@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 
   QFile file(QString::fromStdString(textfile));
   if (!file.open(QIODevice::ReadOnly)) 
-    std::cerr << "Could not read from file" << textfile << "." << std::endl;
+    std::cerr << "Could not read from file " << textfile << "." << std::endl;
 
   QTextStream stream(&file); 
   QStringList wordlist;

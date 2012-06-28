@@ -3,6 +3,7 @@ include_directories(
 
 ADD_EXECUTABLE(wordcloud
   canvas.cpp
+  colormap.cpp
   main.cpp
   word.cpp
   )
