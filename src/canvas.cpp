@@ -9,5 +9,8 @@ void Canvas::addItem(QString s)
 
 void Canvas::addItem(Word *w)
 {
+  // find out where to place the word
+
+  // finally add the word
   QGraphicsScene::addItem((QGraphicsItem*)w);
 }
