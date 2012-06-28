@@ -12,6 +12,7 @@ public:
 
   bool getPinned();
   void setPinned(bool p);
+  void setFontSize(float s);
   void togglePinned();
 
 protected:

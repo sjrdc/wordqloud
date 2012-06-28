@@ -14,3 +14,10 @@ void Word::initBitmap()
 {
   
 }
+
+void Word::setFontSize(float p)
+{
+  QFont f = this->font();
+  f.setPointSizeF(p);
+  this->setFont(f);
+}
