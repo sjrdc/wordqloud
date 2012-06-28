@@ -2,8 +2,9 @@ include_directories(
   )
 
 ADD_EXECUTABLE(wordcloud
-  word.cpp
+  canvas.cpp
   main.cpp
+  word.cpp
   )
 TARGET_LINK_LIBRARIES(wordcloud
   ${Boost_LIBRARIES}
