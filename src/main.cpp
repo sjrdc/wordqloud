@@ -7,6 +7,12 @@
 
 #include <iostream>
 
+#include <QDebug>
+#include <QFile>
+#include <QTextStream>
+#include <QString>
+#include <QStringList>
+
 namespace po = boost::program_options;
 
 int main(int argc, char **argv)
@@ -55,5 +61,19 @@ int main(int argc, char **argv)
       return 0;
     }
 
+  QFile file(QString::fromStdString(textfile));
+  if (!file.open(QIODevice::ReadOnly)) 
+    std::cerr << "Could not read from file" << textfile << "." << std::endl;
+
+  QTextStream stream(&file); 
+  QStringList wordlist;
+  while (!stream.atEnd() && stream.status() == QTextStream::Ok)
+    {
+      QString line = stream.readLine();
+      wordlist.append(line.split(' '));
+    }
+
+  file.close();
+  
   return 0;
 }
