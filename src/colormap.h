@@ -5,14 +5,15 @@ const static int MaxRGB = 255;
 
 class Colormap
 {
-  QVector<QRgb> springColormap(int n);
-  QVector<QRgb> summerColormap(int n);
-  QVector<QRgb> autumnColormap(int n);
-  QVector<QRgb> winterColormap(int n);
+public:
+  static QVector<QColor> springColormap(int n);
+  static QVector<QColor> summerColormap(int n);
+  static QVector<QColor> autumnColormap(int n);
+  static QVector<QColor> winterColormap(int n);
   
-  QVector<QRgb> boneColormap(int n);
-  QVector<QRgb> copperColormap(int n);
-  QVector<QRgb> hotColormap(int n);
-  QVector<QRgb> coolColormap(int n);
+  static QVector<QColor> boneColormap(int n);
+  static QVector<QColor> copperColormap(int n);
+  static QVector<QColor> hotColormap(int n);
+  static QVector<QColor> coolColormap(int n);
   
 };

@@ -64,14 +64,11 @@ void Canvas::addItem(Word *w)
       // evaluate possible overlap between new word and all words placed so far
       done = true;
       foreach (QGraphicsItem *i, items())
-      	{
-      	  // this can be done since we're only adding words to the canvas
-      	  if (w->collidesWithItem(i)) 
-      	    {
-      	      done = false;
-      	      break;
-      	    }
-      	}
+	if (w->collidesWithItem(i)) 
+	  {
+	    done = false;
+	    break;
+	  }
     }
   while (!done);
 
@@ -79,5 +76,8 @@ void Canvas::addItem(Word *w)
   QGraphicsScene::addItem((QGraphicsItem*)w);
 }
 
-
-
+void Canvas::setColors(QColor bcolor, QVector<QRgb> wcolors)
+{
+  setBackgroundBrush(bcolor);
+  wordcolors = wcolors;
+}

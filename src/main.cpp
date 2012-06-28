@@ -17,6 +17,8 @@
 #include <QTextStream>
 
 #include "canvas.h"
+#include "colormap.h"
+#include "word.h"
 
 namespace po = boost::program_options;
 
@@ -80,9 +82,19 @@ int main(int argc, char **argv)
   QApplication app(argc, argv);
   Canvas canvas;
 
+  QVector<QColor> colormap = Colormap::coolColormap(10);
+  
   // place words on the canvas
+  int counter = 0;
   foreach (QString s, wordlist)
-    canvas.addItem(s);
+    {
+      Word *w = new Word(s);
+      w->setBrush(colormap[counter % 10]);
+      w->setFontSize(counter % 10 * 3 + 10);
+      canvas.addItem(w);
+      counter++;
+    }
+  canvas.setBackgroundBrush(Qt::black);
 
   // create image
   QImage img(800, 600, QImage::Format_ARGB32_Premultiplied);

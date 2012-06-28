@@ -19,9 +19,13 @@ public:
   ~Canvas();
   void addItem(QString s);
   void addItem(Word *w);
+  void setColors(QColor bcolor, QVector<QRgb> wcolors);
 
 protected:
   QPointF centrepoint;
+  QVector<QRgb> wordcolors;
+  
+  // some random generator stuff
   boost::mt19937 rng;
   boost::normal_distribution<float> cxDistribution;
   boost::normal_distribution<float> cyDistribution; 
