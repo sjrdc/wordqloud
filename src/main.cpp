@@ -7,20 +7,21 @@
 
 #include <iostream>
 
+#include <QApplication>
 #include <QDebug>
 #include <QFile>
-#include <QTextStream>
+#include <QGraphicsItem>
+#include <QPainter>
 #include <QString>
 #include <QStringList>
+#include <QTextStream>
 
 #include "canvas.h"
 
 namespace po = boost::program_options;
 
 int main(int argc, char **argv)
-{
-  std::cout << "Hello, world!" << std::endl;
-   
+{   
   std::string outfile, textfile;
   po::options_description desc("Allowed options");
   std::vector<std::string> orbargs;
@@ -76,12 +77,21 @@ int main(int argc, char **argv)
     }
   file.close();
 
-  // create a canvas
+  QApplication app(argc, argv);
   Canvas canvas;
-  
-  // place word on the canvas
+
+  // place words on the canvas
   foreach (QString s, wordlist)
     canvas.addItem(s);
-    
+
+  // create image
+  QImage img(800, 600, QImage::Format_ARGB32_Premultiplied);
+  QPainter painter(&img);
+  canvas.render(&painter);
+  painter.end();
+
+  // save image
+  img.save(QString::fromStdString(outfile));  
+
   return 0;
 }

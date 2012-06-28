@@ -11,10 +11,11 @@ public:
   ~Word();
 
   bool getPinned();
+  float height();
   void setPinned(bool p);
   void setFontSize(float s);
   void togglePinned();
-
+  float width();
 protected:
   
   
