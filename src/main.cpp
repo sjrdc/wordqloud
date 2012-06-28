@@ -13,6 +13,8 @@
 #include <QString>
 #include <QStringList>
 
+#include "canvas.h"
+
 namespace po = boost::program_options;
 
 int main(int argc, char **argv)
@@ -72,8 +74,14 @@ int main(int argc, char **argv)
       QString line = stream.readLine();
       wordlist.append(line.split(' '));
     }
-
   file.close();
+
+  // create a canvas
+  Canvas canvas;
   
+  // place word on the canvas
+  foreach (QString s, wordlist)
+    canvas.addItem(s);
+    
   return 0;
 }
