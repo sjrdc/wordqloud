@@ -11,8 +11,8 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
 
   // // initialise random number generator
   rng.seed(static_cast<unsigned int>(std::time(0))); 
-  cxDistribution = boost::normal_distribution<float>(centrepoint.x(), w/5);
-  cyDistribution = boost::normal_distribution<float>(centrepoint.y(), h/5);
+  cxDistribution = boost::normal_distribution<float>(centrepoint.x(), w*.15);
+  cyDistribution = boost::normal_distribution<float>(centrepoint.y(), h*.15);
 
   cxvarnor = new
     boost::variate_generator<boost::mt19937&, 
