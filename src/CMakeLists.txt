@@ -5,6 +5,8 @@ ADD_EXECUTABLE(wordcloud
   canvas.cpp
   colormap.cpp
   main.cpp
+  quadnode.cpp
+  quadtree.cpp
   word.cpp
   )
 TARGET_LINK_LIBRARIES(wordcloud

@@ -10,6 +10,8 @@ public:
   Word(QString w);
   ~Word();
 
+  void cacheCollision(Word *w);
+  bool collidesWithCashed();
   bool getPinned();
   float height();
   void setPinned(bool p);
@@ -20,11 +22,12 @@ protected:
   
   
 private:
-
+    
   void initBitmap();
-  
+
+  Word *cachedCollision;
   bool pinned;
-  bool showbounding;
+  bool showBounding;
 };
 
 inline bool Word::getPinned() { return pinned; }

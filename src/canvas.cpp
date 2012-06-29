@@ -61,11 +61,17 @@ void Canvas::addItem(Word *w)
 
       // place Word
       w->setPos(centre + QPointF(rho*cos(tau), rho*sin(tau)));
+
+      // check cashed collision first
+      if (w->collidesWithCashed())
+	continue;
+
       // evaluate possible overlap between new word and all words placed so far
       done = true;
       foreach (QGraphicsItem *i, items())
 	if (w->collidesWithItem(i)) 
 	  {
+	    w->cacheCollision((Word*)i);
 	    done = false;
 	    break;
 	  }
