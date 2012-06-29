@@ -11,6 +11,7 @@ public:
   ~Word();
 
   void cacheCollision(Word *w);
+  bool collidesWith(Word *w);
   bool collidesWithCashed();
   bool getPinned();
   float height();

@@ -69,7 +69,7 @@ void Canvas::addItem(Word *w)
       // evaluate possible overlap between new word and all words placed so far
       done = true;
       foreach (QGraphicsItem *i, items())
-	if (w->collidesWithItem(i)) 
+	if (w->collidesWith((Word*)i)) 
 	  {
 	    w->cacheCollision((Word*)i);
 	    done = false;

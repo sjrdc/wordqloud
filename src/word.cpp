@@ -17,6 +17,11 @@ void Word::cacheCollision(Word *w)
   cachedCollision = w;
 }
 
+bool Word::collidesWith(Word *w)
+{
+  return collidesWithItem((QGraphicsItem*)w);
+}
+
 bool Word::collidesWithCashed()
 {
   return (cachedCollision != NULL) && 
