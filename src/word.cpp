@@ -8,6 +8,7 @@ Word::Word(QString w)
   : QGraphicsSimpleTextItem(w)
 {
   cachedCollision = NULL;
+  this->setBoundingRegionGranularity(0.3);
 }
 
 Word::~Word()
@@ -21,7 +22,16 @@ void Word::cacheCollision(Word *w)
 
 bool Word::collidesWith(Word *w)
 {
-  return collidesWithItem((QGraphicsSimpleTextItem*)w);
+  QVector<QRect> r = this->boundingRegion(this->sceneTransform()).rects();
+  QVector<QRect> q = w->boundingRegion(w->sceneTransform()).rects();
+
+  for (int i = 0; i < r.size(); ++i)
+    for (int j = 0; j < q.size(); ++j)
+      if (r[i].intersects(q[j])) return true;
+
+  return false;
+
+  // return collidesWithItem((QGraphicsSimpleTextItem*)w);
 }
 
 bool Word::collidesWithCashed()
@@ -59,16 +69,16 @@ void Word::setFontSize(float p)
 
 void Word::writeImage()
 {
-  QImage gimg(boundingRect().size().toSize(), QImage::Format_Mono);
+  QImage gimg(boundingRect().size().toSize(), QImage::Format_ARGB32_Premultiplied);
   QStyleOptionGraphicsItem opt;
   opt.state = QStyle::State_None;
-  QPainter p3;
-  p3.begin(&gimg);
-  p3.setCompositionMode( QPainter::CompositionMode_Clear);
-  p3.fillRect(boundingRect(), QBrush( QColor( 0, 0, 0, 255)));
-  p3.setCompositionMode( QPainter::CompositionMode_Source );
-  this->paint(&p3, &opt, 0);
-  p3.end();
+  QPainter p;
+  p.begin(&gimg);
+  p.setCompositionMode( QPainter::CompositionMode_Clear);
+  p.fillRect(boundingRect(), QBrush( QColor( 0, 0, 0, 255)));
+  p.setCompositionMode( QPainter::CompositionMode_Source );
+  this->paint(&p, &opt, 0);
 
+  p.end();
   gimg.save(text() + ".png");
 }

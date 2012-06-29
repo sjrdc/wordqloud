@@ -86,8 +86,9 @@ int main(int argc, char **argv)
   
   // place words on the canvas
   int counter = 0;
-  foreach (QString s, wordlist)
+  for (int i = 0; i < wordlist.size(); ++i)
     {
+      QString s = wordlist[i];
       if (!s.isEmpty())
 	{
 	  Word *w = new Word(s);
@@ -100,15 +101,21 @@ int main(int argc, char **argv)
     }
   canvas.setBackgroundBrush(Qt::black);
 
-  // create image
+   // create image
   QImage img(800, 600, QImage::Format_ARGB32_Premultiplied);
   QPainter painter(&img);
   canvas.render(&painter);
+  foreach (QGraphicsItem *i, canvas.items())
+    {
+      painter.setPen(((Word*)i)->brush().color());
+      ((Word*)i)->setBoundingRegionGranularity(.3);
+      foreach (QRect rect, i->boundingRegion(i->sceneTransform()).rects())
+	painter.drawRect(rect);
+    }
   painter.end();
  
   // save image
   img.save(QString::fromStdString(outfile));  
-
 
   return 0;
 }
