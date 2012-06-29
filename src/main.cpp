@@ -90,7 +90,7 @@ int main(int argc, char **argv)
     {
       Word *w = new Word(s);
       w->setBrush(colormap[counter % 10]);
-      w->setFontSize(counter % 10 * 3 + 10);
+      w->setFontSize(10 + 20*exp(-counter/5+1));
       canvas.addItem(w);
       counter++;
     }

@@ -56,7 +56,7 @@ void Canvas::addItem(Word *w)
   do
     {
       // get a new location estimate
-      tau += 0.05;
+      tau += 0.10;
       float rho = tau;
 
       // place Word
