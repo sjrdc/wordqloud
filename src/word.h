@@ -15,10 +15,12 @@ public:
   bool collidesWithCashed();
   bool getPinned();
   float height();
+  void prepareCollisionDetection();
   void setPinned(bool p);
   void setFontSize(float s);
   void togglePinned();
   float width();
+  void writeImage();
 protected:
   
   
@@ -26,9 +28,11 @@ private:
     
   void initBitmap();
 
+  QImage *bitmap;
   Word *cachedCollision;
   bool pinned;
   bool showBounding;
+  
 };
 
 inline bool Word::getPinned() { return pinned; }

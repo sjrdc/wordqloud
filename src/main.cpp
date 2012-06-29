@@ -88,11 +88,15 @@ int main(int argc, char **argv)
   int counter = 0;
   foreach (QString s, wordlist)
     {
-      Word *w = new Word(s);
-      w->setBrush(colormap[counter % 10]);
-      w->setFontSize(10 + 20*exp(-counter/5+1));
-      canvas.addItem(w);
-      counter++;
+      if (!s.isEmpty())
+	{
+	  Word *w = new Word(s);
+	  w->setBrush(colormap[counter % 10]);
+	  w->setFontSize(10 + 20*exp(-counter/5+1));
+	  w->prepareCollisionDetection();
+	  canvas.addItem(w);
+	  counter++;
+	}
     }
   canvas.setBackgroundBrush(Qt::black);
 
@@ -101,9 +105,10 @@ int main(int argc, char **argv)
   QPainter painter(&img);
   canvas.render(&painter);
   painter.end();
-
+ 
   // save image
   img.save(QString::fromStdString(outfile));  
+
 
   return 0;
 }
