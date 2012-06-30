@@ -73,8 +73,9 @@ void QuadNode::query(QRectF r, QList<IAreaComparable*>& l) const
   if (!this->intersects(r)) return;
 
   // query this nodes contents
-  foreach (IAreaComparable* item, contents)
-    if (item->boundingBox().intersects(r)) l.push_back(item);
+  if (nodeRectangle.intersects(r))
+    foreach (IAreaComparable* item, contents)
+      l.push_back(item);
 
   // query contents of branches
   foreach (QuadNode *branch, branches)

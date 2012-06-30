@@ -26,13 +26,13 @@ void Word::cacheCollision(Word *w)
 bool Word::collidesWith(Word *w)
 {
   // if collision based on bounding box...
-  if (collidesWithItem((QGraphicsSimpleTextItem*)w))
-    {
+  // if (collidesWithItem((QGraphicsSimpleTextItem*)w))
+  //   {
       // find out whether there is collision based on region rectangles
       for (int i = 0; i < regionRects.size(); ++i)
 	for (int j = 0; j < w->regionRects.size(); ++j)
 	  if (regionRects[i].intersects(w->regionRects[j])) return true;
-    }
+    // }
 
   return false;
 }
