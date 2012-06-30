@@ -10,7 +10,7 @@ public:
   void setRootRectangle(QRectF r);
   
 protected:
-  QuadNode<T*> *rootnode;
+  QuadNode<T> *rootnode;
 };
 
 template <typename T>

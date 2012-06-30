@@ -1,4 +1,12 @@
 #include "quadnode.h"
+#include "word.h"
+
+
+template <typename T>
+bool QuadNode<T>::contains(T* item)
+{
+  return nodeRectangle.contains(item);
+}
 
 template <typename T> 
 void QuadNode<T>::insert(T* t)
@@ -57,4 +65,20 @@ void QuadNode<T>::initBranches()
 	}
     }
   contents.remove(content2Remove);
+}
+
+template <typename T>
+void QuadNode<T>::query(QRectF r, QList<T*>& l)
+{
+  // if the area queried does not even intersect the node area, there
+  // is nothing to add at all
+  if (!this->intersects(r)) return;
+
+  // query this nodes contents
+  foreach (T* item, contents)
+    if (r.contains(item)) l.push_back(item);
+
+  // query contents of branches
+  foreach (QuadNode<T> *branch, branches)
+    branch->query(r, l);    
 }
