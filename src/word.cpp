@@ -22,16 +22,17 @@ void Word::cacheCollision(Word *w)
 
 bool Word::collidesWith(Word *w)
 {
-  QVector<QRect> r = this->boundingRegion(this->sceneTransform()).rects();
-  QVector<QRect> q = w->boundingRegion(w->sceneTransform()).rects();
-
-  for (int i = 0; i < r.size(); ++i)
-    for (int j = 0; j < q.size(); ++j)
-      if (r[i].intersects(q[j])) return true;
+  if (collidesWithItem((QGraphicsSimpleTextItem*)w))
+    {
+      QVector<QRect> r = this->boundingRegion(this->sceneTransform()).rects();
+      QVector<QRect> q = w->boundingRegion(w->sceneTransform()).rects();
+      
+      for (int i = 0; i < r.size(); ++i)
+	for (int j = 0; j < q.size(); ++j)
+	  if (r[i].intersects(q[j])) return true;
+    }
 
   return false;
-
-  // return collidesWithItem((QGraphicsSimpleTextItem*)w);
 }
 
 bool Word::collidesWithCashed()

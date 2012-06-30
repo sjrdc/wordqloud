@@ -29,6 +29,7 @@ int main(int argc, char **argv)
   std::vector<std::string> orbargs;
   desc.add_options()
     ("help,h", "produce help message")
+    ("debug,d", "run in debug mode")
     ("words,w",
      po::value<std::string>(&textfile)->required(),
      "input file with words to use in cloud")
@@ -104,13 +105,17 @@ int main(int argc, char **argv)
    // create image
   QImage img(800, 600, QImage::Format_ARGB32_Premultiplied);
   QPainter painter(&img);
-  canvas.render(&painter);
-  foreach (QGraphicsItem *i, canvas.items())
+  canvas.render(&painter);  
+  if (vmap.count("debug")) 
     {
-      painter.setPen(((Word*)i)->brush().color());
-      ((Word*)i)->setBoundingRegionGranularity(.3);
-      foreach (QRect rect, i->boundingRegion(i->sceneTransform()).rects())
-	painter.drawRect(rect);
+      foreach (QGraphicsItem *i, canvas.items())
+	{
+	  painter.setPen(((Word*)i)->brush().color());
+	  ((Word*)i)->setBoundingRegionGranularity(.3);
+	  foreach (QRect rect, i->boundingRegion(i->sceneTransform()).rects())
+	    painter.drawRect(rect);
+	}
+
     }
   painter.end();
  
