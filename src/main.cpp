@@ -111,7 +111,7 @@ int main(int argc, char **argv)
       foreach (QGraphicsItem *i, canvas.items())
 	{
 	  painter.setPen(((Word*)i)->brush().color());
-	  ((Word*)i)->setBoundingRegionGranularity(.3);
+	  ((Word*)i)->setBoundingRegionGranularity(.4);
 	  foreach (QRect rect, i->boundingRegion(i->sceneTransform()).rects())
 	    painter.drawRect(rect);
 	}

@@ -1,14 +1,16 @@
+#include <cassert>
 #include <QDebug>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
 #include "word.h"
 
-Word::Word(QString w)
+Word::Word(QString w, float b)
   : QGraphicsSimpleTextItem(w)
 {
   cachedCollision = NULL;
-  this->setBoundingRegionGranularity(0.3);
+  assert (b >= 0 && b <= 1);
+  this->setBoundingRegionGranularity(b);
 }
 
 Word::~Word()
@@ -22,14 +24,13 @@ void Word::cacheCollision(Word *w)
 
 bool Word::collidesWith(Word *w)
 {
+  // if collision based on bounding box...
   if (collidesWithItem((QGraphicsSimpleTextItem*)w))
     {
-      QVector<QRect> r = this->boundingRegion(this->sceneTransform()).rects();
-      QVector<QRect> q = w->boundingRegion(w->sceneTransform()).rects();
-      
-      for (int i = 0; i < r.size(); ++i)
-	for (int j = 0; j < q.size(); ++j)
-	  if (r[i].intersects(q[j])) return true;
+      // find out whether there is collision based on region rectangles
+      for (int i = 0; i < regionRects.size(); ++i)
+	for (int j = 0; j < w->regionRects.size(); ++j)
+	  if (regionRects[i].intersects(w->regionRects[j])) return true;
     }
 
   return false;
@@ -58,7 +59,7 @@ void Word::initBitmap()
 
 void Word::prepareCollisionDetection()
 {
-  initBitmap();
+  regionRects = this->boundingRegion(this->sceneTransform()).rects();
 }
 
 void Word::setFontSize(float p)

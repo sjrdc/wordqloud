@@ -7,7 +7,7 @@
 class Word : public QGraphicsSimpleTextItem
 {
 public:
-  Word(QString w);
+  Word(QString w, float b = 0.5);
   ~Word();
 
   void cacheCollision(Word *w);
@@ -28,6 +28,7 @@ private:
     
   void initBitmap();
 
+  QVector<QRect> regionRects;
   QImage *bitmap;
   Word *cachedCollision;
   bool pinned;
