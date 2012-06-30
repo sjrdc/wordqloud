@@ -7,7 +7,7 @@
 class Word : public QGraphicsSimpleTextItem
 {
 public:
-  Word(QString w, float b = 0.5);
+  Word(QString w, float a = 0, float b = 0.5);
   ~Word();
 
   void cacheCollision(Word *w);

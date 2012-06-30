@@ -5,12 +5,13 @@
 
 #include "word.h"
 
-Word::Word(QString w, float b)
+Word::Word(QString w, float a, float b)
   : QGraphicsSimpleTextItem(w)
 {
-  cachedCollision = NULL;
   assert (b >= 0 && b <= 1);
+  cachedCollision = NULL;
   this->setBoundingRegionGranularity(b);
+  this->setRotation(a);
 }
 
 Word::~Word()
