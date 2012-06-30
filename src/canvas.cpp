@@ -21,7 +21,8 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
   cyvarnor = new
     boost::variate_generator<boost::mt19937&, 
   			     boost::normal_distribution<float> >(rng,
-  							    cyDistribution);
+								 cyDistribution);
+  quadtree.setRootRectangle(sceneRect());
 }
 
 Canvas::~Canvas()
@@ -85,6 +86,7 @@ void Canvas::addItem(Word *w)
 
   /* finally add the word */
   QGraphicsScene::addItem((QGraphicsItem*)w);
+  quadtree.insert(w);
 }
 
 void Canvas::setColors(QColor bcolor, QVector<QRgb> wcolors)

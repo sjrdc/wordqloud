@@ -2,7 +2,7 @@
 #include <boost/random/normal_distribution.hpp>
 
 #include <QGraphicsScene>
-
+#include "quadtree.h"
 class Word;
 class Canvas : public QGraphicsScene
 {
@@ -24,6 +24,7 @@ public:
 protected:
   QPointF centrepoint;
   QVector<QRgb> wordcolors;
+  QuadTree quadtree;
   
   // some random generator stuff
   boost::mt19937 rng;

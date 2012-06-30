@@ -1,7 +1,6 @@
 #include "quadtree.h"
 
-template <typename T>
-void QuadTree<T>::insert(T* t)
+QuadTree::QuadTree()
 {
-  rootnode->insert(t);
+  rootnode = new QuadNode();
 }

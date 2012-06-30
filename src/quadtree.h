@@ -1,28 +1,33 @@
+#ifndef QUADTREE_H_
+#define QUADTREE_H_
+#include <QDebug>
 #include <QRectF>
-
+#include "quadnode.h"
 template <typename T> class QList;
-template <typename T> class QuadNode;
-
-template <typename T>
 class QuadTree
 {
 public:
-  void insert(T*);
+  QuadTree();
+  void insert(IAreaComparable*);
   void setRootRectangle(QRectF r);
-  void query(QRectF r, QList<T*> &l) const;
+  void query(QRectF r, QList<IAreaComparable*> &l) const;
 protected:
-  QuadNode<T> *rootnode;
+  QuadNode *rootnode;
 };
 
-template <typename T>
-inline void QuadTree<T>::setRootRectangle(QRectF r) 
+inline void QuadTree::setRootRectangle(QRectF r) 
 { 
   rootnode->setNodeRectangle(r); 
 }
 
-template <typename T>
-inline void QuadTree<T>::query(QRectF r, QList<T*> &l) const 
+inline void QuadTree::insert(IAreaComparable *item)
+{
+  rootnode->insert(item);
+}
+
+inline void QuadTree::query(QRectF r, QList<IAreaComparable*> &l) const 
 {
   rootnode->query(r, l); 
 }
 
+#endif

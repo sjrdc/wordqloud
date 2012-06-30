@@ -1,15 +1,20 @@
+#ifndef WORD_H_
+#define WORD_H_
+
 #include <QColor>
 #include <QFont>
 #include <QGraphicsSimpleTextItem>
 
 #include <string>
+#include "iareacomparable.h"
 
-class Word : public QGraphicsSimpleTextItem
+class Word : public QGraphicsSimpleTextItem, public IAreaComparable
 {
 public:
   Word(QString w, float a = 0, float b = 0.5);
   ~Word();
 
+  virtual QRectF boundingBox() const;
   void cacheCollision(Word *w);
   bool collidesWith(Word *w);
   bool collidesWithCashed();
@@ -36,6 +41,12 @@ private:
   
 };
 
+inline QRectF Word::boundingBox() const
+{
+  QRectF b = ((QGraphicsSimpleTextItem*)this)->boundingRect();
+  return ((QGraphicsSimpleTextItem*)this)->mapRectToScene(b);
+}
+
 inline bool Word::getPinned() { return pinned; }
 
 inline void Word::setPinned(bool p)
@@ -47,3 +58,5 @@ inline void Word::togglePinned()
 {
   pinned = !pinned;
 }
+
+#endif

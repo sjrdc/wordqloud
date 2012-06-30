@@ -1,59 +1,57 @@
+#include <QDebug>
 #include "quadnode.h"
 #include "word.h"
 
 
-template <typename T>
-bool QuadNode<T>::contains(T* item)
+bool QuadNode::contains(IAreaComparable *item) const
 {
-  return nodeRectangle.contains(item);
+  return nodeRectangle.contains(item->boundingBox());
 }
 
-template <typename T> 
-void QuadNode<T>::insert(T* t)
+void QuadNode::insert(IAreaComparable *item)
 {
   if (contents.size() >= maxContents && branches.isEmpty())
     initBranches();
-
+  
   // try to insert in child nodes
-  foreach (QuadNode<T> *node, branches)
-    if (node->contains(t))
+  foreach (QuadNode *node, branches)
+    if (node->contains(item))
       {
-	node->insert(t);
+	node->insert(item);
 	return;
       }
 
   // else... add item to our own collection
-  contents.push_back(t);
+  contents.push_back(item);
 }
 
-template <typename T>
-void QuadNode<T>::initBranches()
+void QuadNode::initBranches()
 {
   QRectF r = this->nodeRectangle;
   r.setSize(0.5*r.size());
   
-  QuadNode<T> *lnw = new QuadNode();
+  QuadNode *lnw = new QuadNode();
   r.moveTo(this->nodeRectangle.topLeft());
-  lnw.setNodeRectangle(r);
+  lnw->setNodeRectangle(r);
   branches.push_back(lnw);
 
-  QuadNode<T> *lne = new QuadNode();
+  QuadNode *lne = new QuadNode();
   r.moveTo(this->nodeRectangle.topLeft() + QPointF(r.width(), 0.));
-  lne.setNodeRectangle(r);
+  lne->setNodeRectangle(r);
   branches.push_back(lne);
 
-  QuadNode<T> *lsw = new QuadNode();
+  QuadNode *lsw = new QuadNode();
   r.moveTo(this->nodeRectangle.topLeft() + QPointF(0., r.height()));
-  lsw.setNodeRectangle(r);
+  lsw->setNodeRectangle(r);
   branches.push_back(lsw);
 
-  QuadNode<T> *lse = new QuadNode();
+  QuadNode *lse = new QuadNode();
   r.moveTo(this->nodeRectangle.topLeft() + QPointF(r.width(), r.height()));
-  lse.setNodeRectangle(r);
+  lse->setNodeRectangle(r);
   branches.push_back(lse);
 
-  QList<T*> content2Remove;
-  foreach (T* item, contents)
+  QList<IAreaComparable*> content2Remove;
+  foreach (IAreaComparable *item, contents)
     {
       foreach (QuadNode* node, branches)
 	{
@@ -64,21 +62,21 @@ void QuadNode<T>::initBranches()
 	    }
 	}
     }
-  contents.remove(content2Remove);
+  foreach (IAreaComparable *item, content2Remove)
+    contents.removeOne(item);
 }
 
-template <typename T>
-void QuadNode<T>::query(QRectF r, QList<T*>& l)
+void QuadNode::query(QRectF r, QList<IAreaComparable*>& l) const
 {
   // if the area queried does not even intersect the node area, there
   // is nothing to add at all
   if (!this->intersects(r)) return;
 
   // query this nodes contents
-  foreach (T* item, contents)
-    if (r.contains(item)) l.push_back(item);
+  foreach (IAreaComparable* item, contents)
+    if (item->boundingBox().intersects(r)) l.push_back(item);
 
   // query contents of branches
-  foreach (QuadNode<T> *branch, branches)
+  foreach (QuadNode *branch, branches)
     branch->query(r, l);    
 }
