@@ -29,7 +29,7 @@ int main(int argc, char **argv)
   desc.add_options()
     ("help,h", "produce help message")
     ("debug,d", "run in debug mode")
-    ("words,w",
+    ("text,t",
      po::value<std::string>(&textfile)->required(),
      "input file with words to use in cloud")
     ("output,o",
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 
   QApplication app(argc, argv);
   Canvas canvas;
-  canvas.setBackgroundBrush(Qt::white);
+  canvas.setBackgroundBrush(Qt::black);
   QGraphicsView view(&canvas);
   
   WordList wordlist;
