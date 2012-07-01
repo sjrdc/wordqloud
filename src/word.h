@@ -42,7 +42,6 @@ private:
   Word *cachedCollision;
   bool pinned;
   bool showBounding;
-  
 };
 
 inline QRectF Word::boundingBox() const

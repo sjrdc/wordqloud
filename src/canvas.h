@@ -50,4 +50,9 @@ protected:
                            boost::normal_distribution<float> > *cyvarnor;
 };
 
-inline void Canvas::setWordList(WordList l) { wordlist = l; }
+inline void Canvas::setWordList(WordList l) 
+{
+  quadtree.clearContents();
+  this->clear();
+  wordlist = l; 
+}
