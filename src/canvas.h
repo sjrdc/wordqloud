@@ -22,6 +22,8 @@ public:
   Canvas(float w = 800, float h = 600);
   ~Canvas();
 
+  void addWord(Word *w);
+  void appendWordList(WordList l);
   void createLayout();
   void randomiseWordColours(QVector<QColor> colours);
   void randomiseWordFontFamily(QVector<QString> fontfamilies);  
@@ -49,6 +51,17 @@ protected:
   boost::variate_generator<boost::mt19937&, 
                            boost::normal_distribution<float> > *cyvarnor;
 };
+
+inline void Canvas::addWord(Word *w)
+{
+  wordlist.push_back(w);
+  layoutWord(w);
+}
+
+inline void Canvas::appendWordList(WordList l)
+{
+  wordlist.append(l);
+}
 
 inline void Canvas::setWordList(WordList l) 
 {
