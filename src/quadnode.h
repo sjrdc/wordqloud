@@ -27,7 +27,7 @@ protected:
   QRectF nodeRectangle;
 
   static const float minimumNodeArea = 10.;
-  static const short maxContents = 20;
+  static const short maxContents = 25;
 };
 
 inline bool QuadNode::contains(QRectF r) const { return nodeRectangle.contains(r); }

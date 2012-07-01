@@ -10,8 +10,8 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
   setBackgroundBrush(Qt::white);
 
   // // initialise random number generator
-  // rng.seed(static_cast<unsigned int>(std::time(0)));
-  rng.seed(static_cast<unsigned int>(0));
+  rng.seed(static_cast<unsigned int>(std::time(0)));
+  // rng.seed(static_cast<unsigned int>(0));
   cxDistribution = boost::normal_distribution<float>(centrepoint.x(), w*.1);
   cyDistribution = boost::normal_distribution<float>(centrepoint.y(), h*.1);
 
