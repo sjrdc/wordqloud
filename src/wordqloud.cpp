@@ -55,6 +55,10 @@ void WordQloud::contextMenuEvent(QContextMenuEvent *event)
 
 void WordQloud::createActions()
 {
+  loadAction = new QAction(tr("&Load text..."), this);
+  loadAction->setStatusTip(tr("load text file"));
+  connect(loadAction, SIGNAL(triggered()), this, SLOT(open()));
+
   openAction = new QAction(tr("&Open..."), this);
   openAction->setShortcuts(QKeySequence::Open);
   openAction->setStatusTip(tr("Open an existing file"));
@@ -78,13 +82,18 @@ void WordQloud::createActions()
 void WordQloud::createMenus()
 {
   fileMenu = menuBar()->addMenu(tr("&File"));
-  fileMenu->addAction(openAction);
+  fileMenu->addAction(loadAction);
+  fileMenu->addAction(openAction);  
   fileMenu->addAction(saveAction);
   fileMenu->addSeparator();
   fileMenu->addAction(exitAction);
 
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAction);
+}
+
+void WordQloud::load()
+{
 }
 
 void WordQloud::open()

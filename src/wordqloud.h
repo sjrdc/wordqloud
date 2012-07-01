@@ -19,9 +19,10 @@ protected:
   void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
+  void about();
+  void load();
   void open();
   void save();
-  void about();
   
 private:
   void createActions();
@@ -31,10 +32,11 @@ private:
   QMenu *helpMenu;
   QActionGroup *alignmentGroup;
 
+  QAction *aboutAction;
+  QAction *exitAction;
+  QAction *loadAction;  
   QAction *openAction;
   QAction *saveAction;
-  QAction *exitAction;
-  QAction *aboutAction;
 
   QLabel *infoLabel;
 };
