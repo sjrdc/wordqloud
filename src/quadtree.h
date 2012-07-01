@@ -3,11 +3,14 @@
 #include <QDebug>
 #include <QRectF>
 #include "quadnode.h"
+
+class QPainter;
 template <typename T> class QList;
 class QuadTree
 {
 public:
   QuadTree();
+  void draw(QPainter &p);
   void insert(IAreaComparable*);
   void setRootRectangle(QRectF r);
   void query(QRectF r, QList<IAreaComparable*> &l) const;

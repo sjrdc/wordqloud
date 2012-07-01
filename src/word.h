@@ -24,6 +24,7 @@ public:
   void setPinned(bool p);
   void setFontSize(float s);
   void togglePinned();
+  void updateCollisionDetection(QPointF delta);
   float width();
   void writeImage();
 protected:

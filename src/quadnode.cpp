@@ -1,16 +1,25 @@
 #include <QDebug>
+#include <QPainter>
+
 #include "quadnode.h"
 #include "word.h"
-
 
 bool QuadNode::contains(IAreaComparable *item) const
 {
   return nodeRectangle.contains(item->boundingBox());
 }
 
+void QuadNode::draw(QPainter &p)
+{
+  p.drawRect(nodeRectangle);
+  p.drawText(nodeRectangle.center(), QString::number(contents.size()));
+  foreach (QuadNode *branch, branches)
+    branch->draw(p);
+}
+
 void QuadNode::insert(IAreaComparable *item)
 {
-  if (contents.size() >= maxContents && branches.isEmpty())
+  if (branches.isEmpty() && contents.size() >= maxContents)
     initBranches();
   
   // try to insert in child nodes
@@ -72,8 +81,8 @@ void QuadNode::query(QRectF r, QList<IAreaComparable*>& l) const
   // is nothing to add at all
   if (!this->intersects(r)) return;
 
-  // query this nodes contents
-  if (nodeRectangle.intersects(r))
+  // add this nodes contents
+  if (contents.size() > 0)
     foreach (IAreaComparable* item, contents)
       l.push_back(item);
 

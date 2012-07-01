@@ -122,5 +122,12 @@ int main(int argc, char **argv)
   // save image
   img.save(QString::fromStdString(outfile));  
 
+  QImage i(800, 600, QImage::Format_ARGB32_Premultiplied);
+  QPainter q(&i);
+  q.setPen(Qt::red);
+  canvas.quadtree.draw(q);
+  q.end();
+  i.save("quadtree.png");
+  
   return 0;
 }

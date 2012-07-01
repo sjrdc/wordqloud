@@ -10,7 +10,8 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
   setBackgroundBrush(Qt::white);
 
   // // initialise random number generator
-  rng.seed(static_cast<unsigned int>(std::time(0))); 
+  // rng.seed(static_cast<unsigned int>(std::time(0)));
+  rng.seed(static_cast<unsigned int>(0));
   cxDistribution = boost::normal_distribution<float>(centrepoint.x(), w*.1);
   cyDistribution = boost::normal_distribution<float>(centrepoint.y(), h*.1);
 
@@ -50,18 +51,21 @@ void Canvas::addItem(Word *w)
       cy = cyvarnor->operator()();      
     }
 
-  QRectF bbox = w->boundingRect();
+  QRectF bbox = w->boundingBox();
   QPointF centre = QPointF(cx - 0.5*bbox.width(), cy - 0.5*bbox.height());
   
   bool done = false;
   do
     {
       // get a new location estimate
-      tau += 0.10;
+      tau += 0.25;
       float rho = tau;
 
       // place Word
       w->setPos(centre + QPointF(rho*cos(tau), rho*sin(tau)));
+      if (!sceneRect().contains(w->boundingBox()))
+	continue;
+      
       w->prepareCollisionDetection();
 
       // check cashed collision first

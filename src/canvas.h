@@ -20,11 +20,11 @@ public:
   void addItem(QString s);
   void addItem(Word *w);
   void setColors(QColor bcolor, QVector<QRgb> wcolors);
-
+  QuadTree quadtree;
 protected:
   QPointF centrepoint;
   QVector<QRgb> wordcolors;
-  QuadTree quadtree;
+
   
   // some random generator stuff
   boost::mt19937 rng;
