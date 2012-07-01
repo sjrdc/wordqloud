@@ -3,6 +3,7 @@
 
 #include <QColor>
 #include <QFont>
+#include <QRegion>
 #include <QGraphicsSimpleTextItem>
 
 #include <string>
@@ -11,7 +12,7 @@
 class Word : public QGraphicsSimpleTextItem, public IAreaComparable
 {
 public:
-  Word(QString w, float a = 0, float b = 0.5);
+  Word(QString w, float a = 0, float b = 1);
   ~Word();
 
   virtual QRectF boundingBox() const;
@@ -35,6 +36,7 @@ private:
   void initBitmap();
 
   QVector<QRect> regionRects;
+  QRegion region;
   QImage *bitmap;
   Word *cachedCollision;
   bool pinned;
