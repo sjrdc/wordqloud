@@ -61,6 +61,8 @@ inline void Canvas::addWord(Word *w)
 inline void Canvas::appendWordList(WordList l)
 {
   wordlist.append(l);
+  foreach (Word *word, l)
+    layoutWord(word);
 }
 
 inline void Canvas::setWordList(WordList l) 
