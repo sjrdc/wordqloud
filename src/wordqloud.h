@@ -28,7 +28,7 @@ private slots:
   void load();
   void open();
   void reCreateLayout();
-  void savePng();
+  void saveBitmap();
   void saveSvg();  
   void setBackgroundColor();
   

@@ -94,10 +94,9 @@ void WordQloud::createActions()
   saveSvgAction->setStatusTip(tr("Save the document to disk"));
   connect(saveSvgAction, SIGNAL(triggered()), this, SLOT(saveSvg()));
 
-  savePngAction = new QAction(tr("&Save PNG"), this);
-  savePngAction->setShortcuts(QKeySequence::Save);
+  savePngAction = new QAction(tr("&Save bitmap"), this);
   savePngAction->setStatusTip(tr("Save the document to disk"));
-  connect(savePngAction, SIGNAL(triggered()), this, SLOT(savePng()));
+  connect(savePngAction, SIGNAL(triggered()), this, SLOT(saveBitmap()));
 
   exitAction = new QAction(tr("E&xit"), this);
   exitAction->setShortcuts(QKeySequence::Quit);
@@ -150,10 +149,10 @@ void WordQloud::reCreateLayout()
   canvas->reCreateLayout();
 }
 
-void WordQloud::savePng()
+void WordQloud::saveBitmap()
 {
   QString filename = 
-    QFileDialog::getSaveFileName(this, "Save PNG");
+    QFileDialog::getSaveFileName(this, "Save bitmap");
 
   QImage img(canvas->width(), canvas->height(),
 	     QImage::Format_ARGB32_Premultiplied);
@@ -171,13 +170,10 @@ void WordQloud::saveSvg()
     QFileDialog::getSaveFileName(this, "Save SVG");
 
   QSvgGenerator svgGen;
- 
   svgGen.setFileName(filename);
   svgGen.setSize(QSize(canvas->width(), canvas->height()));
   svgGen.setViewBox(QRect(0, 0, canvas->width(), canvas->height()));
-  svgGen.setTitle(tr("SVG Generator Example Drawing"));
-  svgGen.setDescription(tr("An SVG drawing created by the SVG Generator "
-			   "Example provided with Qt."));
+  svgGen.setTitle(tr("A wordQloud generated SVG"));
  
   QPainter painter(&svgGen);
   canvas->render(&painter);

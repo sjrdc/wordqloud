@@ -29,9 +29,9 @@ public:
   void updateCollisionDetection(QPointF delta);
   float width();
   void writeImage();
+
 protected:
-  
-  
+
 private:
     
   void initBitmap();

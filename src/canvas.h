@@ -5,7 +5,9 @@
 #include "quadtree.h"
 #include "wordlist.h"
 
+class QGraphicsSceneMouseEvent;
 class Word;
+
 class Canvas : public QGraphicsScene
 {
 public:
@@ -29,7 +31,10 @@ public:
   
 protected:
   void layoutWord(Word *w);
-
+  void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+  void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+  void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);    
+  
   WordList wordlist;
   QPointF centrepoint;
   QVector<QRgb> wordcolors;

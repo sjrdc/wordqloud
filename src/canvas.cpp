@@ -1,8 +1,11 @@
+#include <QDebug>
+#include <QGraphicsSceneMouseEvent>
+
 #include <ctime>
 #include "canvas.h"
 #include "word.h"
 
-#include <QDebug>
+
 
 Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
 { 
@@ -42,61 +45,89 @@ void Canvas::layoutWord(Word *w)
 {
   /* find out where to place the word */
 
-  // initial location for word
-  float tau = 0;
-  short cx = -1, cy = -1;
-  while (cx < 10 || cy < 10 || cx > width() - 10 || cy > height() - 10)
+  if (!w->getPinned())
     {
-      cx = short(cxvarnor->operator()());
-      cy = short(cyvarnor->operator()());
-    }
-
-  QRectF bbox = w->boundingBox();
-  QPoint centre = QPoint(cx - bbox.width()/2, cy - bbox.height()/2);
-  w->setPos(centre);
-  QPoint oldpos(0, 0);
-  w->prepareCollisionDetection();
-  bool done = false;
-  do
-    {
-      // get a new location estimate
-      tau += 0.25;
-      float rho = tau;
-
-      // move Word to a new location
-      QPoint delta = QPoint(rho*cos(tau), rho*sin(tau)) - oldpos;
-      w->moveBy(delta.x(), delta.y());
-      oldpos += delta;
-      if (!sceneRect().contains(w->boundingBox()))
-	continue;
-
-      w->updateCollisionDetection(delta);
-      
-      // check cashed collision first
-      if (w->collidesWithCashed())
-      	continue;
-
-      done = true;
-      // query quadtree to find possibly overlapping items
-      QList<IAreaComparable*> l;
-      quadtree.query(w->boundingBox(), l);
-      foreach (IAreaComparable *i, l)
+      // initial location for word
+      float tau = 0;
+      short cx = -1, cy = -1;
+      while (cx < 10 || cy < 10 || cx > width() - 10 || cy > height() - 10)
 	{
-	  Word* q = (Word*)i;
-	  if (w->collidesWith(q)) 
+	  cx = short(cxvarnor->operator()());
+	  cy = short(cyvarnor->operator()());
+	}
+
+      QRectF bbox = w->boundingBox();
+      QPoint centre = QPoint(cx - bbox.width()/2, cy - bbox.height()/2);
+      w->setPos(centre);
+      QPoint oldpos(0, 0);
+      w->prepareCollisionDetection();
+      bool done = false;
+      do
+	{
+	  // get a new location estimate
+	  tau += 0.25;
+	  float rho = tau;
+
+	  // move Word to a new location
+	  QPoint delta = QPoint(rho*cos(tau), rho*sin(tau)) - oldpos;
+	  w->moveBy(delta.x(), delta.y());
+	  oldpos += delta;
+	  if (!sceneRect().contains(w->boundingBox()))
+	    continue;
+
+	  w->updateCollisionDetection(delta);
+      
+	  // check cashed collision first
+	  if (w->collidesWithCashed())
+	    continue;
+
+	  done = true;
+	  // query quadtree to find possibly overlapping items
+	  QList<IAreaComparable*> l;
+	  quadtree.query(w->boundingBox(), l);
+	  foreach (IAreaComparable *i, l)
 	    {
-	      w->cacheCollision(q);
-	      done = false;
-	      break;
+	      Word* q = (Word*)i;
+	      if (w->collidesWith(q)) 
+		{
+		  w->cacheCollision(q);
+		  done = false;
+		  break;
+		}
 	    }
 	}
+      while (!done);
     }
-  while (!done);
-
+  else w->prepareCollisionDetection();
+  
   /* finally add the word */
   QGraphicsScene::addItem((QGraphicsItem*)w);
   // add it to the quadtree as well
   quadtree.insert(w);
+}
+void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+  QGraphicsItem *item = itemAt(mouseEvent->scenePos());
+  if (item != NULL) item->grabMouse();
+}
+
+void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+  QGraphicsItem *item = mouseGrabberItem();
+  QPoint delta = (mouseEvent->scenePos() - mouseEvent->lastScenePos()).toPoint();
+  item->moveBy(delta.x(), delta.y());
+}
+
+void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+  QGraphicsItem *item = mouseGrabberItem();  
+  item->ungrabMouse();
+
+  Word *w = ((Word*)item);
+  w->setPinned(true);
+  int i = wordlist.indexOf(w);
+  wordlist.move(i, 0);
+  i = wordlist.indexOf(w);
 }
 
 void Canvas::randomiseWordColours(QVector<QColor> colours)

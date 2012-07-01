@@ -1,5 +1,6 @@
 #include <cassert>
 #include <QDebug>
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
@@ -12,6 +13,8 @@ Word::Word(QString w, float a, float b)
   cachedCollision = NULL;
   this->setBoundingRegionGranularity(b);
   this->setRotation(a);
+  this->setAcceptDrops(true);
+  pinned = false;
 }
 
 Word::~Word()
