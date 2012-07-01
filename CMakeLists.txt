@@ -5,6 +5,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0)
 # find required libraries
 find_package(Boost COMPONENTS program_options REQUIRED)
 set(QT_USE_QTOPENGL true)
+set(QT_USE_QTSVG true)
 find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
 

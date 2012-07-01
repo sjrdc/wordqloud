@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QStatusBar>
+#include <QSvgGenerator>
 #include <QVBoxLayout>
 
 #include "canvas.h"
@@ -88,10 +89,15 @@ void WordQloud::createActions()
   openAction->setStatusTip(tr("Open an existing file"));
   connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
 
-  saveAction = new QAction(tr("&Save"), this);
-  saveAction->setShortcuts(QKeySequence::Save);
-  saveAction->setStatusTip(tr("Save the document to disk"));
-  connect(saveAction, SIGNAL(triggered()), this, SLOT(save()));
+  saveSvgAction = new QAction(tr("&Save"), this);
+  saveSvgAction->setShortcuts(QKeySequence::Save);
+  saveSvgAction->setStatusTip(tr("Save the document to disk"));
+  connect(saveSvgAction, SIGNAL(triggered()), this, SLOT(saveSvg()));
+
+  savePngAction = new QAction(tr("&Save PNG"), this);
+  savePngAction->setShortcuts(QKeySequence::Save);
+  savePngAction->setStatusTip(tr("Save the document to disk"));
+  connect(savePngAction, SIGNAL(triggered()), this, SLOT(savePng()));
 
   exitAction = new QAction(tr("E&xit"), this);
   exitAction->setShortcuts(QKeySequence::Quit);
@@ -108,7 +114,8 @@ void WordQloud::createMenus()
   fileMenu = menuBar()->addMenu(tr("&File"));
   fileMenu->addAction(loadAction);
   fileMenu->addAction(openAction);  
-  fileMenu->addAction(saveAction);
+  fileMenu->addAction(saveSvgAction);
+  fileMenu->addAction(savePngAction);  
   fileMenu->addSeparator();
   fileMenu->addAction(exitAction);
 
@@ -143,8 +150,38 @@ void WordQloud::reCreateLayout()
   canvas->reCreateLayout();
 }
 
-void WordQloud::save()
+void WordQloud::savePng()
 {
+  QString filename = 
+    QFileDialog::getSaveFileName(this, "Save PNG");
+
+  QImage img(canvas->width(), canvas->height(),
+	     QImage::Format_ARGB32_Premultiplied);
+  QPainter painter(&img);
+  canvas->render(&painter);  
+  painter.end();
+ 
+  // save image
+  img.save(filename);  
+}
+
+void WordQloud::saveSvg()
+{
+  QString filename = 
+    QFileDialog::getSaveFileName(this, "Save SVG");
+
+  QSvgGenerator svgGen;
+ 
+  svgGen.setFileName(filename);
+  svgGen.setSize(QSize(canvas->width(), canvas->height()));
+  svgGen.setViewBox(QRect(0, 0, canvas->width(), canvas->height()));
+  svgGen.setTitle(tr("SVG Generator Example Drawing"));
+  svgGen.setDescription(tr("An SVG drawing created by the SVG Generator "
+			   "Example provided with Qt."));
+ 
+  QPainter painter(&svgGen);
+  canvas->render(&painter);
+  painter.end();
 }
 
 void WordQloud::setBackgroundColor()

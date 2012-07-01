@@ -21,13 +21,15 @@ class WordQloud : public QMainWindow
 
 protected:
   void contextMenuEvent(QContextMenuEvent *event);
-					    
+  void renderImage();
+		    
 private slots:
   void about();
   void load();
   void open();
   void reCreateLayout();
-  void save();
+  void savePng();
+  void saveSvg();  
   void setBackgroundColor();
   
 private:
@@ -45,7 +47,8 @@ private:
   QAction *exitAction;
   QAction *loadAction;  
   QAction *openAction;
-  QAction *saveAction;
+  QAction *savePngAction;
+  QAction *saveSvgAction;  
 
   QLabel *infoLabel;
 
