@@ -21,6 +21,7 @@ public:
   ~Canvas();
 
   void createLayout();
+  void randomiseWordColours(QVector<QColor> colours);
   void reCreateLayout();
   void setColors(QColor bcolor, QVector<QRgb> wcolors);
   void setWordList(WordList l);

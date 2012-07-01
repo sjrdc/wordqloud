@@ -99,6 +99,19 @@ void Canvas::layoutWord(Word *w)
   quadtree.insert(w);
 }
 
+void Canvas::randomiseWordColours(QVector<QColor> colours)
+{
+  boost::mt19937 colourrng;
+  colourrng.seed(static_cast<unsigned int>(std::time(0)));  
+  
+  boost::uniform_int<> uni(0, colours.size()-1);
+  boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
+    colourpicker(colourrng, uni);
+
+  foreach (Word *word, wordlist)
+    word->setBrush(colours[colourpicker()]);
+}
+
 void Canvas::reCreateLayout()
 {
   quadtree.clearContents();
