@@ -112,6 +112,19 @@ void Canvas::randomiseWordColours(QVector<QColor> colours)
     word->setBrush(colours[colourpicker()]);
 }
 
+void Canvas::randomiseWordFontFamily(QVector<QString> fontfamilies)
+{
+  boost::mt19937 colourrng;
+  colourrng.seed(static_cast<unsigned int>(std::time(0)));  
+  
+  boost::uniform_int<> uni(0, fontfamilies.size()-1);
+  boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
+    colourpicker(colourrng, uni);
+
+  foreach (Word *word, wordlist)
+    word->setFontName(fontfamilies[colourpicker()]);
+}
+
 void Canvas::reCreateLayout()
 {
   quadtree.clearContents();
