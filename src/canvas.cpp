@@ -53,7 +53,8 @@ void Canvas::addItem(Word *w)
 
   QRectF bbox = w->boundingBox();
   QPointF centre = QPointF(cx - 0.5*bbox.width(), cy - 0.5*bbox.height());
-  
+  w->setPos(centre);
+  QPointF oldpos(0., 0.);
   bool done = false;
   do
     {
@@ -61,13 +62,15 @@ void Canvas::addItem(Word *w)
       tau += 0.25;
       float rho = tau;
 
-      // place Word
-      w->setPos(centre + QPointF(rho*cos(tau), rho*sin(tau)));
+      // move Word to a new location
+      QPointF delta = QPointF(rho*cos(tau), rho*sin(tau)) - oldpos;
+      w->moveBy(delta.x(), delta.y());
+      oldpos += delta;
       if (!sceneRect().contains(w->boundingBox()))
 	continue;
-      
-      w->prepareCollisionDetection();
 
+      w->prepareCollisionDetection();
+      
       // check cashed collision first
       if (w->collidesWithCashed())
       	continue;
