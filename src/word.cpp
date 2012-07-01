@@ -54,6 +54,13 @@ void Word::prepareCollisionDetection()
   region = this->boundingRegion(this->sceneTransform());
 }
 
+void Word::setFontName(QString name)
+{
+  QFont f = this->font();
+  f.setFamily(name);
+  this->setFont(f);
+}
+
 void Word::setFontSize(float p)
 {
   QFont f = this->font();

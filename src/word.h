@@ -23,6 +23,7 @@ public:
   float height();
   void prepareCollisionDetection();
   void setPinned(bool p);
+  void setFontName(QString fontname);
   void setFontSize(float s);
   void togglePinned();
   void updateCollisionDetection(QPointF delta);
