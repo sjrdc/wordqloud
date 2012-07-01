@@ -10,6 +10,7 @@ class QuadTree
 {
 public:
   QuadTree();
+  void clearContents();
   void draw(QPainter &p);
   void insert(IAreaComparable*);
   void setRootRectangle(QRectF r);
@@ -17,6 +18,11 @@ public:
 protected:
   QuadNode *rootnode;
 };
+
+inline void QuadTree::clearContents()
+{
+  rootnode->clearContents();
+}
 
 inline void QuadTree::setRootRectangle(QRectF r) 
 { 

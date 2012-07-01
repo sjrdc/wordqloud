@@ -9,6 +9,7 @@ class QActionGroup;
 class QGraphicsView;
 class QLabel;
 class QMenu;
+class QPushButton;
 
 class WordQloud : public QMainWindow
 {
@@ -23,6 +24,7 @@ private slots:
   void about();
   void load();
   void open();
+  void reCreateLayout();
   void save();
   
 private:
@@ -32,6 +34,8 @@ private:
   QMenu *fileMenu;
   QMenu *helpMenu;
   QActionGroup *alignmentGroup;
+
+  QPushButton *reCreateLayoutButton;
 
   QAction *aboutAction;
   QAction *exitAction;

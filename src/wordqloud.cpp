@@ -1,9 +1,11 @@
 #include <QAction>
-#include <QGraphicsView>
 #include <QFileDialog>
+#include <QGraphicsView>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QStatusBar>
 #include <QVBoxLayout>
 
@@ -30,10 +32,17 @@ WordQloud::WordQloud()
   QWidget *bottomFiller = new QWidget;
   bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+  reCreateLayoutButton = new QPushButton("re-create layout");
+  connect(reCreateLayoutButton, SIGNAL(clicked()), this, SLOT(reCreateLayout()));  
+  
+  QHBoxLayout *buttonLayout = new QHBoxLayout;
+  buttonLayout->addWidget(reCreateLayoutButton);
+
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setMargin(5);
   layout->addWidget(topFiller);
   layout->addWidget(view);
+  layout->addItem(buttonLayout);
   layout->addWidget(bottomFiller);
   widget->setLayout(layout);
 
@@ -115,6 +124,12 @@ void WordQloud::load()
 void WordQloud::open()
 {
 }
+
+void WordQloud::reCreateLayout()
+{
+  canvas->reCreateLayout();
+}
+
 void WordQloud::save()
 {
 }

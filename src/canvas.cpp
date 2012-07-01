@@ -99,6 +99,15 @@ void Canvas::layoutWord(Word *w)
   quadtree.insert(w);
 }
 
+void Canvas::reCreateLayout()
+{
+  quadtree.clearContents();
+  foreach (QGraphicsItem *item, items())
+    removeItem(item);
+
+  createLayout();
+}
+
 void Canvas::setColors(QColor bcolor, QVector<QRgb> wcolors)
 {
   setBackgroundBrush(bcolor);

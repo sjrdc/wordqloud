@@ -9,6 +9,7 @@ class QPainter;
 class QuadNode
 {
 public:
+  void clearContents();
   void draw(QPainter &p);
   QRectF getNodeRectangle() const;
   void insert(IAreaComparable *item);
@@ -29,6 +30,13 @@ protected:
   static const float minimumNodeArea = 10.;
   static const short maxContents = 25;
 };
+
+inline void QuadNode::clearContents()
+{
+  contents.clear();
+  foreach (QuadNode *branch, branches)
+    branch->clearContents();
+}
 
 inline bool QuadNode::contains(QRectF r) const { return nodeRectangle.contains(r); }
 
