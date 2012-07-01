@@ -1,11 +1,15 @@
 #include <QAction>
+#include <QGraphicsView>
+#include <QFileDialog>
 #include <QLabel>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QVBoxLayout>
 
+#include "canvas.h"
 #include "wordqloud.moc"
+#include "wordlist.h"
 
 WordQloud::WordQloud()
 {
@@ -15,6 +19,9 @@ WordQloud::WordQloud()
   QWidget *topFiller = new QWidget;
   topFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+  canvas = new Canvas;
+  view = new QGraphicsView(canvas);
+  
   infoLabel = new QLabel(tr("<i>Choose a menu option, or right-click to "
 			    "invoke a context menu</i>"));
   infoLabel->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
@@ -26,7 +33,7 @@ WordQloud::WordQloud()
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setMargin(5);
   layout->addWidget(topFiller);
-  layout->addWidget(infoLabel);
+  layout->addWidget(view);
   layout->addWidget(bottomFiller);
   widget->setLayout(layout);
 
@@ -36,28 +43,23 @@ WordQloud::WordQloud()
   QString message = tr("A context menu is available by right-clicking");
   statusBar()->showMessage(message);
 
-  setWindowTitle(tr("Menus"));
+  setWindowTitle(tr("wordQloud"));
   setMinimumSize(160, 160);
-  resize(480, 320);
 }
 
 void WordQloud::about()
 {
-     infoLabel->setText(tr("Invoked <b>Help|About</b>"));
-     QMessageBox::about(this, tr("About Menu"),
-             tr("The <b>Menu</b> example shows how to create "
-                "menu-bar menus and context menus."));
-}
-
-void WordQloud::contextMenuEvent(QContextMenuEvent *event)
-{
+  infoLabel->setText(tr("Invoked <b>Help|About</b>"));
+  QMessageBox::about(this, tr("About Menu"),
+		     tr("The <b>Menu</b> example shows how to create "
+			"menu-bar menus and context menus."));
 }
 
 void WordQloud::createActions()
 {
   loadAction = new QAction(tr("&Load text..."), this);
   loadAction->setStatusTip(tr("load text file"));
-  connect(loadAction, SIGNAL(triggered()), this, SLOT(open()));
+  connect(loadAction, SIGNAL(triggered()), this, SLOT(load()));
 
   openAction = new QAction(tr("&Open..."), this);
   openAction->setShortcuts(QKeySequence::Open);
@@ -94,6 +96,20 @@ void WordQloud::createMenus()
 
 void WordQloud::load()
 {
+  QString filename = 
+    QFileDialog::getOpenFileName(this, "Load text file");
+
+  WordList wordlist;
+  try { wordlist.fromTextFile(filename); }
+  catch (...) 
+    {
+      statusBar()->showMessage("Could not create wordlist from text file " 
+			       + filename);
+      return;
+    }
+  
+  canvas->setWordList(wordlist);
+  canvas->createLayout();
 }
 
 void WordQloud::open()

@@ -3,8 +3,10 @@
 
 #include <QMainWindow>
 
+class Canvas;
 class QAction;
 class QActionGroup;
+class QGraphicsView;
 class QLabel;
 class QMenu;
 
@@ -16,7 +18,6 @@ class WordQloud : public QMainWindow
   WordQloud();
 
 protected:
-  void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
   void about();
@@ -39,6 +40,9 @@ private:
   QAction *saveAction;
 
   QLabel *infoLabel;
+
+  QGraphicsView *view;
+  Canvas *canvas;
 };
 
 #endif

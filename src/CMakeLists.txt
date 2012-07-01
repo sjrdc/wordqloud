@@ -23,8 +23,14 @@ qt4_automoc(
   wordqloud.h  
 )
 ADD_EXECUTABLE(wordqloud
+  canvas.cpp
+  colormap.cpp
   main.cpp
+  quadtree.cpp
+  quadnode.cpp
   wordqloud.cpp
+  word.cpp
+  wordlist.cpp
 )
 TARGET_LINK_LIBRARIES(wordqloud
   ${QT_LIBRARIES}
