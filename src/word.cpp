@@ -6,13 +6,13 @@
 
 #include "word.h"
 
-Word::Word(QString w, float a, float b)
-  : QGraphicsSimpleTextItem(w)
+Word::Word(QString string, float b)
+  : QGraphicsSimpleTextItem(string)
 {
   assert (b >= 0 && b <= 1);
-  cachedCollision = NULL;
+  this->setBrush(Qt::black);
   this->setBoundingRegionGranularity(b);
-  this->setRotation(a);
+  cachedCollision = NULL;
   this->setAcceptDrops(true);
   pinned = false;
 }

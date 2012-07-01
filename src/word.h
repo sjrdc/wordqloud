@@ -12,7 +12,7 @@
 class Word : public QGraphicsSimpleTextItem, public IAreaComparable
 {
 public:
-  Word(QString w, float a = 0, float b = 1);
+  Word(QString w, float b = 1);
   ~Word();
 
   virtual QRectF boundingBox() const;
