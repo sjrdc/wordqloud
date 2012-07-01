@@ -11,6 +11,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QGraphicsItem>
+#include <QGraphicsView>
 #include <QPainter>
 #include <QString>
 #include <QStringList>
@@ -82,6 +83,7 @@ int main(int argc, char **argv)
 
   QApplication app(argc, argv);
   Canvas canvas;
+  QGraphicsView view(&canvas);
 
   QVector<QColor> colormap = Colormap::coolColormap(10);
   
@@ -132,5 +134,6 @@ int main(int argc, char **argv)
       i.save("quadtree.png");
     }
   
-  return 0;
+  view.show();
+  return app.exec();
 }
