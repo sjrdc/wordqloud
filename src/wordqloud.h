@@ -6,6 +6,7 @@
 class Canvas;
 class QAction;
 class QActionGroup;
+class QContextMenuEvent;
 class QGraphicsView;
 class QLabel;
 class QMenu;
@@ -19,13 +20,15 @@ class WordQloud : public QMainWindow
   WordQloud();
 
 protected:
-
+  void contextMenuEvent(QContextMenuEvent *event);
+					    
 private slots:
   void about();
   void load();
   void open();
   void reCreateLayout();
   void save();
+  void setBackgroundColor();
   
 private:
   void createActions();
@@ -38,6 +41,7 @@ private:
   QPushButton *reCreateLayoutButton;
 
   QAction *aboutAction;
+  QAction *backgroundColorAction;
   QAction *exitAction;
   QAction *loadAction;  
   QAction *openAction;

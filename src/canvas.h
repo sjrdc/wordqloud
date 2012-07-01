@@ -35,7 +35,7 @@ protected:
   QVector<QRgb> wordcolors;
   QuadTree quadtree;
   
-  // some random generator stuff
+  // some random generator stuff for coordinate generation
   boost::mt19937 rng;
   boost::normal_distribution<float> cxDistribution;
   boost::normal_distribution<float> cyDistribution; 

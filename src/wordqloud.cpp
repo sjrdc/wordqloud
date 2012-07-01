@@ -1,4 +1,6 @@
 #include <QAction>
+#include <QColorDialog>
+#include <QContextMenuEvent>
 #include <QFileDialog>
 #include <QGraphicsView>
 #include <QHBoxLayout>
@@ -64,8 +66,19 @@ void WordQloud::about()
 			"menu-bar menus and context menus."));
 }
 
+void WordQloud::contextMenuEvent(QContextMenuEvent *event)
+{
+  QMenu menu(this);
+  menu.addAction(backgroundColorAction);
+  menu.exec(event->globalPos());
+}
+
 void WordQloud::createActions()
 {
+  backgroundColorAction = new QAction(tr("Set background color"), this);
+  connect(backgroundColorAction, SIGNAL(triggered()), 
+	  this, SLOT(setBackgroundColor()));
+  
   loadAction = new QAction(tr("&Load text..."), this);
   loadAction->setStatusTip(tr("load text file"));
   connect(loadAction, SIGNAL(triggered()), this, SLOT(load()));
@@ -132,4 +145,12 @@ void WordQloud::reCreateLayout()
 
 void WordQloud::save()
 {
+}
+
+void WordQloud::setBackgroundColor()
+{
+  QColor color = 
+    QColorDialog::getColor(canvas->backgroundBrush().color(),
+			   this, "Select background color");
+  canvas->setBackgroundBrush(color);
 }
