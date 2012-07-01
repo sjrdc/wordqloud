@@ -17,14 +17,19 @@ public:
    */
   Canvas(float w = 800, float h = 600);
   ~Canvas();
-  void addItem(QString s);
-  void addItem(Word *w);
+
+  void createLayout();
+
   void setColors(QColor bcolor, QVector<QRgb> wcolors);
-  QuadTree quadtree;
+  void setWordList(QList<Word*> l);
+  
 protected:
+  void layoutWord(Word *w);
+
+  QList<Word*> wordlist;
   QPointF centrepoint;
   QVector<QRgb> wordcolors;
-
+  QuadTree quadtree;
   
   // some random generator stuff
   boost::mt19937 rng;
@@ -35,3 +40,5 @@ protected:
   boost::variate_generator<boost::mt19937&, 
                            boost::normal_distribution<float> > *cyvarnor;
 };
+
+inline void Canvas::setWordList(QList<Word*> l) { wordlist = l; }

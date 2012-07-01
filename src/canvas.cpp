@@ -30,15 +30,15 @@ Canvas::~Canvas()
 {
   delete cxvarnor;
   delete cyvarnor;
- }
-
-void Canvas::addItem(QString s)
-{
-  Word *w = new Word(s);
-  addItem(w);
 }
 
-void Canvas::addItem(Word *w)
+void Canvas::createLayout()
+{
+  foreach (Word* w, wordlist)
+    layoutWord(w);
+}
+
+void Canvas::layoutWord(Word *w)
 {
   /* find out where to place the word */
 

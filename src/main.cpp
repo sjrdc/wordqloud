@@ -72,38 +72,41 @@ int main(int argc, char **argv)
   if (!file.open(QIODevice::ReadOnly)) 
     std::cerr << "Could not read from file " << textfile << "." << std::endl;
 
+  QApplication app(argc, argv);
+  Canvas canvas;
+  canvas.setBackgroundBrush(Qt::black);
+  QGraphicsView view(&canvas);
+
   QTextStream stream(&file); 
-  QStringList wordlist;
+  QStringList stringlist;
   while (!stream.atEnd() && stream.status() == QTextStream::Ok)
     {
       QString line = stream.readLine();
-      wordlist.append(line.split(' '));
+      stringlist.append(line.split(' '));
     }
   file.close();
 
-  QApplication app(argc, argv);
-  Canvas canvas;
-  QGraphicsView view(&canvas);
-
   QVector<QColor> colormap = Colormap::coolColormap(10);
   
-  // place words on the canvas
+  // create words from strings and put them in wordlist
   int counter = 0;
-  for (int i = 0; i < wordlist.size(); ++i)
+  QList<Word*> wordlist;
+  for (int i = 0; i < stringlist.size(); ++i)
     {
-      QString s = wordlist[i];
+      QString s = stringlist[i];
       if (!s.isEmpty())
 	{
 	  Word *w = new Word(s);
 	  w->setBrush(colormap[counter % 10]);
 	  w->setFontSize(10 + 20*exp(-counter/5+1));
-	  w->prepareCollisionDetection();
-	  canvas.addItem(w);
+	  wordlist.push_back(w);
 	  counter++;
 	}
     }
-  canvas.setBackgroundBrush(Qt::black);
 
+  canvas.setWordList(wordlist);
+  canvas.createLayout();
+  
    // create image
   QImage img(800, 600, QImage::Format_ARGB32_Premultiplied);
   QPainter painter(&img);
@@ -123,16 +126,6 @@ int main(int argc, char **argv)
  
   // save image
   img.save(QString::fromStdString(outfile));  
-
-  if (vmap.count("debug")) 
-    {
-      QImage i(800, 600, QImage::Format_ARGB32_Premultiplied);
-      QPainter q(&i);
-      q.setPen(Qt::red);
-      canvas.quadtree.draw(q);
-      q.end();
-      i.save("quadtree.png");
-    }
   
   view.show();
   return app.exec();
