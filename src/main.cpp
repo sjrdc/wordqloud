@@ -14,12 +14,10 @@
 #include <QGraphicsView>
 #include <QPainter>
 #include <QString>
-#include <QStringList>
-#include <QTextStream>
 
 #include "canvas.h"
-#include "colormap.h"
 #include "word.h"
+#include "wordlist.h"
 
 namespace po = boost::program_options;
 
@@ -68,42 +66,13 @@ int main(int argc, char **argv)
       return 0;
     }
 
-  QFile file(QString::fromStdString(textfile));
-  if (!file.open(QIODevice::ReadOnly)) 
-    std::cerr << "Could not read from file " << textfile << "." << std::endl;
-
   QApplication app(argc, argv);
   Canvas canvas;
-  canvas.setBackgroundBrush(Qt::black);
+  canvas.setBackgroundBrush(Qt::white);
   QGraphicsView view(&canvas);
-
-  QTextStream stream(&file); 
-  QStringList stringlist;
-  while (!stream.atEnd() && stream.status() == QTextStream::Ok)
-    {
-      QString line = stream.readLine();
-      stringlist.append(line.split(' '));
-    }
-  file.close();
-
-  QVector<QColor> colormap = Colormap::coolColormap(10);
   
-  // create words from strings and put them in wordlist
-  int counter = 0;
-  QList<Word*> wordlist;
-  for (int i = 0; i < stringlist.size(); ++i)
-    {
-      QString s = stringlist[i];
-      if (!s.isEmpty())
-	{
-	  Word *w = new Word(s);
-	  w->setBrush(colormap[counter % 10]);
-	  w->setFontSize(10 + 20*exp(-counter/5+1));
-	  wordlist.push_back(w);
-	  counter++;
-	}
-    }
-
+  WordList wordlist;
+  wordlist.fromTextFile(QString::fromStdString(textfile));
   canvas.setWordList(wordlist);
   canvas.createLayout();
   

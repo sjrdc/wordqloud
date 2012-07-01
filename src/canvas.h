@@ -3,6 +3,8 @@
 
 #include <QGraphicsScene>
 #include "quadtree.h"
+#include "wordlist.h"
+
 class Word;
 class Canvas : public QGraphicsScene
 {
@@ -21,12 +23,12 @@ public:
   void createLayout();
 
   void setColors(QColor bcolor, QVector<QRgb> wcolors);
-  void setWordList(QList<Word*> l);
+  void setWordList(WordList l);
   
 protected:
   void layoutWord(Word *w);
 
-  QList<Word*> wordlist;
+  WordList wordlist;
   QPointF centrepoint;
   QVector<QRgb> wordcolors;
   QuadTree quadtree;
@@ -41,4 +43,4 @@ protected:
                            boost::normal_distribution<float> > *cyvarnor;
 };
 
-inline void Canvas::setWordList(QList<Word*> l) { wordlist = l; }
+inline void Canvas::setWordList(WordList l) { wordlist = l; }

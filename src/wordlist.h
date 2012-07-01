@@ -6,6 +6,8 @@
 class WordList : public QList<Word*>
 {
 public:
+  void fromTextFile(QString filename);
+  void fromWordFile(QString filename);
 protected:
 private:
 };
