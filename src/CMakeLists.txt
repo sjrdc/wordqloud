@@ -8,6 +8,7 @@ ADD_EXECUTABLE(wordcloud
   quadnode.cpp
   quadtree.cpp
   word.cpp
+  wordlist.cpp  
   )
 TARGET_LINK_LIBRARIES(wordcloud
   ${Boost_LIBRARIES}
