@@ -11,7 +11,6 @@
 #include <QDebug>
 #include <QFile>
 #include <QGraphicsItem>
-#include <QGraphicsView>
 #include <QPainter>
 #include <QString>
 
@@ -24,6 +23,7 @@ namespace po = boost::program_options;
 int main(int argc, char **argv)
 {   
   std::string outfile, textfile;
+  int width, height;
   po::options_description desc("Allowed options");
   std::vector<std::string> orbargs;
   desc.add_options()
@@ -34,7 +34,13 @@ int main(int argc, char **argv)
      "input file with words to use in cloud")
     ("output,o",
      po::value<std::string>(&outfile)->default_value("cloud.png"), 
-     "filename for output image file");
+     "filename for output image file")
+    ("width,w",
+     po::value<int>(&width)->default_value(800), 
+     "width of output image file")
+    ("height,h",
+     po::value<int>(&height)->default_value(600), 
+     "height of output image file");
 
   // parse options
   po::variables_map vmap;
@@ -67,9 +73,8 @@ int main(int argc, char **argv)
     }
 
   QApplication app(argc, argv);
-  Canvas canvas;
+  Canvas canvas(width, height);
   canvas.setBackgroundBrush(Qt::black);
-  QGraphicsView view(&canvas);
   
   WordList wordlist;
   wordlist.fromTextFile(QString::fromStdString(textfile));
@@ -77,7 +82,7 @@ int main(int argc, char **argv)
   canvas.createLayout();
   
    // create image
-  QImage img(800, 600, QImage::Format_ARGB32_Premultiplied);
+  QImage img(width, height, QImage::Format_ARGB32_Premultiplied);
   QPainter painter(&img);
   canvas.render(&painter);  
   if (vmap.count("debug")) 
@@ -96,6 +101,5 @@ int main(int argc, char **argv)
   // save image
   img.save(QString::fromStdString(outfile));  
   
-  view.show();
-  return app.exec();
+  return 0;
 }
