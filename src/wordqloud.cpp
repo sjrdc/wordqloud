@@ -110,7 +110,7 @@ void WordQloud::createActions()
   aboutAction->setStatusTip(tr("Show the application's About box"));
   connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
-  randomOrientationAction = new QAction(tr("Randomise orientation"), this);
+  randomOrientationAction = new QAction(tr("Randomise &orientation"), this);
   connect(randomOrientationAction, SIGNAL(triggered()), this, 
 	  SLOT(randomiseOrientations()));
 }
