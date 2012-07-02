@@ -114,20 +114,26 @@ void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
   QGraphicsItem *item = mouseGrabberItem();
-  QPoint delta = (mouseEvent->scenePos() - mouseEvent->lastScenePos()).toPoint();
-  item->moveBy(delta.x(), delta.y());
+  if (item != NULL)
+    {
+      QPoint delta = (mouseEvent->scenePos() - mouseEvent->lastScenePos()).toPoint();
+      item->moveBy(delta.x(), delta.y());
+    }
 }
 
 void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
   QGraphicsItem *item = mouseGrabberItem();  
-  item->ungrabMouse();
-
-  Word *w = ((Word*)item);
-  w->setPinned(true);
-  int i = wordlist.indexOf(w);
-  wordlist.move(i, 0);
-  i = wordlist.indexOf(w);
+  if (item != NULL)
+    {
+      item->ungrabMouse();
+      
+      Word *w = ((Word*)item);
+      w->setPinned(true);
+      int i = wordlist.indexOf(w);
+      wordlist.move(i, 0);
+      i = wordlist.indexOf(w);
+    }
 }
 
 void Canvas::randomiseWordColours(QVector<QColor> colours)

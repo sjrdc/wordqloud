@@ -62,4 +62,5 @@ inline void Word::togglePinned()
   pinned = !pinned;
 }
 
+
 #endif

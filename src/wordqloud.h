@@ -29,7 +29,7 @@ private slots:
   void open();
   void reCreateLayout();
   void saveBitmap();
-  void saveSvg();  
+  void savePDF();  
   void setBackgroundColor();
   
 private:

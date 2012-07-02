@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QPrinter>
 #include <QPushButton>
 #include <QStatusBar>
 #include <QSvgGenerator>
@@ -14,7 +15,9 @@
 
 #include "canvas.h"
 #include "wordqloud.moc"
+#include "word.h"
 #include "wordlist.h"
+
 
 WordQloud::WordQloud()
 {
@@ -89,10 +92,10 @@ void WordQloud::createActions()
   openAction->setStatusTip(tr("Open an existing file"));
   connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
 
-  saveSvgAction = new QAction(tr("&Save"), this);
+  saveSvgAction = new QAction(tr("&Save PDF"), this);
   saveSvgAction->setShortcuts(QKeySequence::Save);
   saveSvgAction->setStatusTip(tr("Save the document to disk"));
-  connect(saveSvgAction, SIGNAL(triggered()), this, SLOT(saveSvg()));
+  connect(saveSvgAction, SIGNAL(triggered()), this, SLOT(savePDF()));
 
   savePngAction = new QAction(tr("&Save bitmap"), this);
   savePngAction->setStatusTip(tr("Save the document to disk"));
@@ -164,18 +167,16 @@ void WordQloud::saveBitmap()
   img.save(filename);  
 }
 
-void WordQloud::saveSvg()
+void WordQloud::savePDF()
 {
   QString filename = 
-    QFileDialog::getSaveFileName(this, "Save SVG");
+    QFileDialog::getSaveFileName(this, "Save PDF");
 
-  QSvgGenerator svgGen;
-  svgGen.setFileName(filename);
-  svgGen.setSize(QSize(canvas->width(), canvas->height()));
-  svgGen.setViewBox(QRect(0, 0, canvas->width(), canvas->height()));
-  svgGen.setTitle(tr("A wordQloud generated SVG"));
- 
-  QPainter painter(&svgGen);
+  QPrinter pdfprinter;
+  pdfprinter.setOutputFormat(QPrinter::PdfFormat);
+  pdfprinter.setOutputFileName(filename);
+
+  QPainter painter(&pdfprinter);
   canvas->render(&painter);
   painter.end();
 }
