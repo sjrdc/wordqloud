@@ -26,6 +26,7 @@ public:
   void appendWordList(WordList l);
   void createLayout();
   void highlightPinned();
+  void randomiseOrientations();
   void randomiseWordColours(QVector<QColor> colours);
   void randomiseWordFontFamily(QVector<QString> fontfamilies);  
   void reCreateLayout();

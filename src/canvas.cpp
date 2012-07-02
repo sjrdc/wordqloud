@@ -158,6 +158,19 @@ void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
+void Canvas::randomiseOrientations()
+{
+  boost::mt19937 rng;
+  rng.seed(static_cast<unsigned int>(std::time(0)));  
+  
+  boost::uniform_int<> uni(0, 1);
+  boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
+    anglepicker(rng, uni);
+
+  foreach (Word *word, wordlist)
+    word->setRotation(90*anglepicker());
+}
+
 void Canvas::randomiseWordColours(QVector<QColor> colours)
 {
   boost::mt19937 colourrng;
