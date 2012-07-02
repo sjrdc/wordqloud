@@ -145,9 +145,16 @@ void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
       item->ungrabMouse();
       
       Word *w = ((Word*)item);
-      w->setPinned(true);
-      wordlist.move(wordlist.indexOf(w), 0);
       ((Word*)item)->toggleManipulated();
+      if (event->modifiers() == Qt::ControlModifier)
+	{
+	  w->setPinned(false);
+	}
+      else
+	{
+	  w->setPinned(true);
+	  wordlist.move(wordlist.indexOf(w), 0);
+	}
     }
 }
 
