@@ -1,11 +1,11 @@
 #include <QDebug>
+#include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
+#include <QKeyEvent>
 
 #include <ctime>
 #include "canvas.h"
 #include "word.h"
-
-
 
 Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
 { 
@@ -39,6 +39,18 @@ void Canvas::createLayout()
 {
   foreach (Word* w, wordlist)
     layoutWord(w);
+}
+
+void Canvas::keyPressEvent(QKeyEvent *event)
+{
+  if (event->key() == Qt::Key_Shift)
+    highlightPinned();
+}
+
+void Canvas::keyReleaseEvent(QKeyEvent *event)
+{
+  if (event->key() == Qt::Key_Shift)
+    highlightPinned();
 }
 
 void Canvas::layoutWord(Word *w)
@@ -178,4 +190,10 @@ void Canvas::setColors(QColor bcolor, QVector<QRgb> wcolors)
 {
   setBackgroundBrush(bcolor);
   wordcolors = wcolors;
+}
+
+void Canvas::highlightPinned()
+{
+  foreach (Word *word, wordlist)
+    word->toggleShowPinned();
 }

@@ -21,17 +21,21 @@ public:
   bool collidesWithCashed();
   bool getPinned();
   float height();
+
   void prepareCollisionDetection();
   void setPinned(bool p);
   void setFontName(QString fontname);
   void setFontSize(float s);
+  void showPinned();
   void togglePinned();
+  void toggleShowPinned();  
   void toggleManipulated();
   void updateCollisionDetection(QPointF delta);
   float width();
   void writeImage();
 
 protected:
+
 
 private:
     
@@ -44,6 +48,7 @@ private:
   bool pinned;
   bool manipulated;
   bool showBounding;
+  bool showPinnedState;
   QColor cachedColor;
 };
 
@@ -77,6 +82,22 @@ inline void Word::toggleManipulated()
       this->cachedColor = this->brush().color();
       this->setBrush(Qt::red);
     }
+}
+
+inline void Word::toggleShowPinned()
+{
+  QColor c = this->brush().color();
+  if (!showPinnedState)
+    {
+      showPinnedState = true;
+      c.setAlpha(pinned ? 255 : 100);
+    }
+  else 
+    {
+      showPinnedState = false;  
+      c.setAlpha(255);
+    }
+  this->setBrush(c);
 }
 
 #endif

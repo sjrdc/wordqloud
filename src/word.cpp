@@ -15,6 +15,7 @@ Word::Word(QString string, float b)
   cachedCollision = NULL;
   this->setAcceptDrops(true);
 
+  showPinnedState = false;
   pinned = false;
   manipulated = false;  
 }

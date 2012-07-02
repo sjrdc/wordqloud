@@ -43,7 +43,7 @@ WordQloud::WordQloud()
   
   QHBoxLayout *buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(reCreateLayoutButton);
-
+			  
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setMargin(5);
   layout->addWidget(topFiller);

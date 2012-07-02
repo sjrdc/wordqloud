@@ -25,6 +25,7 @@ public:
   void addWord(Word *w);
   void appendWordList(WordList l);
   void createLayout();
+  void highlightPinned();
   void randomiseWordColours(QVector<QColor> colours);
   void randomiseWordFontFamily(QVector<QString> fontfamilies);  
   void reCreateLayout();
@@ -32,6 +33,8 @@ public:
   void setWordList(WordList l);
 
 protected:
+  void keyPressEvent(QKeyEvent *event);
+  void keyReleaseEvent(QKeyEvent *event);
   void layoutWord(Word *w);
   void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
