@@ -30,11 +30,6 @@ WordQloud::WordQloud()
   canvas = new Canvas;
   view = new QGraphicsView(canvas);
   
-  infoLabel = new QLabel(tr("<i>Choose a menu option, or right-click to "
-			    "invoke a context menu</i>"));
-  infoLabel->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
-  infoLabel->setAlignment(Qt::AlignCenter);
-
   QWidget *bottomFiller = new QWidget;
   bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -55,19 +50,14 @@ WordQloud::WordQloud()
   createActions();
   createMenus();
 
-  QString message = tr("A context menu is available by right-clicking");
-  statusBar()->showMessage(message);
-
   setWindowTitle(tr("wordQloud"));
-  setMinimumSize(160, 160);
+  setMinimumSize(400, 600);
 }
 
 void WordQloud::about()
 {
-  infoLabel->setText(tr("Invoked <b>Help|About</b>"));
-  QMessageBox::about(this, tr("About Menu"),
-		     tr("The <b>Menu</b> example shows how to create "
-			"menu-bar menus and context menus."));
+  QMessageBox::about(this, tr("About wordQloud"),
+		     tr("short description of how it came to be..."));
 }
 
 void WordQloud::contextMenuEvent(QContextMenuEvent *event)

@@ -52,7 +52,6 @@ private:
   QAction *randomOrientationAction;
   QAction *savePngAction;
   QAction *saveSvgAction;  
-  QLabel *infoLabel;
 
   QGraphicsView *view;
   Canvas *canvas;
