@@ -117,13 +117,16 @@ void Canvas::layoutWord(Word *w)
   // add it to the quadtree as well
   quadtree.insert(w);
 }
-void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-  QGraphicsItem *item = itemAt(mouseEvent->scenePos());
-  if (item != NULL)
+  if (event->button() == Qt::LeftButton)
     {
-      item->grabMouse();
-      ((Word*)item)->toggleManipulated();
+      QGraphicsItem *item = itemAt(event->scenePos());
+      if (item != NULL)
+	{
+	  item->grabMouse();
+	  ((Word*)item)->toggleManipulated();
+	}
     }
 }
 
@@ -139,21 +142,24 @@ void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-  QGraphicsItem *item = mouseGrabberItem();  
-  if (item != NULL)
+  if (event->button() == Qt::LeftButton)
     {
-      item->ungrabMouse();
+      QGraphicsItem *item = mouseGrabberItem();  
+      if (item != NULL)
+	{
+	  item->ungrabMouse();
       
-      Word *w = ((Word*)item);
-      ((Word*)item)->toggleManipulated();
-      if (event->modifiers() == Qt::ControlModifier)
-	{
-	  w->setPinned(false);
-	}
-      else
-	{
-	  w->setPinned(true);
-	  wordlist.move(wordlist.indexOf(w), 0);
+	  Word *w = ((Word*)item);
+	  ((Word*)item)->toggleManipulated();
+	  if (event->modifiers() == Qt::ControlModifier)
+	    {
+	      w->setPinned(false);
+	    }
+	  else
+	    {
+	      w->setPinned(true);
+	      wordlist.move(wordlist.indexOf(w), 0);
+	    }
 	}
     }
 }
