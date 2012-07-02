@@ -108,7 +108,11 @@ void Canvas::layoutWord(Word *w)
 void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
   QGraphicsItem *item = itemAt(mouseEvent->scenePos());
-  if (item != NULL) item->grabMouse();
+  if (item != NULL)
+    {
+      item->grabMouse();
+      ((Word*)item)->toggleManipulated();
+    }
 }
 
 void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -130,9 +134,8 @@ void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
       
       Word *w = ((Word*)item);
       w->setPinned(true);
-      int i = wordlist.indexOf(w);
-      wordlist.move(i, 0);
-      i = wordlist.indexOf(w);
+      wordlist.move(wordlist.indexOf(w), 0);
+      ((Word*)item)->toggleManipulated();
     }
 }
 

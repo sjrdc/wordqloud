@@ -26,6 +26,7 @@ public:
   void setFontName(QString fontname);
   void setFontSize(float s);
   void togglePinned();
+  void toggleManipulated();
   void updateCollisionDetection(QPointF delta);
   float width();
   void writeImage();
@@ -41,7 +42,9 @@ private:
   QImage *bitmap;
   Word *cachedCollision;
   bool pinned;
+  bool manipulated;
   bool showBounding;
+  QColor cachedColor;
 };
 
 inline QRectF Word::boundingBox() const
@@ -62,5 +65,18 @@ inline void Word::togglePinned()
   pinned = !pinned;
 }
 
+inline void Word::toggleManipulated()
+{
+  if (manipulated)
+    {
+      manipulated = false;
+      this->setBrush(cachedColor);
+    }
+  else {
+      manipulated = true;
+      this->cachedColor = this->brush().color();
+      this->setBrush(Qt::red);
+    }
+}
 
 #endif

@@ -14,7 +14,9 @@ Word::Word(QString string, float b)
   this->setBoundingRegionGranularity(b);
   cachedCollision = NULL;
   this->setAcceptDrops(true);
+
   pinned = false;
+  manipulated = false;  
 }
 
 Word::~Word()
