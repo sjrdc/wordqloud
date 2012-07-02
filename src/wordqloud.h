@@ -2,7 +2,7 @@
 #define WORDQLOUD_H_
 
 #include <QMainWindow>
-#include "wordorientation.h"
+#include "enumerations.h"
 
 class Canvas;
 class QAction;
