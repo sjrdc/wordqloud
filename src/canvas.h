@@ -31,6 +31,7 @@ public:
   void reCreateLayout();
   void setColors(QColor bcolor, QVector<QRgb> wcolors);
   void setWordList(WordList l);
+  void setWordFont(QFont font);
 
 public slots:
   void randomiseOrientations();

@@ -2,6 +2,7 @@
 #define WORDQLOUD_H_
 
 #include <QMainWindow>
+#include "wordorientation.h"
 
 class Canvas;
 class QAction;
@@ -32,6 +33,7 @@ private slots:
   void saveBitmap();
   void savePDF();  
   void setBackgroundColor();
+  void setFont();
   
 private:
   void createActions();
@@ -47,6 +49,7 @@ private:
   QAction *aboutAction;
   QAction *backgroundColorAction;
   QAction *exitAction;
+  QAction *fontAction;
   QAction *loadAction;  
   QAction *openAction;
   QAction *randomOrientationAction;

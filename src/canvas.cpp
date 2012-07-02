@@ -212,6 +212,12 @@ void Canvas::setColors(QColor bcolor, QVector<QRgb> wcolors)
   wordcolors = wcolors;
 }
 
+void Canvas::setWordFont(QFont font)
+{
+  foreach (Word *word, wordlist)
+    word->setFontName(font.family());
+}
+
 void Canvas::highlightPinned()
 {
   foreach (Word *word, wordlist)

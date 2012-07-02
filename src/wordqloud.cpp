@@ -2,6 +2,7 @@
 #include <QColorDialog>
 #include <QContextMenuEvent>
 #include <QFileDialog>
+#include <QFontDialog>
 #include <QGraphicsView>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -103,6 +104,11 @@ void WordQloud::createActions()
   randomOrientationAction = new QAction(tr("Randomise &orientation"), this);
   connect(randomOrientationAction, SIGNAL(triggered()), this, 
 	  SLOT(randomiseOrientations()));
+
+  fontAction = new QAction(tr("&Font"), this);
+  fontAction->setShortcuts(QKeySequence::Quit);
+  connect(fontAction, SIGNAL(triggered()), this, SLOT(setFont()));
+
 }
 
 void WordQloud::createMenus()
@@ -116,8 +122,10 @@ void WordQloud::createMenus()
   fileMenu->addAction(exitAction);
 
   layoutMenu = menuBar()->addMenu(tr("&Layout"));
-  layoutMenu->addAction(randomOrientationAction);
-
+  QMenu *orientationMenu = layoutMenu->addMenu(tr("&Orientation"));
+  orientationMenu->addAction(randomOrientationAction);
+  layoutMenu->addAction(fontAction);
+  
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAction);
 }
@@ -190,4 +198,11 @@ void WordQloud::setBackgroundColor()
     QColorDialog::getColor(canvas->backgroundBrush().color(),
 			   this, "Select background color");
   canvas->setBackgroundBrush(color);
+}
+
+void WordQloud::setFont()
+{
+  bool ok;
+  QFont font = QFontDialog::getFont(&ok, this);
+  if (ok) canvas->setWordFont(font);
 }
