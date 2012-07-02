@@ -109,6 +109,10 @@ void WordQloud::createActions()
   aboutAction = new QAction(tr("&About"), this);
   aboutAction->setStatusTip(tr("Show the application's About box"));
   connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
+
+  randomOrientationAction = new QAction(tr("Randomise orientation"), this);
+  connect(randomOrientationAction, SIGNAL(triggered()), this, 
+	  SLOT(randomiseOrientations()));
 }
 
 void WordQloud::createMenus()
@@ -120,6 +124,9 @@ void WordQloud::createMenus()
   fileMenu->addAction(savePngAction);  
   fileMenu->addSeparator();
   fileMenu->addAction(exitAction);
+
+  layoutMenu = menuBar()->addMenu(tr("&Layout"));
+  layoutMenu->addAction(randomOrientationAction);
 
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAction);
@@ -145,6 +152,12 @@ void WordQloud::load()
 
 void WordQloud::open()
 {
+}
+
+void WordQloud::randomiseOrientations()
+{
+  canvas->randomiseOrientations();
+  canvas->reCreateLayout();
 }
 
 void WordQloud::reCreateLayout()

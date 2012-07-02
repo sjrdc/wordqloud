@@ -27,6 +27,7 @@ private slots:
   void about();
   void load();
   void open();
+  void randomiseOrientations();
   void reCreateLayout();
   void saveBitmap();
   void savePDF();  
@@ -37,9 +38,10 @@ private:
   void createMenus();
 
   QMenu *fileMenu;
+  QMenu *layoutMenu;
   QMenu *helpMenu;
+  
   QActionGroup *alignmentGroup;
-
   QPushButton *reCreateLayoutButton;
 
   QAction *aboutAction;
@@ -47,9 +49,9 @@ private:
   QAction *exitAction;
   QAction *loadAction;  
   QAction *openAction;
+  QAction *randomOrientationAction;
   QAction *savePngAction;
   QAction *saveSvgAction;  
-
   QLabel *infoLabel;
 
   QGraphicsView *view;

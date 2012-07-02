@@ -26,12 +26,14 @@ public:
   void appendWordList(WordList l);
   void createLayout();
   void highlightPinned();
-  void randomiseOrientations();
   void randomiseWordColours(QVector<QColor> colours);
   void randomiseWordFontFamily(QVector<QString> fontfamilies);  
   void reCreateLayout();
   void setColors(QColor bcolor, QVector<QRgb> wcolors);
   void setWordList(WordList l);
+
+public slots:
+  void randomiseOrientations();
 
 protected:
   void keyPressEvent(QKeyEvent *event);
