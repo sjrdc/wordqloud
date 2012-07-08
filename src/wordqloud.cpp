@@ -14,6 +14,7 @@
 #include <QSvgGenerator>
 #include <QVBoxLayout>
 
+#include "boundswizard.h"
 #include "canvas.h"
 #include "wordqloud.moc"
 #include "word.h"
@@ -109,6 +110,16 @@ void WordQloud::createActions()
   fontAction->setShortcuts(QKeySequence::Quit);
   connect(fontAction, SIGNAL(triggered()), this, SLOT(setFont()));
 
+  boundsFromImageAction = new QAction(tr("&Bounds from image"), this);
+  connect(boundsFromImageAction, SIGNAL(triggered()), 
+	  this, SLOT(createCloudBoundsFromImage()));
+  
+}
+
+void WordQloud::createCloudBoundsFromImage()
+{
+  BoundsWizard *b = new BoundsWizard;
+  b->show();
 }
 
 void WordQloud::createMenus()
@@ -125,6 +136,8 @@ void WordQloud::createMenus()
   QMenu *orientationMenu = layoutMenu->addMenu(tr("&Orientation"));
   orientationMenu->addAction(randomOrientationAction);
   layoutMenu->addAction(fontAction);
+  layoutMenu->addAction(boundsFromImageAction);
+  
   
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAction);

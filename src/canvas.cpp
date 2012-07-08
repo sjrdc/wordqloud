@@ -117,6 +117,7 @@ void Canvas::layoutWord(Word *w)
   // add it to the quadtree as well
   quadtree.insert(w);
 }
+
 void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
   if (event->button() == Qt::LeftButton)

@@ -26,6 +26,7 @@ protected:
 		    
 private slots:
   void about();
+  void createCloudBoundsFromImage();
   void load();
   void open();
   void randomiseOrientations();
@@ -55,7 +56,8 @@ private:
   QAction *randomOrientationAction;
   QAction *savePngAction;
   QAction *saveSvgAction;  
-
+  QAction *boundsFromImageAction;
+  
   QGraphicsView *view;
   Canvas *canvas;
 };
