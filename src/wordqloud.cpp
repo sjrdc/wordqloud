@@ -14,7 +14,7 @@
 #include <QSvgGenerator>
 #include <QVBoxLayout>
 
-#include "boundswizard.h"
+#include "boundsdialog.h"
 #include "canvas.h"
 #include "wordqloud.moc"
 #include "word.h"
@@ -118,8 +118,8 @@ void WordQloud::createActions()
 
 void WordQloud::createCloudBoundsFromImage()
 {
-  BoundsWizard *b = new BoundsWizard;
-  b->show();
+  BoundsDialog *b = new BoundsDialog;
+  b->exec();
 }
 
 void WordQloud::createMenus()

@@ -19,13 +19,13 @@ include_directories(
   )
 
 qt4_automoc(
-  boundswizard.h
-  boundswizard.cpp
+  boundsdialog.h
+  boundsdialog.cpp
   wordqloud.cpp
   wordqloud.h
 )
 ADD_EXECUTABLE(wordqloud
-  boundswizard.cpp
+  boundsdialog.cpp
   canvas.cpp
   colormap.cpp
   main.cpp
