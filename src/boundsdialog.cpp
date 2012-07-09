@@ -90,8 +90,9 @@ void BoundsDialog::onSliderValueChanged(int v)
   for (int i = 0; i < tmpimg.width(); ++i)
     for (int j = 0; j < tmpimg.height(); ++j)
       {
-  	QRgb c = tmpimg.pixel(i, j);
-  	tmpimg.setPixel(i, j, c < QColor(v, v, v).rgb() ? 
+  	QColor c = tmpimg.pixel(i, j);
+	float val = (11.*c.red() + 16.*c.green() + 5.*c.green())/32.;
+  	tmpimg.setPixel(i, j, val < v ? 
 			QColor(0, 0, 0).rgb() : QColor(255, 255, 255).rgb());
       }
 
