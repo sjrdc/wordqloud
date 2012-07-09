@@ -72,6 +72,7 @@ ThresholdImagePage::ThresholdImagePage(QWidget *parent)
   
   previewLabel = new QLabel;
   previewLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  previewLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 
   slider = new QSlider(Qt::Horizontal);
   slider->setRange(0, 255);
