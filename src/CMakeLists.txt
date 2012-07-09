@@ -16,6 +16,7 @@ TARGET_LINK_LIBRARIES(wordcloud
 
 include_directories(
   ${CMAKE_BINARY_DIR}/src # for moc files
+  ${OPENCV_INCLUDE_DIRS}
   )
 
 qt4_automoc(
@@ -37,6 +38,7 @@ ADD_EXECUTABLE(wordqloud
 )
 TARGET_LINK_LIBRARIES(wordqloud
   ${QT_LIBRARIES}
+  ${OpenCV_LIBS}
   )
 
 install(TARGETS

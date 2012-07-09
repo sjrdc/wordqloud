@@ -1,6 +1,7 @@
 #ifndef BOUNDSWIZARD_H_
 #define BOUNDSWIZARD_H_
 
+#include "cv.h"
 #include <QWizard>
 #include <QWizardPage>
 
@@ -18,7 +19,9 @@ protected slots:
   void onButtonClicked();
   void onFileChanged(QString filename);
   void onSliderValueChanged(int v);  
+
 private:
+  CvMat *img;
   QImage *orgImage;
   QLineEdit *textbox;
   QLabel *previewLabel;

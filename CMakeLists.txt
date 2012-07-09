@@ -8,6 +8,7 @@ set(QT_USE_QTOPENGL true)
 set(QT_USE_QTSVG true)
 find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
+find_package(OpenCV REQUIRED)
 
 # use, i.e. don't skip the full RPATH for the build tree
 SET(CMAKE_SKIP_BUILD_RPATH FALSE)

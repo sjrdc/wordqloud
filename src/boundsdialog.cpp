@@ -1,5 +1,7 @@
 #include <QtGui>
 #include "boundsdialog.moc"
+#include "cv.h"
+#include "highgui.h"
 
 BoundsDialog::BoundsDialog(QWidget *parent)
   : QDialog(parent, Qt::Dialog)
@@ -49,30 +51,34 @@ void BoundsDialog::onButtonClicked()
 
 void BoundsDialog::onFileChanged(QString filename)
 {
-  orgImage = new QImage(textbox->text());
-  pixmap = new QPixmap(textbox->text());
+  img = cvLoadImageM(filename.toStdString().c_str());
+  orgImage = new QImage(filename);
+
+  pixmap = new QPixmap(QPixmap::fromImage(*orgImage));
   if (!pixmap->isNull())
     previewLabel->setPixmap(pixmap->scaled(previewLabel->width(), 
-					   previewLabel->height(),
-					   Qt::KeepAspectRatio));
+  					   previewLabel->height(),
+  					   Qt::KeepAspectRatio));
 
   onSliderValueChanged(slider->value());
 }
 
 void BoundsDialog::onSliderValueChanged(int v)
 {
-  QImage tmp = *orgImage;
-  for (int i = 0; i < tmp.width(); ++i)
-    for (int j = 0; j < tmp.height(); ++j)
+  CvMat *tmp = cvCreateMat(img->rows, img->cols, img->type);
+  cvThreshold(img, tmp, v, 255, CV_THRESH_BINARY);
+  
+  QImage tmpimg = *orgImage;
+  for (int i = 0; i < tmpimg.width(); ++i)
+    for (int j = 0; j < tmpimg.height(); ++j)
       {
-	QRgb c = tmp.pixel(i, j) < QColor(v, v, v).rgb() ? 
-	  QColor(0, 0, 0).rgb() : QColor(255, 255, 255).rgb();
-	
-  	tmp.setPixel(i, j, c);
+  	QRgb c = tmpimg.pixel(i, j);
+  	tmpimg.setPixel(i, j, c < QColor(v, v, v).rgb() ? 
+  		     QColor(0, 0, 0).rgb() : QColor(255, 255, 255).rgb());
       }
 
-  pixmap = new QPixmap(QPixmap::fromImage(tmp));
+  pixmap = new QPixmap(QPixmap::fromImage(tmpimg));
   previewLabel->setPixmap(pixmap->scaled(previewLabel->width(), 
-  					   previewLabel->height(), 
-  					   Qt::KeepAspectRatio));
+  					 previewLabel->height(), 
+  					 Qt::KeepAspectRatio));
 }
