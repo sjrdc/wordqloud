@@ -123,7 +123,6 @@ void WordQloud::createActions()
   connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
   fontAction = new QAction(tr("&Font"), this);
-  fontAction->setShortcuts(QKeySequence::Quit);
   connect(fontAction, SIGNAL(triggered()), this, SLOT(setFont()));
 
   boundsFromImageAction = new QAction(tr("&Bounds from image"), this);
