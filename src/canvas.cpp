@@ -87,15 +87,20 @@ void Canvas::layoutWord(Word *w)
 
 	  if (!sceneRect().contains(w->boundingBox()))
 	    continue;
-	  // else if (boundingRegions.size() > 0)
-	  //   {
-	  //     bool contained = false;
-	  //     foreach(QRegion bound, boundingRegions)
-	  // 	contained = bound.contains(w->boundingBox().toRect());
-	  //     if (!contained) continue;
-	  //   }
-	      
-		   
+
+	  if (boundingRegions.size() > 0)
+	    {
+	      bool contains = false;
+	      foreach(QRegion bound, boundingRegions)
+		if (!bound.contains(w->boundingBox().toRect()))
+		  {
+		    contains = true;
+		    break;
+		  }
+
+	      if (!contains) continue;
+	    }
+  
 	  w->updateCollisionDetection(delta);
       
 	  // check cashed collision first
@@ -226,8 +231,6 @@ void Canvas::setBoundingRegions(QVector<QRegion> b)
 {
   boundingRegions.clear();
   boundingRegions = b;
-
-  qDebug() << boundingRegions;
 }
 
 void Canvas::setColors(QColor bcolor, QVector<QRgb> wcolors)
