@@ -30,6 +30,7 @@ public:
   void randomiseWordFontFamily(QVector<QString> fontfamilies);  
   void reCreateLayout();
   void setColors(QColor bcolor, QVector<QRgb> wcolors);
+  void setBoundingRegions(QVector<QRegion> b);
   void setWordList(WordList l);
   void setWordFont(QFont font);
 
@@ -48,6 +49,7 @@ protected:
   QPointF centrepoint;
   QVector<QRgb> wordcolors;
   QuadTree quadtree;
+  QVector<QRegion> boundingRegions;
   
   // some random generator stuff for coordinate generation
   boost::mt19937 rng;

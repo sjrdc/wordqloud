@@ -84,9 +84,18 @@ void Canvas::layoutWord(Word *w)
 	  QPoint delta = QPoint(rho*cos(tau), rho*sin(tau)) - oldpos;
 	  w->moveBy(delta.x(), delta.y());
 	  oldpos += delta;
+
 	  if (!sceneRect().contains(w->boundingBox()))
 	    continue;
-
+	  // else if (boundingRegions.size() > 0)
+	  //   {
+	  //     bool contained = false;
+	  //     foreach(QRegion bound, boundingRegions)
+	  // 	contained = bound.contains(w->boundingBox().toRect());
+	  //     if (!contained) continue;
+	  //   }
+	      
+		   
 	  w->updateCollisionDetection(delta);
       
 	  // check cashed collision first
@@ -211,6 +220,14 @@ void Canvas::reCreateLayout()
     removeItem(item);
 
   createLayout();
+}
+
+void Canvas::setBoundingRegions(QVector<QRegion> b)
+{
+  boundingRegions.clear();
+  boundingRegions = b;
+
+  qDebug() << boundingRegions;
 }
 
 void Canvas::setColors(QColor bcolor, QVector<QRgb> wcolors)

@@ -120,6 +120,9 @@ void WordQloud::createCloudBoundsFromImage()
 {
   BoundsDialog *b = new BoundsDialog;
   b->exec();
+
+  canvas->setBoundingRegions(b->getRegions());
+  delete b;
 }
 
 void WordQloud::createMenus()

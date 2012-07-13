@@ -70,22 +70,23 @@ void BoundsDialog::onSliderValueChanged(int v)
 
   cv::cvtColor(img, tmp, CV_BGR2GRAY);
   cv::threshold(tmp, tmp, v, 255, CV_THRESH_BINARY);
-
-  std::vector<std::vector<cv::Point> > contours;
-    cv::findContours(tmp, contours,
-		     CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+  
+  contours.clear();
+  cv::findContours(tmp, contours, boundaryHierarchy,
+		   CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
 
   QVector<QPolygon> polygons;
-  for (int c = 0; c < contours.size(); c++)
+  for (int c = 0; c < contours.size(); ++c)
     {
-      // retrieve outer connected component polygon
       QPolygon polygon;
-      for (int i = 0; i < contours[c].size(); ++i)
+      for (int p = 0; p < contours[c].size(); ++p)
 	{
-	  polygon.push_back(QPoint(contours[c][i].x, contours[c][i].y));	  
+	  polygon.push_back(QPoint(contours[c][p].x, 
+				   contours[c][p].y));
 	}
       polygons.push_back(polygon);
     }
+
 
   QImage tmpimg = *orgImage;
   for (int i = 0; i < tmpimg.width(); ++i)
@@ -108,4 +109,48 @@ void BoundsDialog::onSliderValueChanged(int v)
 
   pixmap = new QPixmap(QPixmap::fromImage(tmpimg));
   previewLabel->setPixmap(*pixmap);
+}
+
+QVector<QRegion> BoundsDialog::getRegions()
+{
+  QVector<QRegion> regions;
+  
+  // extract regions from hierarchy
+  for (int c = 0; c < boundaryHierarchy.size(); c++)
+    {
+      // if this is a child contour, we do not need it at this point
+      if (boundaryHierarchy[c][3] != -1)
+	{
+	  // retrieve outer connected component polygon
+	  QPolygon polygon;
+	  for (int i = 0; i < contours[c].size(); ++i)
+	    polygon.push_back(QPoint(contours[c][i].x, contours[c][i].y));
+	  
+	  // create a region that represents the current connected component
+	  QRegion region(polygon);
+
+	  // if the contour has children, we should subtract those
+	  // from the region
+	  int child = boundaryHierarchy[c][2];
+	  while (child != -1)
+	    {	 
+	      // create child region
+	      QPolygon childPolygon;
+	      for (int i = 0; i < contours[child].size(); ++i)
+		childPolygon.push_back(QPoint(contours[child][i].x, 
+					      contours[child][i].y));
+	      QRegion childRegion(childPolygon);
+
+	      // subtract child region from parent region
+	      region -= childRegion;
+	      
+	      // next child of the original contour is the next
+	      // neighbour of the current child
+	      child = boundaryHierarchy[child][1];
+	    }		 
+	  regions.push_back(region);
+	}
+    }
+
+  return regions;
 }
