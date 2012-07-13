@@ -169,8 +169,8 @@ QIcon WordQloud::createColourschemeIcon(QColor backgroundColour,
 void WordQloud::createColourschemeMenu()
 {
   QMenu *colourschemeMenu = layoutMenu->addMenu(tr("&Colours"));
+  QActionGroup *colourschemeActionGroup = new QActionGroup(this);
 
-  // find the colourscheme resourcefile
   QFile colourfile("../src/colourschemes.txt");
   if (!colourfile.open(QIODevice::ReadOnly))		
     qDebug() << "Could not read colourscheme file";
@@ -188,20 +188,28 @@ void WordQloud::createColourschemeMenu()
 	  QColor backgroundColour(colourlist.first());
 	  colourlist.pop_front();
 	  QVector<QColor> foregroundColours;
+	  QList<QVariant> varlist;
+	  varlist.push_back(backgroundColour);
 	  foreach (QString colourstring, colourlist)
-	    foregroundColours.push_back(QColor(colourstring));
-
+	    {
+	      QColor colour(colourstring);
+	      foregroundColours.push_back(colour);
+	      varlist.push_back(QVariant(QColor(colour).rgb()));
+	    }
 	  QIcon schemeIcon = createColourschemeIcon(backgroundColour,
 						    foregroundColours);
 
 	  QAction *action = new QAction(schemeIcon, schemeName, this);
-	  foregroundColours.push_back(backgroundColour);
+	  action->setData(varlist);
 
 	  colourschemeMenu->addAction(action);
+	  colourschemeActionGroup->addAction(action);
 	}
     }
 
   colourfile.close();
+  connect(colourschemeActionGroup, SIGNAL(triggered(QAction*)),
+	  this, SLOT(onColourschemeActionGroupTriggered(QAction*)));
 }
 
 void WordQloud::createMenus()
@@ -250,6 +258,19 @@ void WordQloud::load()
 
 void WordQloud::open()
 {
+}
+
+void WordQloud::onColourschemeActionGroupTriggered(QAction *a)
+{
+  QList<QVariant> varlist = a->data().toList();
+  QColor backgroundColour(varlist.first().toInt());
+  varlist.pop_front();
+  QVector<QColor> colourlist;
+  foreach(QVariant var, varlist)
+    colourlist.push_back(QColor(var.toInt()));
+			 
+  canvas->setBackgroundBrush(backgroundColour);
+  canvas->randomiseWordColours(colourlist);
 }
 
 void WordQloud::onOrientationAction(QAction* a)

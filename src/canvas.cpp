@@ -221,7 +221,7 @@ void Canvas::randomiseOrientations(WordOrientation w)
     word->setRotation(angles[anglepicker()]);
 }
 
-void Canvas::randomiseWordColours(QVector<QColor> colourpalet)
+void Canvas::randomiseWordColours(const QVector<QColor> &colourpalet)
 {
   boost::mt19937 colourrng;
   colourrng.seed(static_cast<unsigned int>(std::time(0)));  
@@ -234,7 +234,7 @@ void Canvas::randomiseWordColours(QVector<QColor> colourpalet)
     word->setBrush(colourpalet[colourpicker()]);
 }
 
-void Canvas::randomiseWordFontFamily(QVector<QString> fontfamilies)
+void Canvas::randomiseWordFontFamily(const QVector<QString> &fontfamilies)
 {
   boost::mt19937 colourrng;
   colourrng.seed(static_cast<unsigned int>(std::time(0)));  

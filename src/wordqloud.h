@@ -30,6 +30,7 @@ private slots:
   void load();
   void open();
   void onOrientationAction(QAction*);
+  void onColourschemeActionGroupTriggered(QAction*);
   void reCreateLayout();
   void saveBitmap();
   void savePDF();  

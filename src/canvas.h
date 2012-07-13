@@ -28,8 +28,8 @@ public:
   void appendWordList(WordList l);
   void createLayout();
   void highlightPinned(bool h);
-  void randomiseWordColours(QVector<QColor> colours);
-  void randomiseWordFontFamily(QVector<QString> fontfamilies);  
+  void randomiseWordColours(const QVector<QColor> &colours);
+  void randomiseWordFontFamily(const QVector<QString> &fontfamilies);  
   void reCreateLayout();
   void setColors(QColor bcolor, QVector<QRgb> wcolors);
   void setBoundingRegions(QVector<QRegion> b);
