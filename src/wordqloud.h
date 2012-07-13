@@ -29,7 +29,7 @@ private slots:
   void createCloudBoundsFromImage();
   void load();
   void open();
-  void randomiseOrientations();
+  void onOrientationAction(QAction*);
   void reCreateLayout();
   void saveBitmap();
   void savePDF();  
@@ -53,11 +53,17 @@ private:
   QAction *fontAction;
   QAction *loadAction;  
   QAction *openAction;
-  QAction *randomOrientationAction;
   QAction *savePngAction;
   QAction *saveSvgAction;  
   QAction *boundsFromImageAction;
-  
+
+  QActionGroup *orientationActionGroup;
+  QAction *horizontalOrientationAction;
+  QAction *mostlyHorizontalOrientationAction;
+  QAction *halfAndHalfOrientationAction;
+  QAction *mostlyVerticalOrientationAction;
+  QAction *verticalOrientationAction;
+    
   QGraphicsView *view;
   Canvas *canvas;
 };

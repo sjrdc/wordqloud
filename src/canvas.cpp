@@ -176,24 +176,49 @@ void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void Canvas::randomiseOrientations()
+void Canvas::randomiseOrientations(WordOrientation w)
 {
   boost::mt19937 rng;
   rng.seed(static_cast<unsigned int>(std::time(0)));  
   
-  boost::uniform_int<> uni(0, 1);
+  std::vector<short> angles;
+  switch (w)
+    {
+    case HorizontalWordOrientation:
+      angles.push_back(0);
+      break;
+    case MostlyHorizontalWordOrientation:
+      angles.push_back(0);
+      angles.push_back(0);
+      angles.push_back(90);
+      break;
+    case HalfAndHalfWordOrientation:
+      angles.push_back(0);
+      angles.push_back(90);
+      break;
+    case MostlyVerticalWordOrientation:
+      angles.push_back(0);
+      angles.push_back(90);
+      angles.push_back(90);
+      break;
+    case VerticalWordOrientation:
+      angles.push_back(90);
+      break;
+    }
+      
+  boost::uniform_int<> uni(0, angles.size() - 1);
   boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
     anglepicker(rng, uni);
 
   foreach (Word *word, wordlist)
-    word->setRotation(90*anglepicker());
+    word->setRotation(angles[anglepicker()]);
 }
 
 void Canvas::randomiseWordColours(QVector<QColor> colours)
 {
   boost::mt19937 colourrng;
   colourrng.seed(static_cast<unsigned int>(std::time(0)));  
-  
+
   boost::uniform_int<> uni(0, colours.size()-1);
   boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
     colourpicker(colourrng, uni);

@@ -71,6 +71,26 @@ void WordQloud::contextMenuEvent(QContextMenuEvent *event)
 
 void WordQloud::createActions()
 {
+  horizontalOrientationAction = new QAction(tr("horizontal"), this);
+  horizontalOrientationAction->setData(HorizontalWordOrientation);
+  mostlyHorizontalOrientationAction = new QAction(tr("mostly horizontal"), this);
+  mostlyHorizontalOrientationAction->setData(MostlyHorizontalWordOrientation);
+  halfAndHalfOrientationAction = new QAction(tr("half and half"), this);
+  halfAndHalfOrientationAction->setData(HalfAndHalfWordOrientation);
+  mostlyVerticalOrientationAction = new QAction(tr("mostly vertical"), this);
+  mostlyVerticalOrientationAction->setData(MostlyVerticalWordOrientation);
+  verticalOrientationAction = new QAction(tr("vertical"), this);
+  verticalOrientationAction->setData(VerticalWordOrientation);
+
+  orientationActionGroup = new QActionGroup(this);
+  orientationActionGroup->addAction(horizontalOrientationAction);
+  orientationActionGroup->addAction(mostlyHorizontalOrientationAction);
+  orientationActionGroup->addAction(halfAndHalfOrientationAction);
+  orientationActionGroup->addAction(mostlyVerticalOrientationAction);
+  orientationActionGroup->addAction(verticalOrientationAction);
+  connect(orientationActionGroup, SIGNAL(triggered(QAction*)),
+	  this, SLOT(onOrientationAction(QAction*)));
+  
   backgroundColorAction = new QAction(tr("Set background color"), this);
   connect(backgroundColorAction, SIGNAL(triggered()), 
 	  this, SLOT(setBackgroundColor()));
@@ -101,10 +121,6 @@ void WordQloud::createActions()
   aboutAction = new QAction(tr("&About"), this);
   aboutAction->setStatusTip(tr("Show the application's About box"));
   connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
-
-  randomOrientationAction = new QAction(tr("Randomise &orientation"), this);
-  connect(randomOrientationAction, SIGNAL(triggered()), this, 
-	  SLOT(randomiseOrientations()));
 
   fontAction = new QAction(tr("&Font"), this);
   fontAction->setShortcuts(QKeySequence::Quit);
@@ -137,11 +153,14 @@ void WordQloud::createMenus()
 
   layoutMenu = menuBar()->addMenu(tr("&Layout"));
   QMenu *orientationMenu = layoutMenu->addMenu(tr("&Orientation"));
-  orientationMenu->addAction(randomOrientationAction);
+  orientationMenu->addAction(horizontalOrientationAction);
+  orientationMenu->addAction(mostlyHorizontalOrientationAction);
+  orientationMenu->addAction(halfAndHalfOrientationAction);
+  orientationMenu->addAction(mostlyVerticalOrientationAction);
+  orientationMenu->addAction(verticalOrientationAction);        
+  
   layoutMenu->addAction(fontAction);
   layoutMenu->addAction(boundsFromImageAction);
-  
-  
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAction);
 }
@@ -168,10 +187,9 @@ void WordQloud::open()
 {
 }
 
-void WordQloud::randomiseOrientations()
+void WordQloud::onOrientationAction(QAction* a)
 {
-  canvas->randomiseOrientations();
-  canvas->reCreateLayout();
+  canvas->randomiseOrientations((WordOrientation)a->data().toInt());
 }
 
 void WordQloud::reCreateLayout()
@@ -186,6 +204,7 @@ void WordQloud::saveBitmap()
 
   QImage img(canvas->width(), canvas->height(),
 	     QImage::Format_ARGB32_Premultiplied);
+
   QPainter painter(&img);
   canvas->render(&painter);  
   painter.end();

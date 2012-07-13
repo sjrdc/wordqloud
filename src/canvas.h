@@ -2,6 +2,8 @@
 #include <boost/random/normal_distribution.hpp>
 
 #include <QGraphicsScene>
+
+#include "enumerations.h"
 #include "quadtree.h"
 #include "wordlist.h"
 
@@ -35,7 +37,7 @@ public:
   void setWordFont(QFont font);
 
 public slots:
-  void randomiseOrientations();
+  void randomiseOrientations(WordOrientation w);
 
 protected:
   void keyPressEvent(QKeyEvent *event);

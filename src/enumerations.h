@@ -4,11 +4,11 @@
 enum WordOrientation
   {
     Any,
-    Horizontal,
-    MostlyHorizontal,
-    HalfAndHalf,
-    MostlyVertical,
-    Vertical
+    HorizontalWordOrientation,
+    MostlyHorizontalWordOrientation,
+    HalfAndHalfWordOrientation,
+    MostlyVerticalWordOrientation,
+    VerticalWordOrientation
   };
 
 enum ColorVariation
