@@ -3,6 +3,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <math.h>
 
 #include "word.h"
 
@@ -53,6 +54,12 @@ void Word::initBitmap()
   p.setCompositionMode( QPainter::CompositionMode_Source );
   this->paint(&p, &opt, 0);
   p.end();
+}
+
+void Word::moveBy(float x, float y)
+{
+  QGraphicsSimpleTextItem::moveBy(round(x), round(y));
+  region.translate(QPoint(round(x), round(y)));
 }
 
 void Word::prepareCollisionDetection()

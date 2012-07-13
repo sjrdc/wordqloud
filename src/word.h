@@ -12,7 +12,7 @@
 class Word : public QGraphicsSimpleTextItem, public IAreaComparable
 {
 public:
-  Word(QString w, float b = 1);
+  Word(QString w, float b = 0.8);
   ~Word();
 
   virtual QRectF boundingBox() const;
@@ -22,6 +22,7 @@ public:
   bool getPinned();
   float height();
 
+  void moveBy(float x, float y);
   void prepareCollisionDetection();
   void setPinned(bool p);
   void setFontName(QString fontname);

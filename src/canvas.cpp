@@ -74,6 +74,7 @@ void Canvas::layoutWord(Word *w)
       QPoint oldpos(0, 0);
       w->prepareCollisionDetection();
       bool done = false;
+
       do
 	{
 	  // get a new location estimate
@@ -81,13 +82,11 @@ void Canvas::layoutWord(Word *w)
 	  float rho = tau;
 
 	  // move Word to a new location
-	  QPoint delta = QPoint(rho*cos(tau), rho*sin(tau)) - oldpos;
+	  QPoint delta = (QPoint(rho*cos(tau), rho*sin(tau)) - oldpos);
 	  w->moveBy(delta.x(), delta.y());
 	  oldpos += delta;
 
-	  if (!sceneRect().contains(w->boundingBox()))
-	    continue;
-
+	  if (!sceneRect().contains(w->boundingBox())) continue;
 	  if (boundingRegions.size() > 0)
 	    {
 	      bool contains = false;
@@ -97,30 +96,27 @@ void Canvas::layoutWord(Word *w)
 		    contains = true;
 		    break;
 		  }
-
 	      if (!contains) continue;
 	    }
   
-	  w->updateCollisionDetection(delta);
-      
 	  // check cashed collision first
-	  if (w->collidesWithCashed())
-	    continue;
+	  if (w->collidesWithCashed()) continue;
 
 	  done = true;
 	  // query quadtree to find possibly overlapping items
 	  QList<IAreaComparable*> l;
 	  quadtree.query(w->boundingBox(), l);
 	  foreach (IAreaComparable *i, l)
-	    {
+	  {
 	      Word* q = (Word*)i;
-	      if (w->collidesWith(q)) 
+	      if (q->collidesWith(w)) 
 		{
 		  w->cacheCollision(q);
 		  done = false;
 		  break;
 		}
-	    }
+	    }	  
+
 	}
       while (!done);
     }
@@ -128,6 +124,7 @@ void Canvas::layoutWord(Word *w)
   
   /* finally add the word */
   QGraphicsScene::addItem((QGraphicsItem*)w);
+
   // add it to the quadtree as well
   quadtree.insert(w);
 }
