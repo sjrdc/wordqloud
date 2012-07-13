@@ -41,16 +41,22 @@ void Canvas::createLayout()
     layoutWord(w);
 }
 
+void Canvas::highlightPinned(bool highlight)
+{
+  foreach (Word *word, wordlist)
+    word->showPinned(highlight);
+}
+
 void Canvas::keyPressEvent(QKeyEvent *event)
 {
   if (event->key() == Qt::Key_Shift)
-    highlightPinned();
+    highlightPinned(true);
 }
 
 void Canvas::keyReleaseEvent(QKeyEvent *event)
 {
   if (event->key() == Qt::Key_Shift)
-    highlightPinned();
+    highlightPinned(false);
 }
 
 void Canvas::layoutWord(Word *w)
@@ -102,6 +108,7 @@ void Canvas::layoutWord(Word *w)
 	  // check cashed collision first
 	  if (w->collidesWithCashed()) continue;
 
+	  /* see whether any of the items already on the canvas collides*/
 	  done = true;
 	  // query quadtree to find possibly overlapping items
 	  QList<IAreaComparable*> l;
@@ -214,17 +221,17 @@ void Canvas::randomiseOrientations(WordOrientation w)
     word->setRotation(angles[anglepicker()]);
 }
 
-void Canvas::randomiseWordColours(QVector<QColor> colours)
+void Canvas::randomiseWordColours(QVector<QColor> colourpalet)
 {
   boost::mt19937 colourrng;
   colourrng.seed(static_cast<unsigned int>(std::time(0)));  
 
-  boost::uniform_int<> uni(0, colours.size()-1);
+  boost::uniform_int<> uni(0, colourpalet.size()-1);
   boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
     colourpicker(colourrng, uni);
 
   foreach (Word *word, wordlist)
-    word->setBrush(colours[colourpicker()]);
+    word->setBrush(colourpalet[colourpicker()]);
 }
 
 void Canvas::randomiseWordFontFamily(QVector<QString> fontfamilies)
@@ -267,10 +274,4 @@ void Canvas::setWordFont(QFont font)
 {
   foreach (Word *word, wordlist)
     word->setFontName(font.family());
-}
-
-void Canvas::highlightPinned()
-{
-  foreach (Word *word, wordlist)
-    word->toggleShowPinned();
 }

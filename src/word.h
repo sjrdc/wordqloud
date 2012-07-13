@@ -27,7 +27,7 @@ public:
   void setPinned(bool p);
   void setFontName(QString fontname);
   void setFontSize(float s);
-  void showPinned();
+  void showPinned(bool p);
   void togglePinned();
   void toggleShowPinned();  
   void toggleManipulated();
@@ -69,6 +69,14 @@ inline void Word::setPinned(bool p)
 inline void Word::togglePinned()
 {
   pinned = !pinned;
+}
+
+inline void Word::showPinned(bool p)
+{
+  QColor c = this->brush().color();
+  showPinnedState = p;
+  c.setAlpha(!p || pinned ? 255 : 100);
+  this->setBrush(c);
 }
 
 inline void Word::toggleManipulated()

@@ -16,8 +16,8 @@ public:
   /** 
    * Canvas constructor
    * 
-   * @param w canvas gets width w
-   * @param h canvas gets height h 
+   * @param w canvas initially gets width w
+   * @param h canvas initially gets height h 
    * 
    * @return 
    */
@@ -27,7 +27,7 @@ public:
   void addWord(Word *w);
   void appendWordList(WordList l);
   void createLayout();
-  void highlightPinned();
+  void highlightPinned(bool h);
   void randomiseWordColours(QVector<QColor> colours);
   void randomiseWordFontFamily(QVector<QString> fontfamilies);  
   void reCreateLayout();
