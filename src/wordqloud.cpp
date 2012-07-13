@@ -140,6 +140,70 @@ void WordQloud::createCloudBoundsFromImage()
   delete b;
 }
 
+QIcon WordQloud::createColourschemeIcon(QColor backgroundColour,
+					QVector<QColor> foregroundColours)
+{
+  int bsize = 7;
+  int squaresize = 20;
+  int between = 5;
+    
+  QImage iconImage(bsize + (squaresize + between)*foregroundColours.size() - 
+		   between + bsize, bsize*2 + squaresize, QImage::Format_RGB32);
+  iconImage.fill(backgroundColour);
+
+  QPainter painter(&iconImage);
+  int c = 0;
+  foreach (QColor colour, foregroundColours)
+    {
+      QRect rectangle(bsize + c*(squaresize + bsize), bsize, 
+		      squaresize, squaresize);
+      painter.setBrush(colour);
+      painter.drawRect(rectangle);
+      c++;
+    }
+  painter.end();
+  
+  return QIcon(QPixmap::fromImage(iconImage));
+}
+
+void WordQloud::createColourschemeMenu()
+{
+  QMenu *colourschemeMenu = layoutMenu->addMenu(tr("&Colours"));
+
+  // find the colourscheme resourcefile
+  QFile colourfile("../src/colourschemes.txt");
+  if (!colourfile.open(QIODevice::ReadOnly))		
+    qDebug() << "Could not read colourscheme file";
+
+  QTextStream textstream(&colourfile);
+  while (!textstream.atEnd() && textstream.status() == QTextStream::Ok)
+    {
+      QString line = textstream.readLine();
+      QStringList colourlist = line.split(' ');
+
+      if (colourlist.size() > 2)
+	{
+	  QString schemeName = colourlist.first();
+	  colourlist.pop_front();
+	  QColor backgroundColour(colourlist.first());
+	  colourlist.pop_front();
+	  QVector<QColor> foregroundColours;
+	  foreach (QString colourstring, colourlist)
+	    foregroundColours.push_back(QColor(colourstring));
+
+	  QIcon schemeIcon = createColourschemeIcon(backgroundColour,
+						    foregroundColours);
+
+	  QAction *action = new QAction(schemeIcon, schemeName, this);
+	  foregroundColours.push_back(backgroundColour);
+
+	  colourschemeMenu->addAction(action);
+	}
+    }
+
+  colourfile.close();
+}
+
 void WordQloud::createMenus()
 {
   fileMenu = menuBar()->addMenu(tr("&File"));
@@ -162,6 +226,8 @@ void WordQloud::createMenus()
   layoutMenu->addAction(boundsFromImageAction);
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAction);
+
+  createColourschemeMenu();
 }
 
 void WordQloud::load()

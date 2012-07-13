@@ -39,7 +39,10 @@ private slots:
 private:
   void createActions();
   void createMenus();
-
+  void createColourschemeMenu();
+  QIcon createColourschemeIcon(QColor backgroundColour, 
+			       QVector<QColor> foregroundColours);
+  
   QMenu *fileMenu;
   QMenu *layoutMenu;
   QMenu *helpMenu;

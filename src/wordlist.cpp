@@ -26,7 +26,7 @@ void WordList::fromTextFile(QString filename)
     }
   file.close();
 
-  QVector<QColor> colormap = Colormap::coolColormap(10);
+ QVector<QColor> colormap = Colormap::coolColormap(10);
 
   int counter = 0;
   for (int i = 0; i < stringlist.size(); ++i)
