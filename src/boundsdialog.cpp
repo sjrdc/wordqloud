@@ -65,23 +65,24 @@ void BoundsDialog::onFileChanged(QString filename)
 
 void BoundsDialog::onSliderValueChanged(int v)
 {
-  CvMat *tmp = cvCreateMat(img->rows, img->cols, CV_8UC1);
-  cvCvtColor(img, tmp, CV_BGR2GRAY);
-  cvThreshold(tmp, tmp, v, 255, CV_THRESH_BINARY);
+  cv::Mat tmp;
+  tmp.create(img->rows, img->cols, CV_8UC1);
 
-  CvSeq* contour = 0;
-  CvMemStorage* storage = cvCreateMemStorage(0);
-  cvFindContours(tmp, storage, &contour,
-		 sizeof(CvContour), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+  cv::cvtColor(img, tmp, CV_BGR2GRAY);
+  cv::threshold(tmp, tmp, v, 255, CV_THRESH_BINARY);
+
+  std::vector<std::vector<cv::Point> > contours;
+    cv::findContours(tmp, contours,
+		     CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
 
   QVector<QPolygon> polygons;
-  for (; contour != 0; contour = contour->h_next)
+  for (int c = 0; c < contours.size(); c++)
     {
+      // retrieve outer connected component polygon
       QPolygon polygon;
-      for (int i = 0; i < contour->total; ++i)
+      for (int i = 0; i < contours[c].size(); ++i)
 	{
-	  CvPoint* p = CV_GET_SEQ_ELEM(CvPoint, contour, i);
-	  polygon.push_back(QPoint(p->x, p->y));	  
+	  polygon.push_back(QPoint(contours[c][i].x, contours[c][i].y));	  
 	}
       polygons.push_back(polygon);
     }

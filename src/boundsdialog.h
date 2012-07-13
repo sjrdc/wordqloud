@@ -28,6 +28,7 @@ private:
   QPixmap *pixmap;
   QSlider *slider;
   QDialogButtonBox *buttonBox;
+  QVector<QRegion> regions;
 };
 
 #endif
