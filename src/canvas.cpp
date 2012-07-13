@@ -231,6 +231,8 @@ void Canvas::setBoundingRegions(QVector<QRegion> b)
 {
   boundingRegions.clear();
   boundingRegions = b;
+
+  reCreateLayout();
 }
 
 void Canvas::setColors(QColor bcolor, QVector<QRgb> wcolors)
