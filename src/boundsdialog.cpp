@@ -51,7 +51,8 @@ void BoundsDialog::onButtonClicked()
 
 void BoundsDialog::onFileChanged(QString filename)
 {
-  img = cvLoadImageM(filename.toStdString().c_str());
+  IplImage *im = cvLoadImage(filename.toStdString().c_str());
+  img = new cv::Mat(im);
   orgImage = new QImage(filename);
 
   pixmap = new QPixmap(QPixmap::fromImage(*orgImage));
@@ -68,7 +69,7 @@ void BoundsDialog::onSliderValueChanged(int v)
   cv::Mat tmp;
   tmp.create(img->rows, img->cols, CV_8UC1);
 
-  cv::cvtColor(img, tmp, CV_BGR2GRAY);
+  cv::cvtColor(*img, tmp, CV_BGR2GRAY);
   cv::threshold(tmp, tmp, v, 255, CV_THRESH_BINARY);
   
   contours.clear();

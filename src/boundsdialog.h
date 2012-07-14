@@ -22,7 +22,7 @@ protected slots:
   void onSliderValueChanged(int v);  
 
 private:
-  CvMat *img;
+  cv::Mat *img;
   std::vector<std::vector<cv::Point> > contours;
   std::vector<cv::Vec4i> boundaryHierarchy;
   QImage *orgImage;
