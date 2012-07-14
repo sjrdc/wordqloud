@@ -88,7 +88,6 @@ void BoundsDialog::onSliderValueChanged(int v)
       polygons.push_back(polygon);
     }
 
-
   QImage tmpimg = *orgImage;
   for (int i = 0; i < tmpimg.width(); ++i)
     for (int j = 0; j < tmpimg.height(); ++j)

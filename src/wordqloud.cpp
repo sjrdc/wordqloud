@@ -100,13 +100,17 @@ void WordQloud::createActions()
   asPaletteAction = new QAction(tr("as palette"), this);
   asPaletteAction->setCheckable(true);
   littleVariationAction = new QAction(tr("a little variation"), this);
+  littleVariationAction->setData(2);
   littleVariationAction->setCheckable(true);  
   someVariationAction = new QAction(tr("some variation"), this);
+  someVariationAction->setData(3);
   someVariationAction->setCheckable(true);
   lotsOfVariationAction = new QAction(tr("lots of variation"), this);
+  lotsOfVariationAction->setData(4);
   lotsOfVariationAction->setCheckable(true);
   wildVariationAction = new QAction(tr("wild variation"), this);
   wildVariationAction->setCheckable(true);
+  wildVariationAction->setData(WildVariation);
   
   colourVariationActionGroup = new QActionGroup(this);
   colourVariationActionGroup->addAction(asPaletteAction);
@@ -156,7 +160,6 @@ void WordQloud::createActions()
   boundsFromImageAction = new QAction(tr("&Bounds from image"), this);
   connect(boundsFromImageAction, SIGNAL(triggered()), 
 	  this, SLOT(createCloudBoundsFromImage()));
-  
 }
 
 void WordQloud::createCloudBoundsFromImage()
@@ -320,7 +323,11 @@ void WordQloud::onColourschemeActionGroupTriggered(QAction *a)
   QVector<QColor> colourlist;
   foreach(QVariant var, varlist)
     colourlist.push_back(QColor(var.toInt()));
-			 
+
+  // create colourvariations
+  int nrColourvariations = 0;
+
+  
   canvas->setBackgroundBrush(backgroundColour);
   canvas->randomiseWordColours(colourlist);
 }
