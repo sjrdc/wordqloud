@@ -380,6 +380,9 @@ void WordQloud::onColourVariationAction(QAction *a)
     colourlist.push_back(QColor(var.toInt()));
 
   addColourVariations(colourlist, (ColourVariation)a->data().toInt());
+
+  canvas->setBackgroundBrush(backgroundColour);
+  canvas->randomiseWordColours(colourlist.toVector());
 }
 
 void WordQloud::onOrientationAction(QAction* a)
