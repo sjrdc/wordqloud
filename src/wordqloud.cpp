@@ -61,6 +61,40 @@ void WordQloud::about()
 		     tr("short description of how it came to be..."));
 }
 
+void WordQloud::addColourVariations(QList<QColor> &colourlist, ColourVariation v)
+{
+  int nrColourvariations;
+  switch (v)
+    {
+    case AsPalette:
+      nrColourvariations = 0;
+      break;
+    case LittleVariation:
+      nrColourvariations = 1;
+      break;
+    case SomeVariation:
+      nrColourvariations = 2;
+      break;
+    case LotsOfVariation:
+      nrColourvariations = 3;
+      break;
+    case WildVariation:
+      nrColourvariations = 4;
+      break;
+    }
+
+  QList<QColor> newColours;
+  for (int i = 0; i < nrColourvariations; ++i)
+    {
+      foreach (QColor colour, colourlist)
+	{
+	  // compute colourvariations
+	}
+    }
+
+  colourlist.append(newColours);
+}
+
 void WordQloud::contextMenuEvent(QContextMenuEvent *event)
 {
   QMenu menu(this);
@@ -99,14 +133,15 @@ void WordQloud::createActions()
 
   asPaletteAction = new QAction(tr("as palette"), this);
   asPaletteAction->setCheckable(true);
+  asPaletteAction->setData(AsPalette);
   littleVariationAction = new QAction(tr("a little variation"), this);
-  littleVariationAction->setData(2);
+  littleVariationAction->setData(LittleVariation);
   littleVariationAction->setCheckable(true);  
   someVariationAction = new QAction(tr("some variation"), this);
-  someVariationAction->setData(3);
+  someVariationAction->setData(SomeVariation);
   someVariationAction->setCheckable(true);
   lotsOfVariationAction = new QAction(tr("lots of variation"), this);
-  lotsOfVariationAction->setData(4);
+  lotsOfVariationAction->setData(LotsOfVariation);
   lotsOfVariationAction->setCheckable(true);
   wildVariationAction = new QAction(tr("wild variation"), this);
   wildVariationAction->setCheckable(true);
@@ -200,7 +235,7 @@ QIcon WordQloud::createColourschemeIcon(QColor backgroundColour,
 void WordQloud::createColourschemeMenu()
 {
   QMenu *colourschemeMenu = layoutMenu->addMenu(tr("&Colours"));
-  QActionGroup *colourschemeActionGroup = new QActionGroup(this);
+  colourschemeActionGroup = new QActionGroup(this);
 
   QFile colourfile("../src/colourschemes.txt");
   if (!colourfile.open(QIODevice::ReadOnly))		
@@ -320,20 +355,31 @@ void WordQloud::onColourschemeActionGroupTriggered(QAction *a)
   QList<QVariant> varlist = a->data().toList();
   QColor backgroundColour(varlist.first().toInt());
   varlist.pop_front();
-  QVector<QColor> colourlist;
+  QList<QColor> colourlist;
   foreach(QVariant var, varlist)
     colourlist.push_back(QColor(var.toInt()));
 
   // create colourvariations
-  int nrColourvariations = 0;
-
+  addColourVariations(colourlist, 
+		      (ColourVariation)colourVariationActionGroup->
+		      checkedAction()->data().toInt());
   
   canvas->setBackgroundBrush(backgroundColour);
-  canvas->randomiseWordColours(colourlist);
+  canvas->randomiseWordColours(colourlist.toVector());
 }
 
 void WordQloud::onColourVariationAction(QAction *a)
 {
+  QAction *schemeAction = colourschemeActionGroup->checkedAction();
+
+  QList<QVariant> varlist = schemeAction->data().toList();
+  QColor backgroundColour(varlist.first().toInt());
+  varlist.pop_front();
+  QList<QColor> colourlist;
+  foreach(QVariant var, varlist)
+    colourlist.push_back(QColor(var.toInt()));
+
+  addColourVariations(colourlist, (ColourVariation)a->data().toInt());
 }
 
 void WordQloud::onOrientationAction(QAction* a)

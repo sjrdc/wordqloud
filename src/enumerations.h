@@ -11,7 +11,7 @@ enum WordOrientation
     VerticalWordOrientation
   };
 
-enum ColorVariation
+enum ColourVariation
   {
     AsPalette,
     LittleVariation,

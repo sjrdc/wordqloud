@@ -39,6 +39,7 @@ private slots:
   void setFont();
   
 private:
+  void addColourVariations(QList<QColor> &colourlis, ColourVariation v);
   void createActions();
   void createMenus();
   void createColourschemeMenu();
@@ -51,7 +52,7 @@ private:
   
   QActionGroup *alignmentGroup;
   QPushButton *reCreateLayoutButton;
-
+  QActionGroup *colourschemeActionGroup;
   QAction *aboutAction;
   QAction *backgroundColorAction;
   QAction *exitAction;
