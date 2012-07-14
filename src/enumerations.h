@@ -18,6 +18,6 @@ enum ColorVariation
     SomeVariation,
     LotsOfVariation,
     WildVariation
-  };
+   };
 
 #endif

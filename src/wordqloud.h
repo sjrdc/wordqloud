@@ -31,6 +31,7 @@ private slots:
   void open();
   void onOrientationAction(QAction*);
   void onColourschemeActionGroupTriggered(QAction*);
+  void onColourVariationAction(QAction*);
   void reCreateLayout();
   void saveBitmap();
   void savePDF();  
@@ -68,6 +69,13 @@ private:
   QAction *mostlyVerticalOrientationAction;
   QAction *verticalOrientationAction;
     
+  QActionGroup *colourVariationActionGroup;
+  QAction *asPaletteAction;
+  QAction *littleVariationAction;
+  QAction *someVariationAction;
+  QAction *lotsOfVariationAction;
+  QAction *wildVariationAction;
+
   QGraphicsView *view;
   Canvas *canvas;
 };

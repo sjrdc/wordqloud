@@ -20,7 +20,6 @@
 #include "word.h"
 #include "wordlist.h"
 
-
 WordQloud::WordQloud()
 {
   QWidget *widget = new QWidget;
@@ -72,15 +71,20 @@ void WordQloud::contextMenuEvent(QContextMenuEvent *event)
 void WordQloud::createActions()
 {
   horizontalOrientationAction = new QAction(tr("horizontal"), this);
+  horizontalOrientationAction->setCheckable(true);
   horizontalOrientationAction->setData(HorizontalWordOrientation);
   mostlyHorizontalOrientationAction = new QAction(tr("mostly horizontal"), this);
   mostlyHorizontalOrientationAction->setData(MostlyHorizontalWordOrientation);
+  mostlyHorizontalOrientationAction->setCheckable(true);  
   halfAndHalfOrientationAction = new QAction(tr("half and half"), this);
   halfAndHalfOrientationAction->setData(HalfAndHalfWordOrientation);
+  halfAndHalfOrientationAction->setCheckable(true);  
   mostlyVerticalOrientationAction = new QAction(tr("mostly vertical"), this);
   mostlyVerticalOrientationAction->setData(MostlyVerticalWordOrientation);
+  mostlyVerticalOrientationAction->setCheckable(true);  
   verticalOrientationAction = new QAction(tr("vertical"), this);
   verticalOrientationAction->setData(VerticalWordOrientation);
+  verticalOrientationAction->setCheckable(true);  
 
   orientationActionGroup = new QActionGroup(this);
   orientationActionGroup->addAction(horizontalOrientationAction);
@@ -88,8 +92,32 @@ void WordQloud::createActions()
   orientationActionGroup->addAction(halfAndHalfOrientationAction);
   orientationActionGroup->addAction(mostlyVerticalOrientationAction);
   orientationActionGroup->addAction(verticalOrientationAction);
+  orientationActionGroup->setExclusive(true);
+  horizontalOrientationAction->setChecked(true);
   connect(orientationActionGroup, SIGNAL(triggered(QAction*)),
 	  this, SLOT(onOrientationAction(QAction*)));
+
+  asPaletteAction = new QAction(tr("as palette"), this);
+  asPaletteAction->setCheckable(true);
+  littleVariationAction = new QAction(tr("a little variation"), this);
+  littleVariationAction->setCheckable(true);  
+  someVariationAction = new QAction(tr("some variation"), this);
+  someVariationAction->setCheckable(true);
+  lotsOfVariationAction = new QAction(tr("lots of variation"), this);
+  lotsOfVariationAction->setCheckable(true);
+  wildVariationAction = new QAction(tr("wild variation"), this);
+  wildVariationAction->setCheckable(true);
+  
+  colourVariationActionGroup = new QActionGroup(this);
+  colourVariationActionGroup->addAction(asPaletteAction);
+  colourVariationActionGroup->addAction(littleVariationAction);
+  colourVariationActionGroup->addAction(someVariationAction);
+  colourVariationActionGroup->addAction(lotsOfVariationAction);
+  colourVariationActionGroup->addAction(wildVariationAction);
+  colourVariationActionGroup->setExclusive(true);
+  littleVariationAction->setChecked(true);
+  connect(colourVariationActionGroup, SIGNAL(triggered(QAction*)),
+	  this, SLOT(onColourVariationAction(QAction*)));
   
   backgroundColorAction = new QAction(tr("Set background color"), this);
   connect(backgroundColorAction, SIGNAL(triggered()), 
@@ -183,31 +211,47 @@ void WordQloud::createColourschemeMenu()
 
       if (colourlist.size() > 2)
 	{
+	  // extract colourscheme name
 	  QString schemeName = colourlist.first();
 	  colourlist.pop_front();
+
+	  // extract backgroundcolour
 	  QColor backgroundColour(colourlist.first());
 	  colourlist.pop_front();
-	  QVector<QColor> foregroundColours;
+
+	  // a varlist to store colours in the action object
 	  QList<QVariant> varlist;
-	  varlist.push_back(backgroundColour);
+	  varlist.push_back(backgroundColour); 
+
+	  // extract all foregroundcolours;
+	  QVector<QColor> foregroundColours;
 	  foreach (QString colourstring, colourlist)
 	    {
 	      QColor colour(colourstring);
 	      foregroundColours.push_back(colour);
 	      varlist.push_back(QVariant(QColor(colour).rgb()));
 	    }
+
+	  // create an icon to use in the menu
 	  QIcon schemeIcon = createColourschemeIcon(backgroundColour,
 						    foregroundColours);
 
+	  // create action for the current scheme
 	  QAction *action = new QAction(schemeIcon, schemeName, this);
 	  action->setData(varlist);
 
+	  // add action to menu and group
 	  colourschemeMenu->addAction(action);
 	  colourschemeActionGroup->addAction(action);
 	}
     }
 
+  colourschemeActionGroup->setExclusive(true);
+  
+  // done - close the file
   colourfile.close();
+
+  // hook up the triggered signal to an event handler
   connect(colourschemeActionGroup, SIGNAL(triggered(QAction*)),
 	  this, SLOT(onColourschemeActionGroupTriggered(QAction*)));
 }
@@ -232,6 +276,14 @@ void WordQloud::createMenus()
   
   layoutMenu->addAction(fontAction);
   layoutMenu->addAction(boundsFromImageAction);
+
+  QMenu *colourVariationMenu = layoutMenu->addMenu(tr("Colour &variation"));
+  colourVariationMenu->addAction(asPaletteAction);
+  colourVariationMenu->addAction(littleVariationAction);
+  colourVariationMenu->addAction(someVariationAction);
+  colourVariationMenu->addAction(lotsOfVariationAction);
+  colourVariationMenu->addAction(wildVariationAction);
+
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAction);
 
@@ -271,6 +323,10 @@ void WordQloud::onColourschemeActionGroupTriggered(QAction *a)
 			 
   canvas->setBackgroundBrush(backgroundColour);
   canvas->randomiseWordColours(colourlist);
+}
+
+void WordQloud::onColourVariationAction(QAction *a)
+{
 }
 
 void WordQloud::onOrientationAction(QAction* a)
