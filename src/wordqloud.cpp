@@ -356,8 +356,20 @@ void WordQloud::load()
   QString filename = 
     QFileDialog::getOpenFileName(this, "Load text file");
 
+  QAction *schemeAction = colourschemeActionGroup->checkedAction();
+  QAction *colourVariationAction = colourVariationActionGroup->checkedAction();
+  
+  QList<QVariant> varlist = schemeAction->data().toList();
+  QColor backgroundColour(varlist.first().toInt());
+  varlist.pop_front();
+  QList<QColor> colourlist;
+  foreach(QVariant var, varlist)
+    colourlist.push_back(QColor(var.toInt()));
+
+  addColourVariations(colourlist, (ColourVariation)colourVariationAction->data().toInt());
+  
   WordList wordlist;
-  try { wordlist.fromTextFile(filename); }
+  try { wordlist.fromTextFile(filename, colourlist); }
   catch (...) 
     {
       statusBar()->showMessage("Could not create wordlist from text file " 

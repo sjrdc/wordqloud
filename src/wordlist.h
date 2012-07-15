@@ -6,7 +6,7 @@
 class WordList : public QList<Word*>
 {
 public:
-  void fromTextFile(QString filename);
+  void fromTextFile(QString filename, const QList<QColor> &colourlist);
   void fromWordFile(QString filename);
 protected:
 private:

@@ -11,7 +11,7 @@
 #include "word.h"
 #include "wordlist.h"
 
-void WordList::fromTextFile(QString filename)
+void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
 {
   QFile file(filename);
   if (!file.open(QIODevice::ReadOnly)) 
@@ -26,8 +26,6 @@ void WordList::fromTextFile(QString filename)
     }
   file.close();
 
- QVector<QColor> colormap = Colormap::coolColormap(10);
-
   int counter = 0;
   for (int i = 0; i < stringlist.size(); ++i)
     {
@@ -36,7 +34,7 @@ void WordList::fromTextFile(QString filename)
 	{
 	  Word *w = new Word(s);
 	  w->setFontSize(10 + 20*exp(-counter/5+1));
-	  w->setBrush(colormap[counter % 10]);
+	  w->setBrush(colourlist[counter % colourlist.size()]);
 	  this->push_back(w);
 	  counter++;
 	}
