@@ -64,6 +64,7 @@ void WordQloud::about()
 void WordQloud::addColourVariations(QList<QColor> &colourlist, ColourVariation v)
 {
   int nrColourvariations;
+  int hmax;
   switch (v)
     {
     case AsPalette:
@@ -71,27 +72,44 @@ void WordQloud::addColourVariations(QList<QColor> &colourlist, ColourVariation v
       break;
     case LittleVariation:
       nrColourvariations = 1;
+      hmax = 25;
       break;
     case SomeVariation:
       nrColourvariations = 2;
+      hmax = 30;
       break;
     case LotsOfVariation:
       nrColourvariations = 3;
+      hmax = 35;
       break;
     case WildVariation:
       nrColourvariations = 4;
+      hmax = 40;
       break;
     }
 
+  // create random number generator
+  boost::mt19937 rng;
+  rng.seed(static_cast<unsigned int>(std::time(0)));
+  boost::uniform_int<> unidist(-hmax, hmax);
+  boost::variate_generator<boost::mt19937&, boost::uniform_int<> > huePicker(rng, unidist);
+  
   QList<QColor> newColours;
-  for (int i = 0; i < nrColourvariations; ++i)
+  foreach (QColor colour, colourlist)
     {
-      foreach (QColor colour, colourlist)
+      // compute colourvariations
+      QColor newColour = colour.toHsv();
+      int h = newColour.hue();
+      for (int i = 0; i < nrColourvariations; ++i)
 	{
-	  // compute colourvariations
+	  int hplus = huePicker();
+	  while (hplus > 360) hplus -= 360;
+	  while (hplus < 0) hplus += 360;
+	  newColours.push_back(QColor::fromHsv((h + hplus) % 360,
+					       newColour.saturation(), 
+					       newColour.value()).toRgb());
 	}
     }
-  
   colourlist.append(newColours);
 }
 
