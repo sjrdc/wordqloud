@@ -28,6 +28,7 @@ private slots:
   void about();
   void createCloudBoundsFromImage();
   void load();
+  void loadWordlist();
   void open();
   void onOrientationAction(QAction*);
   void onColourschemeActionGroupTriggered(QAction*);
@@ -57,7 +58,8 @@ private:
   QAction *backgroundColorAction;
   QAction *exitAction;
   QAction *fontAction;
-  QAction *loadAction;  
+  QAction *loadAction;
+  QAction *loadWordlistAction;
   QAction *openAction;
   QAction *savePngAction;
   QAction *saveSvgAction;  

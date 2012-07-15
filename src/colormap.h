@@ -15,5 +15,4 @@ public:
   static QVector<QColor> copperColormap(int n);
   static QVector<QColor> hotColormap(int n);
   static QVector<QColor> coolColormap(int n);
-  
 };

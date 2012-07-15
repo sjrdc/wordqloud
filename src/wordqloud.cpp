@@ -180,10 +180,13 @@ void WordQloud::createActions()
   connect(backgroundColorAction, SIGNAL(triggered()), 
 	  this, SLOT(setBackgroundColor()));
   
-  loadAction = new QAction(tr("&Load text..."), this);
+  loadAction = new QAction(tr("Load &text..."), this);
   loadAction->setStatusTip(tr("load text file"));
   connect(loadAction, SIGNAL(triggered()), this, SLOT(load()));
 
+  loadWordlistAction = new QAction(tr("Load word list..."), this);
+  connect(loadWordlistAction, SIGNAL(triggered()), this, SLOT(loadWordlist()));
+  
   openAction = new QAction(tr("&Open..."), this);
   openAction->setShortcuts(QKeySequence::Open);
   openAction->setStatusTip(tr("Open an existing file"));
@@ -321,6 +324,7 @@ void WordQloud::createMenus()
 {
   fileMenu = menuBar()->addMenu(tr("&File"));
   fileMenu->addAction(loadAction);
+  fileMenu->addAction(loadWordlistAction);
   fileMenu->addAction(openAction);  
   fileMenu->addAction(saveSvgAction);
   fileMenu->addAction(savePngAction);  
@@ -370,6 +374,24 @@ void WordQloud::load()
   
   WordList wordlist;
   try { wordlist.fromTextFile(filename, colourlist); }
+  catch (...) 
+    {
+      statusBar()->showMessage("Could not create wordlist from text file " 
+			       + filename);
+      return;
+    }
+  
+  canvas->setWordList(wordlist);
+  canvas->createLayout();
+}
+
+void WordQloud::loadWordlist()
+{
+  QString filename = 
+    QFileDialog::getOpenFileName(this, "Load text file");
+
+  WordList wordlist;
+  try { wordlist.fromWordFile(filename); }
   catch (...) 
     {
       statusBar()->showMessage("Could not create wordlist from text file " 
