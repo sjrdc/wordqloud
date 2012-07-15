@@ -15,6 +15,7 @@
 #include <QString>
 
 #include "canvas.h"
+#include "colormap.h"
 #include "word.h"
 #include "wordlist.h"
 
@@ -77,7 +78,7 @@ int main(int argc, char **argv)
   canvas.setBackgroundBrush(Qt::black);
   
   WordList wordlist;
-  wordlist.fromTextFile(QString::fromStdString(textfile));
+  wordlist.fromTextFile(QString::fromStdString(textfile), Colormap::coolColormap(10).toList());
   canvas.setWordList(wordlist);
   canvas.createLayout();
   
