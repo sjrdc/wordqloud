@@ -91,7 +91,7 @@ void WordQloud::addColourVariations(QList<QColor> &colourlist, ColourVariation v
 	  // compute colourvariations
 	}
     }
-
+  
   colourlist.append(newColours);
 }
 
@@ -242,6 +242,7 @@ void WordQloud::createColourschemeMenu()
     qDebug() << "Could not read colourscheme file";
 
   QTextStream textstream(&colourfile);
+  int c = 0;
   while (!textstream.atEnd() && textstream.status() == QTextStream::Ok)
     {
       QString line = textstream.readLine();
@@ -277,15 +278,19 @@ void WordQloud::createColourschemeMenu()
 	  // create action for the current scheme
 	  QAction *action = new QAction(schemeIcon, schemeName, this);
 	  action->setData(varlist);
-
+	  action->setCheckable(true);
+	  
 	  // add action to menu and group
 	  colourschemeMenu->addAction(action);
 	  colourschemeActionGroup->addAction(action);
+
+	  if (c == 0) action->setChecked(true);
+	  c++;
 	}
     }
 
   colourschemeActionGroup->setExclusive(true);
-  
+
   // done - close the file
   colourfile.close();
 
