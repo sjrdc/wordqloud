@@ -33,7 +33,7 @@ void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
       if (!s.isEmpty())
 	{
 	  Word *w = new Word(s);
-	  w->setFontSize(10 + 20*exp(-counter/5+1));
+	  w->setFontsize(10 + 20*exp(-counter/5+1));
 	  w->setColour(colourlist[counter % colourlist.size()]);
 	  this->push_back(w);
 	  counter++;
@@ -72,7 +72,7 @@ void WordList::fromWordFile(QString filename)
 		      if (modifier.size() == 7)
 			{
 			  word->setColour(QColor(modifier));
-			  word->lockColour(true);
+			  word->lockColour();
 			}
 		      break;
 		    }
@@ -80,17 +80,20 @@ void WordList::fromWordFile(QString filename)
 		    {
 		      double angle = modifier.right(1).toDouble();
 		      word->setRotation(angle);
+		      word->lockOrientation();
 		      break;
 		    }
 		  case '!':
 		    {
 		      word->setFontName(modifier.right(1));
+		      word->lockFont();
 		      break;
 		    }
 		  default: 
 		    {
 		      int fsize = modifier.toInt();
-		      word->setFontSize(fsize);
+		      word->setFontsize(fsize);
+		      word->lockFontsize();
 		      break;
 		    }
 		  }

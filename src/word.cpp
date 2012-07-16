@@ -70,16 +70,28 @@ void Word::prepareCollisionDetection()
 
 void Word::setFontName(QString name)
 {
-  QFont f = this->font();
-  f.setFamily(name);
-  this->setFont(f);
+  if (!_fontLocked)
+    {
+      QFont f = this->font();
+      f.setFamily(name);
+      this->setFont(f);
+    }
 }
 
-void Word::setFontSize(float p)
+void Word::setFontsize(float p)
 {
-  QFont f = this->font();
-  f.setPointSizeF(p);
-  this->setFont(f);
+  if (!_fontsizeLocked)
+    {
+      QFont f = this->font();
+      f.setPointSizeF(p);
+      this->setFont(f);
+    }
+}
+
+void Word::setRotation(float r)
+{
+  if (!_orientationLocked)
+    QGraphicsSimpleTextItem::setRotation(r);
 }
 
 void Word::updateCollisionDetection(QPointF delta)
