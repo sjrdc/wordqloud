@@ -2,8 +2,7 @@
 #define BOUNDSWIZARD_H_
 
 #include "cv.h"
-#include <QWizard>
-#include <QWizardPage>
+#include <QDialog>
 
 class QDialogButtonBox;
 class QLineEdit;
