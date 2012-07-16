@@ -19,7 +19,11 @@ Word::Word(QString string, float b)
   showPinnedState = false;
   pinned = false;
   manipulated = false; 
+
   _colourLocked = false;
+  _fontLocked = false;
+  _orientationLocked = false;
+  _fontsizeLocked = false;
 }
 
 Word::~Word()

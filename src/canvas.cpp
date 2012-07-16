@@ -14,7 +14,6 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
 
   // // initialise random number generator
   rng.seed(static_cast<unsigned int>(std::time(0)));
-  // rng.seed(static_cast<unsigned int>(0));
   cxDistribution = boost::normal_distribution<float>(centrepoint.x(), w*.1);
   cyDistribution = boost::normal_distribution<float>(centrepoint.y(), h*.1);
 
@@ -218,11 +217,11 @@ void Canvas::randomiseOrientations(WordOrientation w)
 	  break;
 	}
       
-     boost::uniform_int<> uni(0, angles.size() - 1);
+      boost::uniform_int<> uni(0, angles.size() - 1);  
       boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
 	anglepicker(rng, uni);
-     foreach (Word *word, wordlist)
-       word->setRotation(angles[anglepicker()]);
+      foreach (Word *word, wordlist)
+	word->setRotation(angles[anglepicker()]);
     }
   else 
     {  
