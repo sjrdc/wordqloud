@@ -128,7 +128,6 @@ QList<QColor> WordQloud::checkedColourscheme()
     colourlist.push_back(QColor(var.toInt()));
 
   return colourlist;
-
 }
 
 ColourVariation WordQloud::checkedColourVariation()
@@ -554,4 +553,13 @@ void WordQloud::setFont()
 
 void WordQloud::spinColours()
 {
+  QList<QColor> colourlist = checkedColourscheme();
+  QColor backgroundColour = colourlist.first();
+  colourlist.pop_front();
+
+  addColourVariations(colourlist, 
+		      this->checkedColourVariation());
+
+  canvas->setBackgroundBrush(backgroundColour);
+  canvas->randomiseWordColours(colourlist.toVector());
 }
