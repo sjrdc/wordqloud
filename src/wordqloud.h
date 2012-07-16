@@ -40,6 +40,7 @@ private slots:
   void setCustomScheme();
   void setFont();
   void spinColours();
+  void spinOrientations();  
   
 private:
   void addColourVariations(QList<QColor> &colourlis, ColourVariation v);
@@ -57,7 +58,8 @@ private:
   
   QAction *customColourschemeAction;
   QActionGroup *alignmentGroup;
-  QPushButton *reSpinColoursButton;
+  QPushButton *spinColoursButton;
+  QPushButton *spinOrientationsButton;  
   QPushButton *reCreateLayoutButton;
   QActionGroup *colourschemeActionGroup;
   QAction *aboutAction;

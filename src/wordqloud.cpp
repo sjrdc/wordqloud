@@ -39,11 +39,15 @@ WordQloud::WordQloud()
 
   reCreateLayoutButton = new QPushButton("re-create layout");
   connect(reCreateLayoutButton, SIGNAL(clicked()), this, SLOT(reCreateLayout()));  
-  reSpinColoursButton = new QPushButton("spin colours");
-  connect(reSpinColoursButton, SIGNAL(clicked()), this, SLOT(spinColours()));  
+  spinColoursButton = new QPushButton("spin colours");
+  connect(spinColoursButton, SIGNAL(clicked()), this, SLOT(spinColours()));   
+  spinOrientationsButton = new QPushButton("spin orientation");
+  connect(spinOrientationsButton, SIGNAL(clicked()), 
+	  this, SLOT(spinOrientations()));  
   
   QHBoxLayout *buttonLayout = new QHBoxLayout;
-  buttonLayout->addWidget(reSpinColoursButton);
+  buttonLayout->addWidget(spinColoursButton);
+  buttonLayout->addWidget(spinOrientationsButton);  
   buttonLayout->addWidget(reCreateLayoutButton);
 			  
   QVBoxLayout *layout = new QVBoxLayout;
@@ -562,4 +566,9 @@ void WordQloud::spinColours()
 
   canvas->setBackgroundBrush(backgroundColour);
   canvas->randomiseWordColours(colourlist.toVector());
+}
+
+void WordQloud::spinOrientations()
+{
+  this->onOrientationAction(orientationActionGroup->checkedAction());
 }
