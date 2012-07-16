@@ -3,7 +3,7 @@
 
 enum WordOrientation
   {
-    Any,
+    AnyWordOrientation,
     HorizontalWordOrientation,
     MostlyHorizontalWordOrientation,
     HalfAndHalfWordOrientation,

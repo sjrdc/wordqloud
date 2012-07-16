@@ -74,6 +74,7 @@ private:
   QAction *boundsFromImageAction;
 
   QActionGroup *orientationActionGroup;
+  QAction *anyOrientationAction;
   QAction *horizontalOrientationAction;
   QAction *mostlyHorizontalOrientationAction;
   QAction *halfAndHalfOrientationAction;

@@ -187,38 +187,51 @@ void Canvas::randomiseOrientations(WordOrientation w)
 {
   boost::mt19937 rng;
   rng.seed(static_cast<unsigned int>(std::time(0)));  
-  
-  std::vector<short> angles;
-  switch (w)
-    {
-    case HorizontalWordOrientation:
-      angles.push_back(0);
-      break;
-    case MostlyHorizontalWordOrientation:
-      angles.push_back(0);
-      angles.push_back(0);
-      angles.push_back(90);
-      break;
-    case HalfAndHalfWordOrientation:
-      angles.push_back(0);
-      angles.push_back(90);
-      break;
-    case MostlyVerticalWordOrientation:
-      angles.push_back(0);
-      angles.push_back(90);
-      angles.push_back(90);
-      break;
-    case VerticalWordOrientation:
-      angles.push_back(90);
-      break;
-    }
-      
-  boost::uniform_int<> uni(0, angles.size() - 1);
-  boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
-    anglepicker(rng, uni);
 
-  foreach (Word *word, wordlist)
-    word->setRotation(angles[anglepicker()]);
+  if (w != AnyWordOrientation)
+    {
+      std::vector<short> angles;
+      switch (w)
+	{	
+	case HorizontalWordOrientation:
+	  angles.push_back(0);
+	  break;
+	case MostlyHorizontalWordOrientation:
+	  angles.push_back(0);
+	  angles.push_back(0);
+	  angles.push_back(90);
+	  break;
+	case HalfAndHalfWordOrientation:
+	  angles.push_back(0);
+	  angles.push_back(90);
+	  break;
+	case MostlyVerticalWordOrientation:
+	  angles.push_back(0);
+	  angles.push_back(90);
+	  angles.push_back(90);
+	  break;
+	case VerticalWordOrientation:
+	  angles.push_back(90);
+	  break;
+	default: // unknown - treat as horizontal
+	  angles.push_back(0);
+	  break;
+	}
+      
+     boost::uniform_int<> uni(0, angles.size() - 1);
+      boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
+	anglepicker(rng, uni);
+     foreach (Word *word, wordlist)
+       word->setRotation(angles[anglepicker()]);
+    }
+  else 
+    {  
+      boost::uniform_int<> uni(0, 359);
+      boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
+	anglepicker(rng, uni);
+      foreach (Word *word, wordlist)
+       word->setRotation(anglepicker());
+    }
 }
 
 void Canvas::randomiseWordColours(const QVector<QColor> &colourpalet)

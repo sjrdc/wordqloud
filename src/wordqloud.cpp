@@ -152,6 +152,9 @@ void WordQloud::createActions()
   horizontalOrientationAction = new QAction(tr("horizontal"), this);
   horizontalOrientationAction->setCheckable(true);
   horizontalOrientationAction->setData(HorizontalWordOrientation);
+  anyOrientationAction = new QAction(tr("any"), this);
+  anyOrientationAction->setCheckable(true);
+  anyOrientationAction->setData(AnyWordOrientation);
   mostlyHorizontalOrientationAction = new QAction(tr("mostly horizontal"), this);
   mostlyHorizontalOrientationAction->setData(MostlyHorizontalWordOrientation);
   mostlyHorizontalOrientationAction->setCheckable(true);  
@@ -171,6 +174,7 @@ void WordQloud::createActions()
   orientationActionGroup->addAction(halfAndHalfOrientationAction);
   orientationActionGroup->addAction(mostlyVerticalOrientationAction);
   orientationActionGroup->addAction(verticalOrientationAction);
+  orientationActionGroup->addAction(anyOrientationAction);
   orientationActionGroup->setExclusive(true);
   horizontalOrientationAction->setChecked(true);
   connect(orientationActionGroup, SIGNAL(triggered(QAction*)),
@@ -375,7 +379,10 @@ void WordQloud::createMenus()
   orientationMenu->addAction(mostlyHorizontalOrientationAction);
   orientationMenu->addAction(halfAndHalfOrientationAction);
   orientationMenu->addAction(mostlyVerticalOrientationAction);
-  orientationMenu->addAction(verticalOrientationAction);        
+  orientationMenu->addAction(verticalOrientationAction); 
+  orientationMenu->addSeparator();
+  orientationMenu->addAction(anyOrientationAction);        
+        
   
   layoutMenu->addAction(fontAction);
   layoutMenu->addAction(boundsFromImageAction);
