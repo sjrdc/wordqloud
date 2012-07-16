@@ -37,10 +37,12 @@ private slots:
   void saveBitmap();
   void savePDF();  
   void setBackgroundColor();
+  void setCustomScheme();
   void setFont();
   
 private:
   void addColourVariations(QList<QColor> &colourlis, ColourVariation v);
+  ColourVariation checkedColourVariation();
   void createActions();
   void createMenus();
   void createColourschemeMenu();
@@ -51,6 +53,7 @@ private:
   QMenu *layoutMenu;
   QMenu *helpMenu;
   
+  QAction *customColourschemeAction;
   QActionGroup *alignmentGroup;
   QPushButton *reCreateLayoutButton;
   QActionGroup *colourschemeActionGroup;

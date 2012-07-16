@@ -17,6 +17,7 @@
 #include <ctime>
 
 #include "boundsdialog.h"
+#include "colourschemedialog.h"
 #include "canvas.h"
 #include "wordqloud.moc"
 #include "word.h"
@@ -115,6 +116,12 @@ void WordQloud::addColourVariations(QList<QColor> &colourlist, ColourVariation v
   colourlist.append(newColours);
 }
 
+ColourVariation WordQloud::checkedColourVariation()
+{
+  return (ColourVariation)colourVariationActionGroup->
+    checkedAction()->data().toInt();
+}
+
 void WordQloud::contextMenuEvent(QContextMenuEvent *event)
 {
   QMenu menu(this);
@@ -178,6 +185,11 @@ void WordQloud::createActions()
   connect(colourVariationActionGroup, SIGNAL(triggered(QAction*)),
 	  this, SLOT(onColourVariationAction(QAction*)));
   
+  customColourschemeAction = new QAction(tr("Custom..."), this);
+  customColourschemeAction->setCheckable(true);
+  connect(customColourschemeAction, SIGNAL(triggered()), 
+	  this, SLOT(setCustomScheme()));
+
   backgroundColorAction = new QAction(tr("Set background color"), this);
   connect(backgroundColorAction, SIGNAL(triggered()), 
 	  this, SLOT(setBackgroundColor()));
@@ -258,8 +270,12 @@ QIcon WordQloud::createColourschemeIcon(QColor backgroundColour,
 void WordQloud::createColourschemeMenu()
 {
   QMenu *colourschemeMenu = layoutMenu->addMenu(tr("&Colours"));
-  colourschemeActionGroup = new QActionGroup(this);
+  colourschemeMenu->addAction(customColourschemeAction);
+  colourschemeMenu->addSeparator();
 
+  colourschemeActionGroup = new QActionGroup(this);
+  colourschemeActionGroup->addAction(customColourschemeAction);
+  
   QFile colourfile("../src/colourschemes.txt");
   if (!colourfile.open(QIODevice::ReadOnly))		
     qDebug() << "Could not read colourscheme file";
@@ -313,6 +329,8 @@ void WordQloud::createColourschemeMenu()
     }
 
   colourschemeActionGroup->setExclusive(true);
+  customColourschemeAction->
+    setData(colourschemeActionGroup->checkedAction()->data());
 
   // done - close the file
   colourfile.close();
@@ -418,10 +436,11 @@ void WordQloud::onColourschemeActionGroupTriggered(QAction *a)
   foreach(QVariant var, varlist)
     colourlist.push_back(QColor(var.toInt()));
 
+  customColourschemeAction->setData(a->data());
+
   // create colourvariations
   addColourVariations(colourlist, 
-		      (ColourVariation)colourVariationActionGroup->
-		      checkedAction()->data().toInt());
+		      this->checkedColourVariation());
   
   canvas->setBackgroundBrush(backgroundColour);
   canvas->randomiseWordColours(colourlist.toVector());
@@ -490,6 +509,35 @@ void WordQloud::setBackgroundColor()
     QColorDialog::getColor(canvas->backgroundBrush().color(),
 			   this, "Select background color");
   canvas->setBackgroundBrush(color);
+}
+
+void WordQloud::setCustomScheme()
+{
+  QAction *a = colourschemeActionGroup->checkedAction();
+  QList<QVariant> varlist = a->data().toList();
+  QColor backgroundColour = QColor(varlist.first().toInt());
+  varlist.pop_front();
+  QList<QColor> colourlist;
+  foreach(QVariant var, varlist)
+    colourlist.push_back(QColor(var.toInt()));
+
+  ColourschemeDialog *c = new ColourschemeDialog(colourlist);
+  c->exec();
+  QList<QColor> customscheme = c->getScheme();
+  delete c;
+
+  varlist.clear();
+  varlist.push_back(backgroundColour);
+  foreach(QColor colour, customscheme)
+    varlist.push_back(QVariant(colour.rgb()));
+
+  customColourschemeAction->setData(varlist);
+ 
+  addColourVariations(customscheme, 
+		      this->checkedColourVariation());
+
+  canvas->setBackgroundBrush(backgroundColour);
+  canvas->randomiseWordColours(customscheme.toVector());
 }
 
 void WordQloud::setFont()
