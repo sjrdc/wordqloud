@@ -39,8 +39,11 @@ WordQloud::WordQloud()
 
   reCreateLayoutButton = new QPushButton("re-create layout");
   connect(reCreateLayoutButton, SIGNAL(clicked()), this, SLOT(reCreateLayout()));  
+  reSpinColoursButton = new QPushButton("spin colours");
+  connect(reSpinColoursButton, SIGNAL(clicked()), this, SLOT(spinColours()));  
   
   QHBoxLayout *buttonLayout = new QHBoxLayout;
+  buttonLayout->addWidget(reSpinColoursButton);
   buttonLayout->addWidget(reCreateLayoutButton);
 			  
   QVBoxLayout *layout = new QVBoxLayout;
@@ -114,6 +117,18 @@ void WordQloud::addColourVariations(QList<QColor> &colourlist, ColourVariation v
 	}
     }
   colourlist.append(newColours);
+}
+
+QList<QColor> WordQloud::checkedColourscheme()
+{
+  QList<QVariant> varlist = 
+    colourschemeActionGroup->checkedAction()->data().toList();
+  QList<QColor> colourlist;
+  foreach(QVariant var, varlist)
+    colourlist.push_back(QColor(var.toInt()));
+
+  return colourlist;
+
 }
 
 ColourVariation WordQloud::checkedColourVariation()
@@ -448,14 +463,9 @@ void WordQloud::onColourschemeActionGroupTriggered(QAction *a)
 
 void WordQloud::onColourVariationAction(QAction *a)
 {
-  QAction *schemeAction = colourschemeActionGroup->checkedAction();
-
-  QList<QVariant> varlist = schemeAction->data().toList();
-  QColor backgroundColour(varlist.first().toInt());
-  varlist.pop_front();
-  QList<QColor> colourlist;
-  foreach(QVariant var, varlist)
-    colourlist.push_back(QColor(var.toInt()));
+  QList<QColor> colourlist = this->checkedColourscheme();
+  QColor backgroundColour = colourlist.first();
+  colourlist.pop_front();
 
   addColourVariations(colourlist, (ColourVariation)a->data().toInt());
 
@@ -513,26 +523,21 @@ void WordQloud::setBackgroundColor()
 
 void WordQloud::setCustomScheme()
 {
-  QAction *a = colourschemeActionGroup->checkedAction();
-  QList<QVariant> varlist = a->data().toList();
-  QColor backgroundColour = QColor(varlist.first().toInt());
-  varlist.pop_front();
-  QList<QColor> colourlist;
-  foreach(QVariant var, varlist)
-    colourlist.push_back(QColor(var.toInt()));
+  QList<QColor> colourlist = checkedColourscheme();
+  QColor backgroundColour = colourlist.first();
+  colourlist.pop_front();
 
   ColourschemeDialog *c = new ColourschemeDialog(colourlist);
   c->exec();
   QList<QColor> customscheme = c->getScheme();
   delete c;
 
-  varlist.clear();
+  QList<QVariant> varlist;
   varlist.push_back(backgroundColour);
   foreach(QColor colour, customscheme)
     varlist.push_back(QVariant(colour.rgb()));
 
-  customColourschemeAction->setData(varlist);
- 
+  customColourschemeAction->setData(varlist); 
   addColourVariations(customscheme, 
 		      this->checkedColourVariation());
 
@@ -545,4 +550,8 @@ void WordQloud::setFont()
   bool ok;
   QFont font = QFontDialog::getFont(&ok, this);
   if (ok) canvas->setWordFont(font);
+}
+
+void WordQloud::spinColours()
+{
 }

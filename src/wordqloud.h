@@ -39,6 +39,7 @@ private slots:
   void setBackgroundColor();
   void setCustomScheme();
   void setFont();
+  void spinColours();
   
 private:
   void addColourVariations(QList<QColor> &colourlis, ColourVariation v);
@@ -48,13 +49,15 @@ private:
   void createColourschemeMenu();
   QIcon createColourschemeIcon(QColor backgroundColour, 
 			       QVector<QColor> foregroundColours);
-  
+  QList<QColor> checkedColourscheme();
+
   QMenu *fileMenu;
   QMenu *layoutMenu;
   QMenu *helpMenu;
   
   QAction *customColourschemeAction;
   QActionGroup *alignmentGroup;
+  QPushButton *reSpinColoursButton;
   QPushButton *reCreateLayoutButton;
   QActionGroup *colourschemeActionGroup;
   QAction *aboutAction;
