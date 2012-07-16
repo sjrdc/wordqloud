@@ -14,6 +14,8 @@
 #include <QSvgGenerator>
 #include <QVBoxLayout>
 
+#include <ctime>
+
 #include "boundsdialog.h"
 #include "canvas.h"
 #include "wordqloud.moc"
