@@ -184,9 +184,6 @@ void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void Canvas::randomiseOrientations(WordOrientation w)
 {
-  boost::mt19937 rng;
-  rng.seed(static_cast<unsigned int>(std::time(0)));  
-
   if (w != AnyWordOrientation)
     {
       std::vector<short> angles;
