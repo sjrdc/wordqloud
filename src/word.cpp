@@ -18,7 +18,8 @@ Word::Word(QString string, float b)
 
   showPinnedState = false;
   pinned = false;
-  manipulated = false;  
+  manipulated = false; 
+  _colourLocked = false;
 }
 
 Word::~Word()

@@ -34,7 +34,7 @@ void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
 	{
 	  Word *w = new Word(s);
 	  w->setFontSize(10 + 20*exp(-counter/5+1));
-	  w->setBrush(colourlist[counter % colourlist.size()]);
+	  w->setColour(colourlist[counter % colourlist.size()]);
 	  this->push_back(w);
 	  counter++;
 	}
@@ -70,7 +70,10 @@ void WordList::fromWordFile(QString filename)
 		  case '#':
 		    {
 		      if (modifier.size() == 7)
-			word->setBrush(QColor(modifier));
+			{
+			  word->setColour(QColor(modifier));
+			  word->lockColour(true);
+			}
 		      break;
 		    }
 		  case '@':

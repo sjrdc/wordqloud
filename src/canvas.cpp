@@ -231,7 +231,7 @@ void Canvas::randomiseWordColours(const QVector<QColor> &colourpalet)
     colourpicker(colourrng, uni);
 
   foreach (Word *word, wordlist)
-    word->setBrush(colourpalet[colourpicker()]);
+    word->setColour(colourpalet[colourpicker()]);
 }
 
 void Canvas::randomiseWordFontFamily(const QVector<QString> &fontfamilies)

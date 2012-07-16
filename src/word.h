@@ -19,11 +19,13 @@ public:
   void cacheCollision(Word *w);
   bool collidesWith(Word *w);
   bool collidesWithCashed();
+  bool colourLocked();
   bool getPinned();
   float height();
-
+  void lockColour(bool b);
   void moveBy(float x, float y);
   void prepareCollisionDetection();
+  void setColour(QColor c);
   void setPinned(bool p);
   void setFontName(QString fontname);
   void setFontSize(float s);
@@ -39,7 +41,7 @@ protected:
 
 
 private:
-    
+  void setBrush(QBrush b);
   void initBitmap();
 
   QVector<QRect> regionRects;
@@ -50,6 +52,7 @@ private:
   bool manipulated;
   bool showBounding;
   bool showPinnedState;
+  bool _colourLocked;
   QColor cachedColor;
 };
 
@@ -58,6 +61,8 @@ inline QRectF Word::boundingBox() const
   QRectF b = ((QGraphicsSimpleTextItem*)this)->boundingRect();
   return ((QGraphicsSimpleTextItem*)this)->mapRectToScene(b);
 }
+
+inline bool Word::colourLocked() { return _colourLocked; }
 
 inline bool Word::getPinned() { return pinned; }
 
@@ -69,6 +74,16 @@ inline void Word::setPinned(bool p)
 inline void Word::togglePinned()
 {
   pinned = !pinned;
+}
+
+inline void Word::setBrush(QBrush b)
+{
+  QGraphicsSimpleTextItem::setBrush(b);
+}
+
+inline void Word::setColour(QColor c)
+{
+  if (!_colourLocked) this->setBrush(c);
 }
 
 inline void Word::showPinned(bool p)
@@ -107,6 +122,11 @@ inline void Word::toggleShowPinned()
       c.setAlpha(255);
     }
   this->setBrush(c);
+}
+
+inline void Word::lockColour(bool b)
+{
+  _colourLocked = b;
 }
 
 #endif
