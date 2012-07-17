@@ -17,6 +17,7 @@ TARGET_LINK_LIBRARIES(wordcloud
 include_directories(
   ${CMAKE_BINARY_DIR}/src # for moc files
   ${OPENCV_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
   )
 
 qt4_automoc(

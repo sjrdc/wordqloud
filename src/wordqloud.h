@@ -33,6 +33,7 @@ private slots:
   void onOrientationAction(QAction*);
   void onColourschemeActionGroupTriggered(QAction*);
   void onColourVariationAction(QAction*);
+  void onUnpinAllButtonClicked();
   void reCreateLayout();
   void saveBitmap();
   void savePDF();  
@@ -58,6 +59,7 @@ private:
   
   QAction *customColourschemeAction;
   QActionGroup *alignmentGroup;
+  QPushButton *unpinAllButton;
   QPushButton *spinColoursButton;
   QPushButton *spinOrientationsButton;  
   QPushButton *reCreateLayoutButton;

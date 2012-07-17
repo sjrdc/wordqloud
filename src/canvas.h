@@ -38,6 +38,7 @@ public:
 
 public slots:
   void randomiseOrientations(WordOrientation w);
+  void unpinAll();
 
 protected:
   void keyPressEvent(QKeyEvent *event);

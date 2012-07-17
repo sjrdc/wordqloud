@@ -37,6 +37,8 @@ WordQloud::WordQloud()
   QWidget *bottomFiller = new QWidget;
   bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+  unpinAllButton = new QPushButton("unpin all");
+  connect(unpinAllButton, SIGNAL(clicked()), this, SLOT(onUnpinAllButtonClicked()));
   reCreateLayoutButton = new QPushButton("re-create layout");
   connect(reCreateLayoutButton, SIGNAL(clicked()), this, SLOT(reCreateLayout()));  
   spinColoursButton = new QPushButton("spin colours");
@@ -47,7 +49,8 @@ WordQloud::WordQloud()
   
   QHBoxLayout *buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(spinColoursButton);
-  buttonLayout->addWidget(spinOrientationsButton);  
+  buttonLayout->addWidget(spinOrientationsButton); 
+  buttonLayout->addWidget(unpinAllButton);  
   buttonLayout->addWidget(reCreateLayoutButton);
 			  
   QVBoxLayout *layout = new QVBoxLayout;
@@ -486,6 +489,11 @@ void WordQloud::onColourVariationAction(QAction *a)
 void WordQloud::onOrientationAction(QAction* a)
 {
   canvas->randomiseOrientations((WordOrientation)a->data().toInt());
+}
+
+void WordQloud::onUnpinAllButtonClicked()
+{
+  canvas->unpinAll();
 }
 
 void WordQloud::reCreateLayout()

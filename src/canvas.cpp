@@ -184,6 +184,7 @@ void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void Canvas::randomiseOrientations(WordOrientation w)
 {
+  rng.seed(static_cast<unsigned int>(std::time(0)));
   if (w != AnyWordOrientation)
     {
       std::vector<short> angles;
@@ -283,4 +284,10 @@ void Canvas::setWordFont(QFont font)
 {
   foreach (Word *word, wordlist)
     word->setFontName(font.family());
+}
+
+void Canvas::unpinAll()
+{
+  foreach (Word *word, wordlist)
+    word->setPinned(false);
 }
