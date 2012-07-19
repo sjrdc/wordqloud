@@ -33,7 +33,7 @@ void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
       if (!s.isEmpty())
 	{
 	  Word *w = new Word(s);
-	  w->setFontsize(10 + 20*exp(-counter/5+1));
+	  w->setFontsize(12);
 	  w->setColour(colourlist[counter % colourlist.size()]);
 	  this->push_back(w);
 	  counter++;

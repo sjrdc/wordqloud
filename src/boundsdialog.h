@@ -4,6 +4,7 @@
 #include "cv.h"
 #include <QDialog>
 
+class QCheckBox;
 class QDialogButtonBox;
 class QLineEdit;
 class QSlider;
@@ -18,12 +19,14 @@ public:
 protected slots:
   void onButtonClicked();
   void onFileChanged(QString filename);
+  void onInvertStateChanged(int s);
   void onSliderValueChanged(int v);  
 
 private:
   cv::Mat *img;
   std::vector<std::vector<cv::Point> > contours;
   std::vector<cv::Vec4i> boundaryHierarchy;
+  QCheckBox *invert;
   QImage *orgImage;
   QLineEdit *textbox;
   QLabel *previewLabel;
