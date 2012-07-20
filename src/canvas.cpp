@@ -16,6 +16,7 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
   rng.seed(static_cast<unsigned int>(std::time(0)));
   cxDistribution = boost::normal_distribution<float>(centrepoint.x(), w*.1);
   cyDistribution = boost::normal_distribution<float>(centrepoint.y(), h*.1);
+  angleIncrement = boost::uniform_int<>(1, 25);
 
   cxvarnor = new
     boost::variate_generator<boost::mt19937&, 
@@ -25,6 +26,10 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
     boost::variate_generator<boost::mt19937&, 
   			     boost::normal_distribution<float> >(rng,
 								 cyDistribution);
+  avarnor = new
+    boost::variate_generator<boost::mt19937&,
+			     boost::uniform_int<> >(rng, angleIncrement);
+  
   quadtree.setRootRectangle(sceneRect());
 }
 
@@ -82,7 +87,7 @@ void Canvas::layoutWord(Word *w)
       do
 	{
 	  // get a new location estimate
-	  tau += 0.25;
+	  tau += avarnor->operator()()*0.01;
 	  float rho = tau;
 
 	  // move Word to a new location
@@ -101,7 +106,7 @@ void Canvas::layoutWord(Word *w)
 		  }
 	      if (!contains) continue;
 	    }
-	  else if (!sceneRect().contains(w->boundingBox())) continue;
+	  // else if (!sceneRect().contains(w->boundingBox())) continue;
   
 	  // check cashed collision first
 	  if (w->collidesWithCashed()) continue;
