@@ -325,7 +325,7 @@ void WordQloud::createColourschemeMenu()
 
 	  // a varlist to store colours in the action object
 	  QList<QVariant> varlist;
-	  varlist.push_back(backgroundColour); 
+	  varlist.push_back(backgroundColour.rgb()); 
 
 	  // extract all foregroundcolours;
 	  QVector<QColor> foregroundColours;
@@ -460,12 +460,9 @@ void WordQloud::open()
 
 void WordQloud::onColourschemeActionGroupTriggered(QAction *a)
 {
-  QList<QVariant> varlist = a->data().toList();
-  QColor backgroundColour(varlist.first().toInt());
-  varlist.pop_front();
-  QList<QColor> colourlist;
-  foreach(QVariant var, varlist)
-    colourlist.push_back(QColor(var.toInt()));
+  QList<QColor> colourlist = checkedColourscheme();
+  QColor backgroundColour(colourlist.first());
+  colourlist.pop_front();
 
   customColourschemeAction->setData(a->data());
 

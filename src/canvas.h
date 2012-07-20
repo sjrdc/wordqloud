@@ -43,7 +43,7 @@ public slots:
 protected:
   void keyPressEvent(QKeyEvent *event);
   void keyReleaseEvent(QKeyEvent *event);
-  void layoutWord(Word *w);
+  bool layoutWord(Word *w);
   void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);    

@@ -63,8 +63,9 @@ void Canvas::keyReleaseEvent(QKeyEvent *event)
     highlightPinned(false);
 }
 
-void Canvas::layoutWord(Word *w)
+bool Canvas::layoutWord(Word *w)
 {
+  int attempts = 0;
   /* find out where to place the word */
   if (!w->getPinned())
     {
@@ -79,10 +80,11 @@ void Canvas::layoutWord(Word *w)
 
       QRectF bbox = w->boundingBox();
       QPoint centre = QPoint(cx - bbox.width()/2, cy - bbox.height()/2);
-      w->setPos(centre);
+    startlayout:
       QPoint oldpos(0, 0);
-      w->prepareCollisionDetection();
       bool done = false;
+      w->setPos(centre);
+      w->prepareCollisionDetection();
 
       do
 	{
@@ -106,7 +108,7 @@ void Canvas::layoutWord(Word *w)
 		  }
 	      if (!contains) continue;
 	    }
-	  // else if (!sceneRect().contains(w->boundingBox())) continue;
+	  else if (!sceneRect().contains(w->boundingBox())) { attempts++; goto startlayout; }
   
 	  // check cashed collision first
 	  if (w->collidesWithCashed()) continue;
@@ -128,15 +130,19 @@ void Canvas::layoutWord(Word *w)
 	    }	  
 
 	}
-      while (!done);
+      while (!done && attempts < 10);
     }
   else w->prepareCollisionDetection();
+
+  if (attempts >= 10) return false;
   
   /* finally add the word */
   QGraphicsScene::addItem((QGraphicsItem*)w);
 
   // add it to the quadtree as well
   quadtree.insert(w);
+
+  return true;
 }
 
 void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
