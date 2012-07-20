@@ -76,10 +76,3 @@ inline void Canvas::appendWordList(WordList l)
   foreach (Word *word, l)
     layoutWord(word);
 }
-
-inline void Canvas::setWordList(WordList l) 
-{
-  quadtree.clearContents();
-  this->clear();
-  wordlist = l; 
-}

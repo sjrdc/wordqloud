@@ -285,6 +285,14 @@ void Canvas::setWordFont(QFont font)
     word->setFontName(font.family());
 }
 
+void Canvas::setWordList(WordList l) 
+{
+  quadtree.clearContents();
+  this->clear();
+  wordlist = l;
+
+}
+
 void Canvas::unpinAll()
 {
   foreach (Word *word, wordlist)

@@ -11,6 +11,16 @@
 #include "word.h"
 #include "wordlist.h"
 
+float WordList::area()
+{
+  float a = .0;
+  foreach (Word *word, *this)
+    a += word->area();
+
+  return a;
+}
+
+
 void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
 {
   QFile file(filename);

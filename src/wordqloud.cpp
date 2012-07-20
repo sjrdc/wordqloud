@@ -414,6 +414,7 @@ void WordQloud::load()
   QList<QVariant> varlist = schemeAction->data().toList();
   QColor backgroundColour(varlist.first().toInt());
   varlist.pop_front();
+
   QList<QColor> colourlist;
   foreach(QVariant var, varlist)
     colourlist.push_back(QColor(var.toInt()));
