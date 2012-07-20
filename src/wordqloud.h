@@ -33,25 +33,35 @@ private slots:
   void onOrientationAction(QAction*);
   void onColourschemeActionGroupTriggered(QAction*);
   void onColourVariationAction(QAction*);
+  void onUnpinAllButtonClicked();
   void reCreateLayout();
   void saveBitmap();
   void savePDF();  
   void setBackgroundColor();
+  void setCustomScheme();
   void setFont();
+  void spinColours();
+  void spinOrientations();  
   
 private:
   void addColourVariations(QList<QColor> &colourlis, ColourVariation v);
+  ColourVariation checkedColourVariation();
   void createActions();
   void createMenus();
   void createColourschemeMenu();
   QIcon createColourschemeIcon(QColor backgroundColour, 
 			       QVector<QColor> foregroundColours);
-  
+  QList<QColor> checkedColourscheme();
+
   QMenu *fileMenu;
   QMenu *layoutMenu;
   QMenu *helpMenu;
   
+  QAction *customColourschemeAction;
   QActionGroup *alignmentGroup;
+  QPushButton *unpinAllButton;
+  QPushButton *spinColoursButton;
+  QPushButton *spinOrientationsButton;  
   QPushButton *reCreateLayoutButton;
   QActionGroup *colourschemeActionGroup;
   QAction *aboutAction;
@@ -66,6 +76,7 @@ private:
   QAction *boundsFromImageAction;
 
   QActionGroup *orientationActionGroup;
+  QAction *anyOrientationAction;
   QAction *horizontalOrientationAction;
   QAction *mostlyHorizontalOrientationAction;
   QAction *halfAndHalfOrientationAction;

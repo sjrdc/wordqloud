@@ -15,6 +15,9 @@ BoundsDialog::BoundsDialog(QWidget *parent)
   previewLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   previewLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 
+  invert = new QCheckBox("invert");
+  invert->setChecked(false);
+  
   slider = new QSlider(Qt::Horizontal);
   slider->setRange(0, 255);
   slider->setValue(128);
@@ -22,6 +25,8 @@ BoundsDialog::BoundsDialog(QWidget *parent)
   buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
 				   | QDialogButtonBox::Cancel);
 
+  connect(invert, SIGNAL(stateChanged(int)),
+	  this, SLOT(onInvertStateChanged(int)));
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
   connect(btn, SIGNAL(clicked()), this, SLOT(onButtonClicked()));
@@ -34,10 +39,14 @@ BoundsDialog::BoundsDialog(QWidget *parent)
   hlayout->addWidget(textbox);
   hlayout->addWidget(btn);
 
+  QHBoxLayout *hlayoutBottom = new QHBoxLayout;
+  hlayoutBottom->addWidget(invert);
+  hlayoutBottom->addWidget(slider);
+
   QVBoxLayout *layout = new QVBoxLayout;
   layout->addItem(hlayout);
   layout->addWidget(previewLabel);
-  layout->addWidget(slider);
+  layout->addItem(hlayoutBottom);
   layout->addWidget(buttonBox);
   
   this->setLayout(layout);
@@ -64,12 +73,18 @@ void BoundsDialog::onFileChanged(QString filename)
   onSliderValueChanged(slider->value());
 }
 
+void BoundsDialog::onInvertStateChanged(int state)
+{ 
+}
+
 void BoundsDialog::onSliderValueChanged(int v)
 {
   cv::Mat tmp;
   tmp.create(img->rows, img->cols, CV_8UC1);
 
   cv::cvtColor(*img, tmp, CV_BGR2GRAY);
+  if (invert->checkState() == Qt::Checked)
+    tmp = ~tmp;
   cv::threshold(tmp, tmp, v, 255, CV_THRESH_BINARY);
   
   contours.clear();
@@ -88,14 +103,20 @@ void BoundsDialog::onSliderValueChanged(int v)
       polygons.push_back(polygon);
     }
 
+  QColor foregroundColor = invert->checkState() == Qt::Checked ? 
+    QColor(255, 255, 255).rgb() : QColor(0, 0, 0).rgb();
+  QColor backgroundColor = invert->checkState() == Qt::Checked ? 
+    QColor(0, 0, 0) : QColor(255, 255, 255);
+
   QImage tmpimg = *orgImage;
   for (int i = 0; i < tmpimg.width(); ++i)
     for (int j = 0; j < tmpimg.height(); ++j)
       {
   	QColor c = tmpimg.pixel(i, j);
 	float val = (11.*c.red() + 16.*c.green() + 5.*c.green())/32.;
-  	tmpimg.setPixel(i, j, val < v ? 
-			QColor(0, 0, 0).rgb() : QColor(255, 255, 255).rgb());
+  	tmpimg.setPixel(i, j, 
+			val < v ? backgroundColor.rgb() : 
+			foregroundColor.rgb());
       }
 
   QPainter p(&tmpimg);

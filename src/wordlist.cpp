@@ -11,6 +11,16 @@
 #include "word.h"
 #include "wordlist.h"
 
+float WordList::area()
+{
+  float a = .0;
+  foreach (Word *word, *this)
+    a += word->area();
+
+  return a;
+}
+
+
 void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
 {
   QFile file(filename);
@@ -33,8 +43,8 @@ void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
       if (!s.isEmpty())
 	{
 	  Word *w = new Word(s);
-	  w->setFontSize(10 + 20*exp(-counter/5+1));
-	  w->setBrush(colourlist[counter % colourlist.size()]);
+	  w->setFontsize(12);
+	  w->setColour(colourlist[counter % colourlist.size()]);
 	  this->push_back(w);
 	  counter++;
 	}
@@ -70,24 +80,30 @@ void WordList::fromWordFile(QString filename)
 		  case '#':
 		    {
 		      if (modifier.size() == 7)
-			word->setBrush(QColor(modifier));
+			{
+			  word->setColour(QColor(modifier));
+			  word->lockColour();
+			}
 		      break;
 		    }
 		  case '@':
 		    {
 		      double angle = modifier.right(1).toDouble();
 		      word->setRotation(angle);
+		      word->lockOrientation();
 		      break;
 		    }
 		  case '!':
 		    {
 		      word->setFontName(modifier.right(1));
+		      word->lockFont();
 		      break;
 		    }
 		  default: 
 		    {
 		      int fsize = modifier.toInt();
-		      word->setFontSize(fsize);
+		      word->setFontsize(fsize);
+		      word->lockFontsize();
 		      break;
 		    }
 		  }

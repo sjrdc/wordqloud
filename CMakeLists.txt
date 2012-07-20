@@ -3,6 +3,7 @@ PROJECT(wordcloud)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0)
 
 # find required libraries
+set(BOOST_ROOT /packages64)
 find_package(Boost COMPONENTS program_options REQUIRED)
 set(QT_USE_QTOPENGL true)
 set(QT_USE_QTSVG true)

@@ -14,7 +14,6 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
 
   // // initialise random number generator
   rng.seed(static_cast<unsigned int>(std::time(0)));
-  // rng.seed(static_cast<unsigned int>(0));
   cxDistribution = boost::normal_distribution<float>(centrepoint.x(), w*.1);
   cyDistribution = boost::normal_distribution<float>(centrepoint.y(), h*.1);
 
@@ -62,7 +61,6 @@ void Canvas::keyReleaseEvent(QKeyEvent *event)
 void Canvas::layoutWord(Word *w)
 {
   /* find out where to place the word */
-
   if (!w->getPinned())
     {
       // initial location for word
@@ -92,7 +90,7 @@ void Canvas::layoutWord(Word *w)
 	  w->moveBy(delta.x(), delta.y());
 	  oldpos += delta;
 
-	  if (!sceneRect().contains(w->boundingBox())) continue;
+	  // if (!sceneRect().contains(w->boundingBox())) continue;
 	  if (boundingRegions.size() > 0)
 	    {
 	      bool contains = false;
@@ -185,40 +183,51 @@ void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void Canvas::randomiseOrientations(WordOrientation w)
 {
-  boost::mt19937 rng;
-  rng.seed(static_cast<unsigned int>(std::time(0)));  
-  
-  std::vector<short> angles;
-  switch (w)
+  rng.seed(static_cast<unsigned int>(std::time(0)));
+  if (w != AnyWordOrientation)
     {
-    case HorizontalWordOrientation:
-      angles.push_back(0);
-      break;
-    case MostlyHorizontalWordOrientation:
-      angles.push_back(0);
-      angles.push_back(0);
-      angles.push_back(90);
-      break;
-    case HalfAndHalfWordOrientation:
-      angles.push_back(0);
-      angles.push_back(90);
-      break;
-    case MostlyVerticalWordOrientation:
-      angles.push_back(0);
-      angles.push_back(90);
-      angles.push_back(90);
-      break;
-    case VerticalWordOrientation:
-      angles.push_back(90);
-      break;
-    }
+      std::vector<short> angles;
+      switch (w)
+	{	
+	case HorizontalWordOrientation:
+	  angles.push_back(0);
+	  break;
+	case MostlyHorizontalWordOrientation:
+	  angles.push_back(0);
+	  angles.push_back(0);
+	  angles.push_back(90);
+	  break;
+	case HalfAndHalfWordOrientation:
+	  angles.push_back(0);
+	  angles.push_back(90);
+	  break;
+	case MostlyVerticalWordOrientation:
+	  angles.push_back(0);
+	  angles.push_back(90);
+	  angles.push_back(90);
+	  break;
+	case VerticalWordOrientation:
+	  angles.push_back(90);
+	  break;
+	default: // unknown - treat as horizontal
+	  angles.push_back(0);
+	  break;
+	}
       
-  boost::uniform_int<> uni(0, angles.size() - 1);
-  boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
-    anglepicker(rng, uni);
-
-  foreach (Word *word, wordlist)
-    word->setRotation(angles[anglepicker()]);
+      boost::uniform_int<> uni(0, angles.size() - 1);  
+      boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
+	anglepicker(rng, uni);
+      foreach (Word *word, wordlist)
+	word->setRotation(angles[anglepicker()]);
+    }
+  else 
+    {  
+      boost::uniform_int<> uni(0, 359);
+      boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
+	anglepicker(rng, uni);
+      foreach (Word *word, wordlist)
+       word->setRotation(anglepicker());
+    }
 }
 
 void Canvas::randomiseWordColours(const QVector<QColor> &colourpalet)
@@ -231,7 +240,7 @@ void Canvas::randomiseWordColours(const QVector<QColor> &colourpalet)
     colourpicker(colourrng, uni);
 
   foreach (Word *word, wordlist)
-    word->setBrush(colourpalet[colourpicker()]);
+    word->setColour(colourpalet[colourpicker()]);
 }
 
 void Canvas::randomiseWordFontFamily(const QVector<QString> &fontfamilies)
@@ -274,4 +283,38 @@ void Canvas::setWordFont(QFont font)
 {
   foreach (Word *word, wordlist)
     word->setFontName(font.family());
+}
+
+void Canvas::setWordList(WordList l) 
+{
+  quadtree.clearContents();
+  this->clear();
+  wordlist = l;
+  
+  float wordArea = wordlist.area();
+  float boundArea = 0.;
+  if (boundingRegions.size() != 0)
+    foreach (QRegion region, boundingRegions)
+      {
+	QVector<QRect> rects = region.rects();
+	foreach (QRect rect, rects)
+	  boundArea += rect.width()*rect.height();
+      }
+  else 
+    {
+      QRectF scene = sceneRect();
+      boundArea = scene.width()*scene.height();
+    }
+
+  float scalefactor = 0.9/(wordArea/boundArea);
+
+  qDebug() << wordArea << boundArea << scalefactor;
+  foreach (Word *word, wordlist)  
+    word->setScale(scalefactor);
+}
+
+void Canvas::unpinAll()
+{
+  foreach (Word *word, wordlist)
+    word->setPinned(false);
 }

@@ -14,7 +14,10 @@
 #include <QSvgGenerator>
 #include <QVBoxLayout>
 
+#include <ctime>
+
 #include "boundsdialog.h"
+#include "colourschemedialog.h"
 #include "canvas.h"
 #include "wordqloud.moc"
 #include "word.h"
@@ -34,10 +37,20 @@ WordQloud::WordQloud()
   QWidget *bottomFiller = new QWidget;
   bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+  unpinAllButton = new QPushButton("unpin all");
+  connect(unpinAllButton, SIGNAL(clicked()), this, SLOT(onUnpinAllButtonClicked()));
   reCreateLayoutButton = new QPushButton("re-create layout");
   connect(reCreateLayoutButton, SIGNAL(clicked()), this, SLOT(reCreateLayout()));  
+  spinColoursButton = new QPushButton("spin colours");
+  connect(spinColoursButton, SIGNAL(clicked()), this, SLOT(spinColours()));   
+  spinOrientationsButton = new QPushButton("spin orientation");
+  connect(spinOrientationsButton, SIGNAL(clicked()), 
+	  this, SLOT(spinOrientations()));  
   
   QHBoxLayout *buttonLayout = new QHBoxLayout;
+  buttonLayout->addWidget(spinColoursButton);
+  buttonLayout->addWidget(spinOrientationsButton); 
+  buttonLayout->addWidget(unpinAllButton);  
   buttonLayout->addWidget(reCreateLayoutButton);
 			  
   QVBoxLayout *layout = new QVBoxLayout;
@@ -113,6 +126,23 @@ void WordQloud::addColourVariations(QList<QColor> &colourlist, ColourVariation v
   colourlist.append(newColours);
 }
 
+QList<QColor> WordQloud::checkedColourscheme()
+{
+  QList<QVariant> varlist = 
+    colourschemeActionGroup->checkedAction()->data().toList();
+  QList<QColor> colourlist;
+  foreach(QVariant var, varlist)
+    colourlist.push_back(QColor(var.toInt()));
+
+  return colourlist;
+}
+
+ColourVariation WordQloud::checkedColourVariation()
+{
+  return (ColourVariation)colourVariationActionGroup->
+    checkedAction()->data().toInt();
+}
+
 void WordQloud::contextMenuEvent(QContextMenuEvent *event)
 {
   QMenu menu(this);
@@ -125,6 +155,9 @@ void WordQloud::createActions()
   horizontalOrientationAction = new QAction(tr("horizontal"), this);
   horizontalOrientationAction->setCheckable(true);
   horizontalOrientationAction->setData(HorizontalWordOrientation);
+  anyOrientationAction = new QAction(tr("any"), this);
+  anyOrientationAction->setCheckable(true);
+  anyOrientationAction->setData(AnyWordOrientation);
   mostlyHorizontalOrientationAction = new QAction(tr("mostly horizontal"), this);
   mostlyHorizontalOrientationAction->setData(MostlyHorizontalWordOrientation);
   mostlyHorizontalOrientationAction->setCheckable(true);  
@@ -144,6 +177,7 @@ void WordQloud::createActions()
   orientationActionGroup->addAction(halfAndHalfOrientationAction);
   orientationActionGroup->addAction(mostlyVerticalOrientationAction);
   orientationActionGroup->addAction(verticalOrientationAction);
+  orientationActionGroup->addAction(anyOrientationAction);
   orientationActionGroup->setExclusive(true);
   horizontalOrientationAction->setChecked(true);
   connect(orientationActionGroup, SIGNAL(triggered(QAction*)),
@@ -176,6 +210,11 @@ void WordQloud::createActions()
   connect(colourVariationActionGroup, SIGNAL(triggered(QAction*)),
 	  this, SLOT(onColourVariationAction(QAction*)));
   
+  customColourschemeAction = new QAction(tr("Custom..."), this);
+  customColourschemeAction->setCheckable(true);
+  connect(customColourschemeAction, SIGNAL(triggered()), 
+	  this, SLOT(setCustomScheme()));
+
   backgroundColorAction = new QAction(tr("Set background color"), this);
   connect(backgroundColorAction, SIGNAL(triggered()), 
 	  this, SLOT(setBackgroundColor()));
@@ -256,8 +295,12 @@ QIcon WordQloud::createColourschemeIcon(QColor backgroundColour,
 void WordQloud::createColourschemeMenu()
 {
   QMenu *colourschemeMenu = layoutMenu->addMenu(tr("&Colours"));
-  colourschemeActionGroup = new QActionGroup(this);
+  colourschemeMenu->addAction(customColourschemeAction);
+  colourschemeMenu->addSeparator();
 
+  colourschemeActionGroup = new QActionGroup(this);
+  colourschemeActionGroup->addAction(customColourschemeAction);
+  
   QFile colourfile("../src/colourschemes.txt");
   if (!colourfile.open(QIODevice::ReadOnly))		
     qDebug() << "Could not read colourscheme file";
@@ -311,6 +354,8 @@ void WordQloud::createColourschemeMenu()
     }
 
   colourschemeActionGroup->setExclusive(true);
+  customColourschemeAction->
+    setData(colourschemeActionGroup->checkedAction()->data());
 
   // done - close the file
   colourfile.close();
@@ -337,7 +382,10 @@ void WordQloud::createMenus()
   orientationMenu->addAction(mostlyHorizontalOrientationAction);
   orientationMenu->addAction(halfAndHalfOrientationAction);
   orientationMenu->addAction(mostlyVerticalOrientationAction);
-  orientationMenu->addAction(verticalOrientationAction);        
+  orientationMenu->addAction(verticalOrientationAction); 
+  orientationMenu->addSeparator();
+  orientationMenu->addAction(anyOrientationAction);        
+        
   
   layoutMenu->addAction(fontAction);
   layoutMenu->addAction(boundsFromImageAction);
@@ -366,11 +414,13 @@ void WordQloud::load()
   QList<QVariant> varlist = schemeAction->data().toList();
   QColor backgroundColour(varlist.first().toInt());
   varlist.pop_front();
+
   QList<QColor> colourlist;
   foreach(QVariant var, varlist)
     colourlist.push_back(QColor(var.toInt()));
 
-  addColourVariations(colourlist, (ColourVariation)colourVariationAction->data().toInt());
+  addColourVariations(colourlist,
+		      (ColourVariation)colourVariationAction->data().toInt());
   
   WordList wordlist;
   try { wordlist.fromTextFile(filename, colourlist); }
@@ -416,10 +466,11 @@ void WordQloud::onColourschemeActionGroupTriggered(QAction *a)
   foreach(QVariant var, varlist)
     colourlist.push_back(QColor(var.toInt()));
 
+  customColourschemeAction->setData(a->data());
+
   // create colourvariations
   addColourVariations(colourlist, 
-		      (ColourVariation)colourVariationActionGroup->
-		      checkedAction()->data().toInt());
+		      this->checkedColourVariation());
   
   canvas->setBackgroundBrush(backgroundColour);
   canvas->randomiseWordColours(colourlist.toVector());
@@ -427,14 +478,9 @@ void WordQloud::onColourschemeActionGroupTriggered(QAction *a)
 
 void WordQloud::onColourVariationAction(QAction *a)
 {
-  QAction *schemeAction = colourschemeActionGroup->checkedAction();
-
-  QList<QVariant> varlist = schemeAction->data().toList();
-  QColor backgroundColour(varlist.first().toInt());
-  varlist.pop_front();
-  QList<QColor> colourlist;
-  foreach(QVariant var, varlist)
-    colourlist.push_back(QColor(var.toInt()));
+  QList<QColor> colourlist = this->checkedColourscheme();
+  QColor backgroundColour = colourlist.first();
+  colourlist.pop_front();
 
   addColourVariations(colourlist, (ColourVariation)a->data().toInt());
 
@@ -445,6 +491,11 @@ void WordQloud::onColourVariationAction(QAction *a)
 void WordQloud::onOrientationAction(QAction* a)
 {
   canvas->randomiseOrientations((WordOrientation)a->data().toInt());
+}
+
+void WordQloud::onUnpinAllButtonClicked()
+{
+  canvas->unpinAll();
 }
 
 void WordQloud::reCreateLayout()
@@ -490,9 +541,51 @@ void WordQloud::setBackgroundColor()
   canvas->setBackgroundBrush(color);
 }
 
+void WordQloud::setCustomScheme()
+{
+  QList<QColor> colourlist = checkedColourscheme();
+  QColor backgroundColour = colourlist.first();
+  colourlist.pop_front();
+
+  ColourschemeDialog *c = new ColourschemeDialog(colourlist);
+  c->exec();
+  QList<QColor> customscheme = c->getScheme();
+  delete c;
+
+  QList<QVariant> varlist;
+  varlist.push_back(backgroundColour);
+  foreach(QColor colour, customscheme)
+    varlist.push_back(QVariant(colour.rgb()));
+
+  customColourschemeAction->setData(varlist); 
+  addColourVariations(customscheme, 
+		      this->checkedColourVariation());
+
+  canvas->setBackgroundBrush(backgroundColour);
+  canvas->randomiseWordColours(customscheme.toVector());
+}
+
 void WordQloud::setFont()
 {
   bool ok;
   QFont font = QFontDialog::getFont(&ok, this);
   if (ok) canvas->setWordFont(font);
+}
+
+void WordQloud::spinColours()
+{
+  QList<QColor> colourlist = checkedColourscheme();
+  QColor backgroundColour = colourlist.first();
+  colourlist.pop_front();
+
+  addColourVariations(colourlist, 
+		      this->checkedColourVariation());
+
+  canvas->setBackgroundBrush(backgroundColour);
+  canvas->randomiseWordColours(colourlist.toVector());
+}
+
+void WordQloud::spinOrientations()
+{
+  this->onOrientationAction(orientationActionGroup->checkedAction());
 }

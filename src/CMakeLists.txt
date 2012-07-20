@@ -17,16 +17,20 @@ TARGET_LINK_LIBRARIES(wordcloud
 include_directories(
   ${CMAKE_BINARY_DIR}/src # for moc files
   ${OPENCV_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
   )
 
 qt4_automoc(
   boundsdialog.h
   boundsdialog.cpp
+  colourschemedialog.h
+  colourschemedialog.cpp
   wordqloud.cpp
   wordqloud.h
 )
 ADD_EXECUTABLE(wordqloud
   boundsdialog.cpp
+  colourschemedialog.cpp
   canvas.cpp
   colormap.cpp
   main.cpp

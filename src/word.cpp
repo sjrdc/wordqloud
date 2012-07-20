@@ -16,13 +16,31 @@ Word::Word(QString string, float b)
   cachedCollision = NULL;
   this->setAcceptDrops(true);
 
-  showPinnedState = false;
-  pinned = false;
-  manipulated = false;  
+  _showPinnedState = false;
+  _pinned = false;
+  _manipulated = false; 
+
+  _colourLocked = false;
+  _fontLocked = false;
+  _orientationLocked = false;
+  _fontsizeLocked = false;
+  _regionInitialised = false;
 }
 
 Word::~Word()
 {
+}
+
+float Word::area()
+{
+  if (!_regionInitialised) prepareCollisionDetection();
+
+  float a = 0.;  
+  QVector<QRect> regionRects = region.rects();
+  foreach (QRect rect, regionRects)
+    a += rect.width()*rect.height();
+
+  return a;
 }
 
 void Word::cacheCollision(Word *w)
@@ -30,30 +48,15 @@ void Word::cacheCollision(Word *w)
   cachedCollision = w;
 }
 
-bool Word::collidesWith(Word *w)
+bool Word::collidesWith(Word *w) const
 {
   return region.intersects(w->region);
 }
 
-bool Word::collidesWithCashed()
+bool Word::collidesWithCashed() const
 {
   return (cachedCollision != NULL) && 
     this->collidesWith(cachedCollision);
-}
-
-void Word::initBitmap()
-{
-  bitmap = new QImage(boundingRect().size().toSize(), QImage::Format_Mono);
-
-  QStyleOptionGraphicsItem opt;
-  opt.state = QStyle::State_None;
-  QPainter p;
-  p.begin(bitmap);
-  p.setCompositionMode( QPainter::CompositionMode_Clear);
-  p.fillRect(boundingRect(), QBrush( QColor( 0, 0, 0, 255)));
-  p.setCompositionMode( QPainter::CompositionMode_Source );
-  this->paint(&p, &opt, 0);
-  p.end();
 }
 
 void Word::moveBy(float x, float y)
@@ -65,39 +68,37 @@ void Word::moveBy(float x, float y)
 void Word::prepareCollisionDetection()
 {
   region = this->boundingRegion(this->sceneTransform());
+  _regionInitialised = true;
 }
 
 void Word::setFontName(QString name)
 {
-  QFont f = this->font();
-  f.setFamily(name);
-  this->setFont(f);
+  if (!_fontLocked)
+    {
+      QFont f = this->font();
+      f.setFamily(name);
+      this->setFont(f);
+    }
 }
 
-void Word::setFontSize(float p)
+void Word::setFontsize(float p)
 {
-  QFont f = this->font();
-  f.setPointSizeF(p);
-  this->setFont(f);
+  if (!_fontsizeLocked)
+    {
+      QFont f = this->font();
+      f.setPointSizeF(p);
+      this->setFont(f);
+    }
+}
+
+void Word::setRotation(float r)
+{
+  if (!_orientationLocked)
+    QGraphicsSimpleTextItem::setRotation(r);
 }
 
 void Word::updateCollisionDetection(QPointF delta)
 {
   region.translate(delta.toPoint());
-}
-
-void Word::writeImage()
-{
-  QImage gimg(boundingRect().size().toSize(), QImage::Format_ARGB32_Premultiplied);
-  QStyleOptionGraphicsItem opt;
-  opt.state = QStyle::State_None;
-  QPainter p;
-  p.begin(&gimg);
-  p.setCompositionMode( QPainter::CompositionMode_Clear);
-  p.fillRect(boundingRect(), QBrush( QColor( 0, 0, 0, 255)));
-  p.setCompositionMode( QPainter::CompositionMode_Source );
-  this->paint(&p, &opt, 0);
-
-  p.end();
-  gimg.save(text() + ".png");
+  _regionInitialised = true;
 }

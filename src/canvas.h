@@ -38,6 +38,7 @@ public:
 
 public slots:
   void randomiseOrientations(WordOrientation w);
+  void unpinAll();
 
 protected:
   void keyPressEvent(QKeyEvent *event);
@@ -74,11 +75,4 @@ inline void Canvas::appendWordList(WordList l)
   wordlist.append(l);
   foreach (Word *word, l)
     layoutWord(word);
-}
-
-inline void Canvas::setWordList(WordList l) 
-{
-  quadtree.clearContents();
-  this->clear();
-  wordlist = l; 
 }
