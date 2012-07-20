@@ -61,7 +61,6 @@ void Canvas::keyReleaseEvent(QKeyEvent *event)
 void Canvas::layoutWord(Word *w)
 {
   /* find out where to place the word */
-
   if (!w->getPinned())
     {
       // initial location for word
@@ -91,7 +90,7 @@ void Canvas::layoutWord(Word *w)
 	  w->moveBy(delta.x(), delta.y());
 	  oldpos += delta;
 
-	  if (!sceneRect().contains(w->boundingBox())) continue;
+	  // if (!sceneRect().contains(w->boundingBox())) continue;
 	  if (boundingRegions.size() > 0)
 	    {
 	      bool contains = false;

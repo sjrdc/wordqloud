@@ -15,21 +15,22 @@ public:
   Word(QString w, float b = 0.8);
   ~Word();
 
+  float area();
   virtual QRectF boundingBox() const;
   void cacheCollision(Word *w);
-  bool collidesWith(Word *w);
-  bool collidesWithCashed();
-  bool colourLocked();
-  bool fontLocked();
-  bool fontsizeLocked();
-  bool getPinned();
+  bool collidesWith(Word *w) const;
+  bool collidesWithCashed() const;
+  bool colourLocked() const;
+  bool fontLocked() const;
+  bool fontsizeLocked() const;
+  bool getPinned() const;
   float height();
   void lockColour(bool b = true);
   void lockFont(bool b = true);
   void lockFontsize(bool b = true);
   void lockOrientation(bool b = true);
   void moveBy(float x, float y);
-  bool orientationLocked();
+  bool orientationLocked() const;
   void prepareCollisionDetection();
   void setColour(QColor c);
   void setPinned(bool p);
@@ -42,27 +43,24 @@ public:
   void toggleManipulated();
   void updateCollisionDetection(QPointF delta);
   float width();
-  void writeImage();
 
 protected:
 
 
 private:
   void setBrush(QBrush b);
-  void initBitmap();
 
-  QVector<QRect> regionRects;
   QRegion region;
-  QImage *bitmap;
   Word *cachedCollision;
-  bool pinned;
-  bool manipulated;
-  bool showBounding;
-  bool showPinnedState;
+  bool _pinned;
+  bool _manipulated;
+  bool _showBounding;
+  bool _showPinnedState;
   bool _colourLocked;
   bool _fontLocked;  
   bool _orientationLocked;
   bool _fontsizeLocked;
+  bool _regionInitialised;
   QColor cachedColor;
 };
 
@@ -73,10 +71,10 @@ inline QRectF Word::boundingBox() const
 }
 
 // locks
-inline bool Word::colourLocked() { return _colourLocked; }
-inline bool Word::fontLocked() { return _fontLocked; }
-inline bool Word::fontsizeLocked() { return _fontsizeLocked; }
-inline bool Word::orientationLocked() { return _orientationLocked; }
+inline bool Word::colourLocked() const { return _colourLocked; }
+inline bool Word::fontLocked() const { return _fontLocked; }
+inline bool Word::fontsizeLocked() const { return _fontsizeLocked; }
+inline bool Word::orientationLocked() const { return _orientationLocked; }
 
 inline void Word::lockColour(bool b) { _colourLocked = b; }
 inline void Word::lockOrientation(bool b) { _orientationLocked = b; }
@@ -84,40 +82,43 @@ inline void Word::lockFontsize(bool b) { _fontsizeLocked = b; }
 inline void Word::lockFont(bool b) { _fontLocked = b; }
 
 // pinning
-inline bool Word::getPinned() { return pinned; }
-inline void Word::setPinned(bool p) { pinned = p; }
-inline void Word::togglePinned() { pinned = !pinned; }
+inline bool Word::getPinned() const { return _pinned; }
+inline void Word::setPinned(bool p) { _pinned = p; }
+inline void Word::togglePinned() { _pinned = !_pinned; }
+
 inline void Word::showPinned(bool p)
 {
   QColor c = this->brush().color();
-  showPinnedState = p;
-  c.setAlpha(!p || pinned ? 255 : 100);
+  _showPinnedState = p;
+  c.setAlpha(!p || _pinned ? 255 : 100);
   this->setBrush(c);
 }
+
 inline void Word::toggleShowPinned()
 {
   QColor c = this->brush().color();
-  if (!showPinnedState)
+  if (!_showPinnedState)
     {
-      showPinnedState = true;
-      c.setAlpha(pinned ? 255 : 100);
+      _showPinnedState = true;
+      c.setAlpha(_pinned ? 255 : 100);
     }
   else 
     {
-      showPinnedState = false;  
+      _showPinnedState = false;  
       c.setAlpha(255);
     }
   this->setBrush(c);
 }
+
 inline void Word::toggleManipulated()
 {
-  if (manipulated)
+  if (_manipulated)
     {
-      manipulated = false;
+      _manipulated = false;
       this->setBrush(cachedColor);
     }
   else {
-      manipulated = true;
+      _manipulated = true;
       this->cachedColor = this->brush().color();
       this->setBrush(Qt::red);
     }
