@@ -419,7 +419,8 @@ void WordQloud::load()
   foreach(QVariant var, varlist)
     colourlist.push_back(QColor(var.toInt()));
 
-  addColourVariations(colourlist, (ColourVariation)colourVariationAction->data().toInt());
+  addColourVariations(colourlist,
+		      (ColourVariation)colourVariationAction->data().toInt());
   
   WordList wordlist;
   try { wordlist.fromTextFile(filename, colourlist); }
