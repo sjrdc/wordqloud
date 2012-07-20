@@ -12,6 +12,7 @@ class QGraphicsView;
 class QLabel;
 class QMenu;
 class QPushButton;
+class View;
 
 class WordQloud : public QMainWindow
 {
@@ -90,7 +91,7 @@ private:
   QAction *lotsOfVariationAction;
   QAction *wildVariationAction;
 
-  QGraphicsView *view;
+  View *view;
   Canvas *canvas;
 };
 

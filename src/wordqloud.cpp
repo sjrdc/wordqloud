@@ -19,6 +19,7 @@
 #include "boundsdialog.h"
 #include "colourschemedialog.h"
 #include "canvas.h"
+#include "view.moc"
 #include "wordqloud.moc"
 #include "word.h"
 #include "wordlist.h"
@@ -32,7 +33,7 @@ WordQloud::WordQloud()
   topFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   canvas = new Canvas;
-  view = new QGraphicsView(canvas);
+  view = new View(canvas);
   
   QWidget *bottomFiller = new QWidget;
   bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

@@ -90,7 +90,6 @@ void Canvas::layoutWord(Word *w)
 	  w->moveBy(delta.x(), delta.y());
 	  oldpos += delta;
 
-	  // if (!sceneRect().contains(w->boundingBox())) continue;
 	  if (boundingRegions.size() > 0)
 	    {
 	      bool contains = false;
@@ -102,6 +101,7 @@ void Canvas::layoutWord(Word *w)
 		  }
 	      if (!contains) continue;
 	    }
+	  else if (!sceneRect().contains(w->boundingBox())) continue;
   
 	  // check cashed collision first
 	  if (w->collidesWithCashed()) continue;
