@@ -14,8 +14,8 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
 
   // // initialise random number generator
   rng.seed(static_cast<unsigned int>(std::time(0)));
-  cxDistribution = boost::normal_distribution<float>(centrepoint.x(), w*.1);
-  cyDistribution = boost::normal_distribution<float>(centrepoint.y(), h*.1);
+  cxDistribution = boost::normal_distribution<float>(centrepoint.x(), w*.5);
+  cyDistribution = boost::normal_distribution<float>(centrepoint.y(), h*.5);
   angleIncrement = boost::uniform_int<>(1, 25);
 
   cxvarnor = new
@@ -80,6 +80,7 @@ bool Canvas::layoutWord(Word *w)
 
       QRectF bbox = w->boundingBox();
       QPoint centre = QPoint(cx - bbox.width()/2, cy - bbox.height()/2);
+
     startlayout:
       QPoint oldpos(0, 0);
       bool done = false;
