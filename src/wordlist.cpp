@@ -20,7 +20,6 @@ float WordList::area()
   return a;
 }
 
-
 void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
 {
   QFile file(filename);

@@ -318,9 +318,7 @@ void Canvas::setWordList(WordList l)
       boundArea = scene.width()*scene.height();
     }
 
-  float scalefactor = 0.9/(wordArea/boundArea);
-
-  qDebug() << wordArea << boundArea << scalefactor;
+  float scalefactor = 0.85/(wordArea/boundArea);
   foreach (Word *word, wordlist)  
     word->setScale(scalefactor);
 }

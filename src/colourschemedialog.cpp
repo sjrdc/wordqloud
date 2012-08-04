@@ -15,7 +15,7 @@ ColourschemeDialog::ColourschemeDialog(QList<QColor> initialScheme,
   QHBoxLayout *hlayout = new QHBoxLayout;
   buttonGroup = new QButtonGroup;
   connect(buttonGroup, SIGNAL(buttonClicked(QAbstractButton*)),
-	  this, SLOT(onButtonClicked(QAbstractButton*)));
+	  this, SLOT(onColourButtonClicked(QAbstractButton*)));
   int c = 0;
   foreach(QColor colour, initialScheme)
     {
@@ -28,7 +28,11 @@ ColourschemeDialog::ColourschemeDialog(QList<QColor> initialScheme,
       buttonGroup->addButton(label, c++);
       hlayout->addWidget(label);
     }
-
+  plusButton = new QPushButton("+");
+  connect(plusButton, SIGNAL(clicked()),	
+	  this, SLOT(onPlusButtonClicked()));
+  hlayout->addWidget(plusButton);
+  
   QVBoxLayout *layout = new QVBoxLayout;
   layout->addItem(hlayout);
   layout->addWidget(buttonBox);
@@ -37,13 +41,21 @@ ColourschemeDialog::ColourschemeDialog(QList<QColor> initialScheme,
   this->setMinimumSize(QSize(500, 100));
 }
 
-void ColourschemeDialog::onButtonClicked(QAbstractButton *button)
+void ColourschemeDialog::onColourButtonClicked(QAbstractButton *button)
 {
   int id = buttonGroup->id(button);
   QColor colour = 
     QColorDialog::getColor(colourscheme[id],
 			   this, "Select background color");
-  colourscheme[id] = colour;
-  button->setStyleSheet("QPushButton { background-color: " +
-			colour.name() + "; }");
+  if (colour.isValid())
+    {
+      colourscheme[id] = colour;
+      button->setStyleSheet("QPushButton { background-color: " +
+			    colour.name() + "; }");
+    }
+}
+
+void ColourschemeDialog::onPlusButtonClicked()
+{
+  
 }

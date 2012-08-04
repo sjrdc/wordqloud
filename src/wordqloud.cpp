@@ -548,20 +548,23 @@ void WordQloud::setCustomScheme()
 
   ColourschemeDialog *c = new ColourschemeDialog(colourlist);
   c->exec();
-  QList<QColor> customscheme = c->getScheme();
+  if (c->result() == QDialog::Accepted)
+    {
+      QList<QColor> customscheme = c->getScheme();
+      
+      QList<QVariant> varlist;
+      varlist.push_back(backgroundColour);
+      foreach(QColor colour, customscheme)
+	varlist.push_back(QVariant(colour.rgb()));
+
+      customColourschemeAction->setData(varlist); 
+      addColourVariations(customscheme, 
+			  this->checkedColourVariation());
+
+      canvas->setBackgroundBrush(backgroundColour);
+      canvas->randomiseWordColours(customscheme.toVector());
+    }
   delete c;
-
-  QList<QVariant> varlist;
-  varlist.push_back(backgroundColour);
-  foreach(QColor colour, customscheme)
-    varlist.push_back(QVariant(colour.rgb()));
-
-  customColourschemeAction->setData(varlist); 
-  addColourVariations(customscheme, 
-		      this->checkedColourVariation());
-
-  canvas->setBackgroundBrush(backgroundColour);
-  canvas->randomiseWordColours(customscheme.toVector());
 }
 
 void WordQloud::setFont()

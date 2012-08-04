@@ -6,6 +6,7 @@
 class QAbstractButton;
 class QDialogButtonBox;
 class QLineEdit;
+class QPushButton;
 class QSlider;
 
 class ColourschemeDialog : public QDialog
@@ -16,12 +17,15 @@ public:
   QList<QColor> getScheme();
 			     
 protected slots:
-  void onButtonClicked(QAbstractButton *button);
+  void onColourButtonClicked(QAbstractButton *button);
+  void onPlusButtonClicked();
   
 private:
   QList<QColor> colourscheme;
-  QDialogButtonBox *buttonBox;
+  QPushButton *plusButton;
   QButtonGroup *buttonGroup;
+  QDialogButtonBox *buttonBox;
+
 };
 
 inline QList<QColor> ColourschemeDialog::getScheme() { return colourscheme; }
