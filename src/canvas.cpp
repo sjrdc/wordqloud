@@ -37,6 +37,7 @@ Canvas::~Canvas()
 {
   delete cxvarnor;
   delete cyvarnor;
+  delete avarnor;
 }
 
 void Canvas::createLayout()
