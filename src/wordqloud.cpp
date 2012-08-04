@@ -432,6 +432,7 @@ void WordQloud::load()
       return;
     }
   
+  canvas->setBackgroundBrush(backgroundColour);
   canvas->setWordList(wordlist);
   canvas->createLayout();
 }
