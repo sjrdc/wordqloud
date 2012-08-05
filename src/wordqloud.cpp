@@ -263,7 +263,10 @@ void WordQloud::createCloudBoundsFromImage()
   BoundsDialog *b = new BoundsDialog;
   b->exec();
 
-  canvas->setBoundingRegions(b->getRegions());
+  if (b->result() == QDialog::Accepted)
+    canvas->setBoundingRegions(b->getRegions());
+
+  // clean up
   delete b;
 }
 
