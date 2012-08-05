@@ -268,6 +268,9 @@ void WordQloud::createCloudBoundsFromImage()
 
   // clean up
   delete b;
+
+  // re-do the layout
+  canvas->reCreateLayout();
 }
 
 QIcon WordQloud::createColourschemeIcon(QColor backgroundColour,

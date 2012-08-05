@@ -9,19 +9,20 @@
 
 Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
 { 
-  centrepoint = 0.5*QPointF(w, h);
   setBackgroundBrush(Qt::white);
 
   // // initialise random number generator
   rng.seed(static_cast<unsigned int>(std::time(0)));
+  angleIncrement = boost::uniform_int<>(1, 25);
+  
+  centrepoint = 0.5*QPointF(w, h);
   cxDistribution = boost::normal_distribution<float>(centrepoint.x(), w*.5);
   cyDistribution = boost::normal_distribution<float>(centrepoint.y(), h*.5);
-  angleIncrement = boost::uniform_int<>(1, 25);
-
+  
   cxvarnor = new
     boost::variate_generator<boost::mt19937&, 
   			     boost::normal_distribution<float> >(rng,
-  							    cxDistribution);
+								 cxDistribution);
   cyvarnor = new
     boost::variate_generator<boost::mt19937&, 
   			     boost::normal_distribution<float> >(rng,
@@ -42,8 +43,10 @@ Canvas::~Canvas()
 
 void Canvas::createLayout()
 {
+  int words = 0;
   foreach (Word* w, wordlist)
-    layoutWord(w);
+    if (layoutWord(w)) ++words;
+  qDebug() << wordlist.size() << words;
 }
 
 void Canvas::highlightPinned(bool highlight)
@@ -91,7 +94,7 @@ bool Canvas::layoutWord(Word *w)
       do
 	{
 	  // get a new location estimate
-	  tau += avarnor->operator()()*0.01;
+	  tau += avarnor->operator()()*0.05;
 	  float rho = tau;
 
 	  // move Word to a new location
@@ -99,18 +102,17 @@ bool Canvas::layoutWord(Word *w)
 	  w->moveBy(delta.x(), delta.y());
 	  oldpos += delta;
 
-	  if (boundingRegions.size() > 0)
-	    {
-	      bool contains = false;
-	      foreach(QRegion bound, boundingRegions)
-		if (!bound.contains(w->boundingBox().toRect()))
+	  if (!sceneRect().contains(w->boundingBox())) { attempts++; goto startlayout; }
+          if (boundingRegions.size() > 0)
+            {
+              bool contains = false;
+	      for (int i = 0; i < boundingRegions.size() && !contains; ++i)
+		if (!boundingRegions[i].contains(w->boundingBox().toRect()))
 		  {
 		    contains = true;
-		    break;
 		  }
-	      if (!contains) continue;
-	    }
-	  else if (!sceneRect().contains(w->boundingBox())) { attempts++; goto startlayout; }
+              if (!contains) continue;
+            }
   
 	  // check cashed collision first
 	  if (w->collidesWithCashed()) continue;
@@ -280,10 +282,35 @@ void Canvas::reCreateLayout()
 
 void Canvas::setBoundingRegions(QVector<QRegion> b)
 {
+  // find bounding rectangle for union of all bounding regions
+  QRegion masterBound;
+  foreach (QRegion region, b)
+    masterBound += region;
+
+  QRect r = masterBound.boundingRect();
+  this->setSceneRect(r);
+  
+  // adapt random distributions to new bounding regions
+  centrepoint = 0.5*QPointF(r.width(), r.height());
+  cxDistribution = boost::normal_distribution<float>(centrepoint.x(), r.width()*0.5);
+  cyDistribution = boost::normal_distribution<float>(centrepoint.y(), r.height()*0.5);
+  
+  /*
+  QRect srect = this->sceneRect().toRect();
+
+  // find out whether bounds within scene
+  if (!srect.contains(brect))
+    {
+      // is the area of the scene large enough to contain the bounds?
+      int boundArea = brect.width()*brect.height();
+      int sceneArea = srect.width()*srect.height();
+      if (scene > boundArea)
+	
+    }
+  */
+  
   boundingRegions.clear();
   boundingRegions = b;
-
-  reCreateLayout();
 }
 
 void Canvas::setColors(QColor bcolor, QVector<QRgb> wcolors)
@@ -307,19 +334,21 @@ void Canvas::setWordList(WordList l)
   float wordArea = wordlist.area();
   float boundArea = 0.;
   if (boundingRegions.size() != 0)
-    foreach (QRegion region, boundingRegions)
-      {
-	QVector<QRect> rects = region.rects();
-	foreach (QRect rect, rects)
-	  boundArea += rect.width()*rect.height();
-      }
+    {
+      foreach (QRegion region, boundingRegions)
+	{
+	  QVector<QRect> rects = region.rects();
+	  foreach (QRect rect, rects)
+	    boundArea += rect.width()*rect.height();
+	}
+    }
   else 
     {
       QRectF scene = sceneRect();
       boundArea = scene.width()*scene.height();
     }
-
   float scalefactor = 0.85/(wordArea/boundArea);
+  qDebug() << wordArea << boundArea << scalefactor;
   foreach (Word *word, wordlist)  
     word->setScale(scalefactor);
 }
