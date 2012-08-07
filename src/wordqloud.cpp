@@ -183,6 +183,24 @@ void WordQloud::createActions()
   connect(orientationActionGroup, SIGNAL(triggered(QAction*)),
 	  this, SLOT(onOrientationAction(QAction*)));
 
+  sceneBoundOnlyAction = new QAction(tr("Scene only"), this);
+  sceneBoundOnlyAction->setCheckable(true);
+  sceneBoundOnlyAction->setData(SceneOnly);
+  imageBoundOnlyAction = new QAction(tr("Image only"), this);
+  imageBoundOnlyAction->setCheckable(true);
+  imageBoundOnlyAction->setData(ImageOnly);
+  imageAndSceneBoundAction = new QAction(tr("Image and scene"), this);
+  imageAndSceneBoundAction->setCheckable(true);
+  imageAndSceneBoundAction->setData(Combined);
+  layoutBoundsActionGroup = new QActionGroup(this);
+  layoutBoundsActionGroup->addAction(sceneBoundOnlyAction);
+  layoutBoundsActionGroup->addAction(imageAndSceneBoundAction);
+  layoutBoundsActionGroup->addAction(imageBoundOnlyAction);
+  layoutBoundsActionGroup->setExclusive(true);
+  sceneBoundOnlyAction->setChecked(true);
+  connect(layoutBoundsActionGroup, SIGNAL(triggered(QAction*)),
+	  this, SLOT(onLayoutBoundsAction(QAction*)));
+  
   asPaletteAction = new QAction(tr("as palette"), this);
   asPaletteAction->setCheckable(true);
   asPaletteAction->setData(AsPalette);
@@ -385,10 +403,14 @@ void WordQloud::createMenus()
   orientationMenu->addAction(verticalOrientationAction); 
   orientationMenu->addSeparator();
   orientationMenu->addAction(anyOrientationAction);        
-        
-  
+          
   layoutMenu->addAction(fontAction);
   layoutMenu->addAction(boundsFromImageAction);
+
+  QMenu *layoutBoundsMenu = layoutMenu->addMenu(tr("Layout bounds"));
+  layoutBoundsMenu->addAction(sceneBoundOnlyAction);
+  layoutBoundsMenu->addAction(imageBoundOnlyAction);
+  layoutBoundsMenu->addAction(imageAndSceneBoundAction);
 
   QMenu *colourVariationMenu = layoutMenu->addMenu(tr("Colour &variation"));
   colourVariationMenu->addAction(asPaletteAction);
@@ -491,6 +513,12 @@ void WordQloud::onColourVariationAction(QAction *a)
 void WordQloud::onOrientationAction(QAction* a)
 {
   canvas->randomiseOrientations((WordOrientation)a->data().toInt());
+}
+
+void WordQloud::onLayoutBoundsAction(QAction *a)
+{
+  LayoutBound l = (LayoutBound)(a->data().toInt());
+  canvas->setLayoutBound(l);
 }
 
 void WordQloud::onUnpinAllButtonClicked()

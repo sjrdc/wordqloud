@@ -35,7 +35,7 @@ public:
   void setBoundingRegions(QVector<QRegion> b);
   void setWordList(WordList l);
   void setWordFont(QFont font);
-
+  void setLayoutBound(LayoutBound l);
 public slots:
   void randomiseOrientations(WordOrientation w);
   void unpinAll();
@@ -49,6 +49,7 @@ protected:
   void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);    
   
   WordList wordlist;
+  LayoutBound layoutBound;
   QPointF centrepoint;
   QVector<QRgb> wordcolors;
   QuadTree quadtree;
@@ -75,4 +76,10 @@ inline void Canvas::appendWordList(WordList l)
   wordlist.append(l);
   foreach (Word *word, l)
     layoutWord(word);
+}
+
+
+inline void Canvas::setLayoutBound(LayoutBound l)
+{
+  layoutBound = l;
 }
