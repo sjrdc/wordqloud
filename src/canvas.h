@@ -43,7 +43,7 @@ public slots:
 protected:
   void keyPressEvent(QKeyEvent *event);
   void keyReleaseEvent(QKeyEvent *event);
-  void layoutWord(Word *w);
+  bool layoutWord(Word *w);
   void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);    
@@ -58,11 +58,14 @@ protected:
   // some random generator stuff for coordinate generation
   boost::mt19937 rng;
   boost::normal_distribution<float> cxDistribution;
-  boost::normal_distribution<float> cyDistribution; 
+  boost::normal_distribution<float> cyDistribution;
+  boost::uniform_int<> angleIncrement;   
   boost::variate_generator<boost::mt19937&, 
                            boost::normal_distribution<float> > *cxvarnor;
   boost::variate_generator<boost::mt19937&, 
                            boost::normal_distribution<float> > *cyvarnor;
+  boost::variate_generator<boost::mt19937&,
+    boost::uniform_int<> > *avarnor;    
 };
 
 inline void Canvas::addWord(Word *w)

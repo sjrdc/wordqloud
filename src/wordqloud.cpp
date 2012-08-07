@@ -19,6 +19,7 @@
 #include "boundsdialog.h"
 #include "colourschemedialog.h"
 #include "canvas.h"
+#include "view.moc"
 #include "wordqloud.moc"
 #include "word.h"
 #include "wordlist.h"
@@ -32,7 +33,7 @@ WordQloud::WordQloud()
   topFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   canvas = new Canvas;
-  view = new QGraphicsView(canvas);
+  view = new View(canvas);
   
   QWidget *bottomFiller = new QWidget;
   bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -342,7 +343,7 @@ void WordQloud::createColourschemeMenu()
 
 	  // a varlist to store colours in the action object
 	  QList<QVariant> varlist;
-	  varlist.push_back(backgroundColour); 
+	  varlist.push_back(backgroundColour.rgb()); 
 
 	  // extract all foregroundcolours;
 	  QVector<QColor> foregroundColours;
@@ -481,12 +482,9 @@ void WordQloud::open()
 
 void WordQloud::onColourschemeActionGroupTriggered(QAction *a)
 {
-  QList<QVariant> varlist = a->data().toList();
-  QColor backgroundColour(varlist.first().toInt());
-  varlist.pop_front();
-  QList<QColor> colourlist;
-  foreach(QVariant var, varlist)
-    colourlist.push_back(QColor(var.toInt()));
+  QList<QColor> colourlist = checkedColourscheme();
+  QColor backgroundColour(colourlist.first());
+  colourlist.pop_front();
 
   customColourschemeAction->setData(a->data());
 

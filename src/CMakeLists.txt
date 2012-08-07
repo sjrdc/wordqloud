@@ -25,6 +25,8 @@ qt4_automoc(
   boundsdialog.cpp
   colourschemedialog.h
   colourschemedialog.cpp
+view.cpp
+view.h
   wordqloud.cpp
   wordqloud.h
 )
@@ -36,6 +38,7 @@ ADD_EXECUTABLE(wordqloud
   main.cpp
   quadtree.cpp
   quadnode.cpp
+view.cpp
   wordqloud.cpp
   word.cpp
   wordlist.cpp

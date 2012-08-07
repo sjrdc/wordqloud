@@ -16,6 +16,7 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
   rng.seed(static_cast<unsigned int>(std::time(0)));
   cxDistribution = boost::normal_distribution<float>(centrepoint.x(), w*.1);
   cyDistribution = boost::normal_distribution<float>(centrepoint.y(), h*.1);
+  angleIncrement = boost::uniform_int<>(1, 25);
 
   cxvarnor = new
     boost::variate_generator<boost::mt19937&, 
@@ -25,6 +26,10 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
     boost::variate_generator<boost::mt19937&, 
   			     boost::normal_distribution<float> >(rng,
 								 cyDistribution);
+  avarnor = new
+    boost::variate_generator<boost::mt19937&,
+			     boost::uniform_int<> >(rng, angleIncrement);
+  
   quadtree.setRootRectangle(sceneRect());
 }
 
@@ -58,8 +63,9 @@ void Canvas::keyReleaseEvent(QKeyEvent *event)
     highlightPinned(false);
 }
 
-void Canvas::layoutWord(Word *w)
+bool Canvas::layoutWord(Word *w)
 {
+  int attempts = 0;
   /* find out where to place the word */
   if (!w->getPinned())
     {
@@ -74,15 +80,16 @@ void Canvas::layoutWord(Word *w)
 
       QRectF bbox = w->boundingBox();
       QPoint centre = QPoint(cx - bbox.width()/2, cy - bbox.height()/2);
-      w->setPos(centre);
+    startlayout:
       QPoint oldpos(0, 0);
-      w->prepareCollisionDetection();
       bool done = false;
+      w->setPos(centre);
+      w->prepareCollisionDetection();
 
       do
 	{
 	  // get a new location estimate
-	  tau += 0.25;
+	  tau += avarnor->operator()()*0.01;
 	  float rho = tau;
 
 	  // move Word to a new location
@@ -90,7 +97,6 @@ void Canvas::layoutWord(Word *w)
 	  w->moveBy(delta.x(), delta.y());
 	  oldpos += delta;
 
-	  // if (!sceneRect().contains(w->boundingBox())) continue;
 	  if (boundingRegions.size() > 0)
 	    {
 	      bool contains = false;
@@ -102,6 +108,7 @@ void Canvas::layoutWord(Word *w)
 		  }
 	      if (!contains) continue;
 	    }
+	  else if (!sceneRect().contains(w->boundingBox())) { attempts++; goto startlayout; }
   
 	  // check cashed collision first
 	  if (w->collidesWithCashed()) continue;
@@ -123,15 +130,19 @@ void Canvas::layoutWord(Word *w)
 	    }	  
 
 	}
-      while (!done);
+      while (!done && attempts < 10);
     }
   else w->prepareCollisionDetection();
+
+  if (attempts >= 10) return false;
   
   /* finally add the word */
   QGraphicsScene::addItem((QGraphicsItem*)w);
 
   // add it to the quadtree as well
   quadtree.insert(w);
+
+  return true;
 }
 
 void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
