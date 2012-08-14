@@ -50,6 +50,6 @@ TARGET_LINK_LIBRARIES(wordqloud
 
 install(TARGETS
   wordcloud
-  RUNTIME DESTINATION bin/linaccontrolclients
+  RUNTIME DESTINATION bin/wordqloud
   )
 
