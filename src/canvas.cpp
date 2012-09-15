@@ -331,26 +331,26 @@ void Canvas::setWordList(WordList l)
   this->clear();
   wordlist = l;
   
-  float wordArea = wordlist.area();
-  float boundArea = 0.;
-  if (boundingRegions.size() != 0)
-    {
-      foreach (QRegion region, boundingRegions)
-	{
-	  QVector<QRect> rects = region.rects();
-	  foreach (QRect rect, rects)
-	    boundArea += rect.width()*rect.height();
-	}
-    }
-  else 
-    {
-      QRectF scene = sceneRect();
-      boundArea = scene.width()*scene.height();
-    }
-  float scalefactor = 0.85/(wordArea/boundArea);
-  qDebug() << wordArea << boundArea << scalefactor;
-  foreach (Word *word, wordlist)  
-    word->setScale(scalefactor);
+  // float wordArea = wordlist.area();
+  // float boundArea = 0.;
+  // if (boundingRegions.size() != 0)
+  //   {
+  //     foreach (QRegion region, boundingRegions)
+  // 	{
+  // 	  QVector<QRect> rects = region.rects();
+  // 	  foreach (QRect rect, rects)
+  // 	    boundArea += rect.width()*rect.height();
+  // 	}
+  //   }
+  // else 
+  //   {
+  //     QRectF scene = sceneRect();
+  //     boundArea = scene.width()*scene.height();
+  //   }
+  // float scalefactor = 0.85/(wordArea/boundArea);
+  // qDebug() << wordArea << boundArea << scalefactor;
+  // foreach (Word *word, wordlist)  
+  //   word->setScale(scalefactor);
 }
 
 void Canvas::unpinAll()

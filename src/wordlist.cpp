@@ -6,6 +6,7 @@
 #include <QTextStream>
 
 #include <math.h>
+#include <map>
 
 #include "colormap.h"
 #include "word.h"
@@ -35,17 +36,36 @@ void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
     }
   file.close();
 
+  std::map<QString, int> histogram;
+  foreach (QString s, stringlist)
+    histogram[s]++;
+
   int counter = 0;
-  for (int i = 0; i < stringlist.size(); ++i)
+  // for (int i = 0; i < stringlist.size(); ++i)
+  //   {
+  //     QString s = stringlist[i];
+  //     if (!s.isEmpty())
+  // 	{
+  // 	  Word *w = new Word(s);
+  // 	  w->setFontsize(12);
+  // 	  w->setColour(colourlist[counter % colourlist.size()]);
+  // 	  this->push_back(w);
+  // 	  counter++;
+  // 	}
+  //   }
+
+  for (std::map<QString, int>::const_iterator i = histogram.begin();
+       i != histogram.end(); ++i)
     {
-      QString s = stringlist[i];
-      if (!s.isEmpty())
+      if (i->first.size() > 0 &&i->first.size() < 50)
 	{
-	  Word *w = new Word(s);
-	  w->setFontsize(12);
-	  w->setColour(colourlist[counter % colourlist.size()]);
-	  this->push_back(w);
-	  counter++;
+	  qDebug() << i->first << i->second;
+      Word *w = new Word(i->first);
+      float f = log10(i->second);
+      w->setFontsize(10*(f > 0 ? 2*f : 1));
+      w->setColour(colourlist[counter % colourlist.size()]);
+      this->push_back(w);
+      counter++;
 	}
     }
 }
