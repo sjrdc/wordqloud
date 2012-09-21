@@ -21,6 +21,11 @@ float WordList::area()
   return a;
 }
 
+bool compareWords(std::pair<QString, int> a, std::pair<QString, int> b)
+{
+  return a.second > b.second;
+}
+
 void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
 {
   QFile file(filename);
@@ -28,44 +33,36 @@ void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
     qDebug() << "Could not read from file " << filename << ".";
   
   QTextStream stream(&file); 
-  QStringList stringlist;
+  std::map<QString, int> map;
   while (!stream.atEnd() && stream.status() == QTextStream::Ok)
     {
       QString line = stream.readLine();
-      stringlist.append(line.split(' '));
+      QStringList stringlist = line.split(' ');
+      foreach (QString s, stringlist)
+	map[s.remove(QRegExp("[().,:;`\'!?0-9]")).trimmed()]++;
     }
   file.close();
 
-  std::map<QString, int> histogram;
-  foreach (QString s, stringlist)
-    histogram[s]++;
+  std::vector<std::pair<QString, int> > histogram(map.size());
+  std::copy(map.begin(), map.end(), histogram.begin());
+  map.clear();
+  std::sort(histogram.begin(), histogram.end(), compareWords);
 
   int counter = 0;
-  // for (int i = 0; i < stringlist.size(); ++i)
-  //   {
-  //     QString s = stringlist[i];
-  //     if (!s.isEmpty())
-  // 	{
-  // 	  Word *w = new Word(s);
-  // 	  w->setFontsize(12);
-  // 	  w->setColour(colourlist[counter % colourlist.size()]);
-  // 	  this->push_back(w);
-  // 	  counter++;
-  // 	}
-  //   }
-
-  for (std::map<QString, int>::const_iterator i = histogram.begin();
+  char blacklistedCharacters [6] = {'\\', '{', '}', '$', '~', '%'};
+  for (std::vector<std::pair<QString, int> >::const_iterator i = histogram.begin();
        i != histogram.end(); ++i)
     {
-      if (i->first.size() > 0 &&i->first.size() < 50)
+      
+      if (!(i->first.toStdString().find_first_of(blacklistedCharacters) < std::string::npos) && i->first.size() > 1)
 	{
-	  qDebug() << i->first << i->second;
-      Word *w = new Word(i->first);
-      float f = log10(i->second);
-      w->setFontsize(10*(f > 0 ? 2*f : 1));
-      w->setColour(colourlist[counter % colourlist.size()]);
-      this->push_back(w);
-      counter++;
+	  qDebug() << i->first << i->first.toStdString().find_first_of(blacklistedCharacters) << i->second;
+	  Word *w = new Word(i->first);
+	  float f = log10(i->second);
+	  w->setFontsize(10*(f > 0 ? 2*f : 1));
+	  w->setColour(colourlist[counter % colourlist.size()]);
+	  this->push_back(w);
+	  counter++;
 	}
     }
 }
