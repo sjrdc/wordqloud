@@ -6,6 +6,7 @@
 #include <QTextStream>
 
 #include <math.h>
+#include <iostream>
 #include <map>
 
 #include "colormap.h"
@@ -38,8 +39,13 @@ void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
     {
       QString line = stream.readLine();
       QStringList stringlist = line.split(' ');
-      foreach (QString s, stringlist)
-	map[s.remove(QRegExp("[().,:;`\'!?0-9]")).trimmed()]++;
+      foreach (QString s, stringlist)  
+	{
+	  s = s.remove(QRegExp("[().,:;`\'!?0-9]")).trimmed();
+	  if (s.toStdString().find_first_of("\\{}$~%") == std::string::npos
+	      && s.length() > 1)
+	    map[s]++;
+	}
     }
   file.close();
 
@@ -47,23 +53,16 @@ void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
   std::copy(map.begin(), map.end(), histogram.begin());
   map.clear();
   std::sort(histogram.begin(), histogram.end(), compareWords);
-
   int counter = 0;
-  char blacklistedCharacters [6] = {'\\', '{', '}', '$', '~', '%'};
   for (std::vector<std::pair<QString, int> >::const_iterator i = histogram.begin();
        i != histogram.end(); ++i)
-    {
-      
-      if (!(i->first.toStdString().find_first_of(blacklistedCharacters) < std::string::npos) && i->first.size() > 1)
-	{
-	  qDebug() << i->first << i->first.toStdString().find_first_of(blacklistedCharacters) << i->second;
-	  Word *w = new Word(i->first);
-	  float f = log10(i->second);
-	  w->setFontsize(10*(f > 0 ? 2*f : 1));
-	  w->setColour(colourlist[counter % colourlist.size()]);
-	  this->push_back(w);
-	  counter++;
-	}
+    {      
+      Word *w = new Word(i->first);
+      float f = log10(i->second);
+      w->setFontsize(10*(f > 0 ? 2.5*f : 1));
+      w->setColour(colourlist[counter % colourlist.size()]);
+      this->push_back(w);
+      counter ++;
     }
 }
 

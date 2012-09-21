@@ -67,6 +67,8 @@ WordQloud::WordQloud()
 
   setWindowTitle(tr("wordQloud"));
   setMinimumSize(400, 600);
+
+  load();
 }
 
 void WordQloud::about()
@@ -434,9 +436,11 @@ void WordQloud::createMenus()
 
 void WordQloud::load()
 {
-  QString filename = 
-    QFileDialog::getOpenFileName(this, "Load text file");
+  // QString filename = 
+  //   QFileDialog::getOpenFileName(this, "Load text file");
 
+  QString filename = "discussion.tex";
+  
   QAction *schemeAction = colourschemeActionGroup->checkedAction();
   QAction *colourVariationAction = colourVariationActionGroup->checkedAction();
   
