@@ -23,6 +23,7 @@ public:
   bool colourLocked() const;
   bool fontLocked() const;
   bool fontsizeLocked() const;
+  int getFrequency() const;
   bool getPinned() const;
   float height();
   void lockColour(bool b = true);
@@ -36,6 +37,7 @@ public:
   void setPinned(bool p);
   void setFontName(QString fontname);
   void setFontsize(float s);
+  void setFrequency(int f);
   void setRotation(float r);
   void showPinned(bool p);
   void togglePinned();
@@ -62,6 +64,7 @@ private:
   bool _fontsizeLocked;
   bool _regionInitialised;
   QColor cachedColor;
+  int frequency;
 };
 
 inline QRectF Word::boundingBox() const
@@ -127,5 +130,8 @@ inline void Word::toggleManipulated()
 // colouring
 inline void Word::setBrush(QBrush b) { QGraphicsSimpleTextItem::setBrush(b); }
 inline void Word::setColour(QColor c) { if (!_colourLocked) this->setBrush(c); }
+
+inline void Word::setFrequency(int f) { frequency = f; }
+inline int  Word::getFrequency() const { return frequency; }
 
 #endif
