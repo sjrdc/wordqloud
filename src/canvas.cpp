@@ -329,28 +329,60 @@ void Canvas::setWordList(WordList l)
 {
   quadtree.clearContents();
   this->clear();
+  wordlist.clear();
   wordlist = l;
   
-  // float wordArea = wordlist.area();
-  // float boundArea = 0.;
-  // if (boundingRegions.size() != 0)
-  //   {
-  //     foreach (QRegion region, boundingRegions)
-  // 	{
-  // 	  QVector<QRect> rects = region.rects();
-  // 	  foreach (QRect rect, rects)
-  // 	    boundArea += rect.width()*rect.height();
-  // 	}
-  //   }
-  // else 
-  //   {
-  //     QRectF scene = sceneRect();
-  //     boundArea = scene.width()*scene.height();
-  //   }
-  // float scalefactor = 0.85/(wordArea/boundArea);
-  // qDebug() << wordArea << boundArea << scalefactor;
+  float wordArea = wordlist.area();
+  float boundArea = 0.;
+  if (boundingRegions.size() != 0)
+    {
+      foreach (QRegion region, boundingRegions)
+  	{
+  	  QVector<QRect> rects = region.rects();
+  	  foreach (QRect rect, rects)
+  	    boundArea += rect.width()*rect.height();
+  	}
+    }
+  else 
+    {
+      QRectF scene = sceneRect();
+      boundArea = scene.width()*scene.height();
+    }
+
+  std::cout << boundArea << " " << wordArea << " " << (wordArea - boundArea)/boundArea << std::endl;
+  if (fabs(0.85*wordArea - boundArea)/boundArea > 0.03) 
+    {
+      float scalefactor = .5*(wordArea/boundArea);
+      scaleSceneRectArea(scalefactor);
+    }
+
   // foreach (Word *word, wordlist)  
   //   word->setScale(scalefactor);
+}
+
+void Canvas::scaleSceneRectArea(float factor)
+{
+  std::cout << " scaling with factor " << factor << std::endl;
+  QRectF sceneRect = this->sceneRect();
+  sceneRect.setWidth(sceneRect.width()/sqrt(factor));
+  sceneRect.setHeight(sceneRect.height()/sqrt(factor));
+  this->setSceneRect(sceneRect);
+  quadtree.setRootRectangle(sceneRect);
+
+  centrepoint = 0.5*QPointF(sceneRect.width(), sceneRect.height());
+  cxDistribution = boost::normal_distribution<float>(centrepoint.x(),
+						     sceneRect.width()*.5);
+  cyDistribution = boost::normal_distribution<float>(centrepoint.y(), 
+						     sceneRect.height()*.5);
+  delete cxvarnor, cyvarnor;
+  cxvarnor = new
+    boost::variate_generator<boost::mt19937&, 
+  			     boost::normal_distribution<float> >(rng,
+								 cxDistribution);
+  cyvarnor = new
+    boost::variate_generator<boost::mt19937&, 
+  			     boost::normal_distribution<float> >(rng,
+								 cyDistribution);
 }
 
 void Canvas::unpinAll()

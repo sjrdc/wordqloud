@@ -47,6 +47,7 @@ protected:
   void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);    
+  void scaleSceneRectArea(float factor);
   
   WordList wordlist;
   LayoutBound layoutBound;

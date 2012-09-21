@@ -27,8 +27,29 @@ bool compareWords(std::pair<QString, int> a, std::pair<QString, int> b)
   return a.second > b.second;
 }
 
+void WordList::initBlackList()
+{
+  QFile file("../blacklist.txt");
+  
+  if (!file.open(QIODevice::ReadOnly)) 
+    qDebug() << "Could not read from file ../blacklist.txt";
+  QTextStream stream(&file);
+  while (!stream.atEnd() && stream.status() == QTextStream::Ok)
+    {
+      QString line = stream.readLine();
+      QStringList stringlist = line.split(' ');
+      foreach (QString s, stringlist)  
+	blacklist.push_back(s.toLower());
+    }
+
+  file.close();
+  std::sort(blacklist.begin(), blacklist.end());
+}
+
 void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
 {
+  if (blacklist.size() == 0) initBlackList();    
+
   QFile file(filename);
   if (!file.open(QIODevice::ReadOnly)) 
     qDebug() << "Could not read from file " << filename << ".";
@@ -56,14 +77,17 @@ void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
   int counter = 0;
   for (std::vector<std::pair<QString, int> >::const_iterator i = histogram.begin();
        i != histogram.end(); ++i)
-    {      
-      Word *w = new Word(i->first);
-      float f = log10(i->second);
-      w->setFontsize(10*(f > 0 ? 2.5*f : 1));
-      w->setFrequency(i->second);
-      w->setColour(colourlist[counter % colourlist.size()]);
-      this->push_back(w);
-      counter ++;
+    {
+      if (std::find(blacklist.begin(), blacklist.end(), i->first.toLower()) == blacklist.end())
+	{
+	  Word *w = new Word(i->first);
+	  float f = log10(i->second);
+	  w->setFontsize(10*(f > 0 ? 4*f : 1));
+	  w->setFrequency(i->second);
+	  w->setColour(colourlist[counter % colourlist.size()]);
+	  this->push_back(w);
+	  counter ++;
+	}
     }
 }
 
