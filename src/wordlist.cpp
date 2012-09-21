@@ -60,6 +60,7 @@ void WordList::fromTextFile(QString filename, const QList<QColor> &colourlist)
       Word *w = new Word(i->first);
       float f = log10(i->second);
       w->setFontsize(10*(f > 0 ? 2.5*f : 1));
+      w->setFrequency(i->second);
       w->setColour(colourlist[counter % colourlist.size()]);
       this->push_back(w);
       counter ++;
