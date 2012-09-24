@@ -150,7 +150,7 @@ bool Canvas::layoutWord(Word *w)
 	    }	  
 
 	}
-      while (!done && attempts < 10);
+      while (!done && attempts < 100);
     }
   else w->prepareCollisionDetection();
 
@@ -268,10 +268,10 @@ void Canvas::randomiseWordColours(const QVector<QColor> &colourpalet)
 
   boost::uniform_int<> uni(0, colourpalet.size()-1);
   boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
-    colourpicker(colourrng, uni);
+    picker(colourrng, uni);
 
   foreach (Word *word, wordlist)
-    word->setColour(colourpalet[colourpicker()]);
+    word->setColour(colourpalet[picker()]);
 }
 
 void Canvas::randomiseWordFontFamily(const QVector<QString> &fontfamilies)
@@ -281,10 +281,10 @@ void Canvas::randomiseWordFontFamily(const QVector<QString> &fontfamilies)
   
   boost::uniform_int<> uni(0, fontfamilies.size()-1);
   boost::variate_generator<boost::mt19937, boost::uniform_int<> > 
-    colourpicker(colourrng, uni);
+    picker(colourrng, uni);
 
   foreach (Word *word, wordlist)
-    word->setFontName(fontfamilies[colourpicker()]);
+    word->setFontName(fontfamilies[picker()]);
 }
 
 void Canvas::reCreateLayout()
@@ -338,7 +338,9 @@ void Canvas::setColors(QColor bcolor, QVector<QRgb> wcolors)
 void Canvas::setWordFont(QFont font)
 {
   foreach (Word *word, wordlist)
-    word->setFontName(font.family());
+    {
+      word->setFontName(font.family());
+    }
 }
 
 void Canvas::setWordList(WordList l) 
@@ -347,44 +349,51 @@ void Canvas::setWordList(WordList l)
   this->clear();
   wordlist.clear();
   wordlist = l;
-  
-  float wordArea = wordlist.area();
-  float boundArea = 0.;
-  if (boundingRegions.size() != 0)
-    {
-      foreach (QRegion region, boundingRegions)
-  	{
-  	  QVector<QRect> rects = region.rects();
-  	  foreach (QRect rect, rects)
-  	    boundArea += rect.width()*rect.height();
-  	}
-    }
-  else 
-    {
-      QRectF scene = sceneRect();
-      boundArea = scene.width()*scene.height();
-    }
 
-  std::cout << boundArea << " " << wordArea << " " << (wordArea - boundArea)/boundArea << std::endl;
-  if (fabs(0.85*wordArea - boundArea)/boundArea > 0.03) 
-    {
-      float scalefactor = .4*(wordArea/boundArea);
-      scaleSceneRectArea(scalefactor);
-    }
+  scaleSceneRectArea();
 
   // foreach (Word *word, wordlist)  
   //   word->setScale(scalefactor);
 }
 
+void Canvas::scaleSceneRect()
+{
+  if (wordlist.size() > 1)
+    {
+      float wordArea = wordlist.area();
+      float boundArea = 0.;
+      if (boundingRegions.size() != 0)
+	{
+	  foreach (QRegion region, boundingRegions)
+	    {
+	      QVector<QRect> rects = region.rects();
+	      foreach (QRect rect, rects)
+		boundArea += rect.width()*rect.height();
+	    }
+	}
+      else 
+	{
+	  qDebug() << "Hello wordl!";
+	  QRectF scene = sceneRect();
+	  boundArea = scene.width()*scene.height();
+	}
+
+      std::cout << boundArea << " " << wordArea << " " 
+		<< (wordArea/boundArea) << std::endl;
+      scaleSceneRectArea(1.5*wordArea/boundArea);
+    }
+}
+
+
 void Canvas::scaleSceneRectArea(float factor)
 {
-  std::cout << " scaling with factor " << factor << std::endl;
   QRectF sceneRect = this->sceneRect();
-  sceneRect.setWidth(sceneRect.width()/sqrt(factor));
-  sceneRect.setHeight(sceneRect.height()/sqrt(factor));
+  qDebug() << sceneRect;
+  sceneRect.setWidth(sceneRect.width()*sqrt(factor));
+  sceneRect.setHeight(sceneRect.height()*sqrt(factor));
   this->setSceneRect(sceneRect);
   quadtree.setRootRectangle(sceneRect);
-
+  qDebug() << sceneRect;
   centrepoint = 0.5*QPointF(sceneRect.width(), sceneRect.height());
   cxDistribution = boost::normal_distribution<float>(centrepoint.x(),
 						     sceneRect.width()*.5);

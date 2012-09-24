@@ -30,13 +30,15 @@ public:
   void highlightPinned(bool h);
   void randomiseWordColours(const QVector<QColor> &colours);
   void randomiseWordFontFamily(const QVector<QString> &fontfamilies);  
-  void reCreateLayout();
+  void reCreateLayout();  
+  void scaleSceneRect();
   void setColors(QColor bcolor, QVector<QRgb> wcolors);
   void setBoundingRegions(QVector<QRegion> b);
   void setLayoutBound(LayoutBound l);
   void setLayoutPath(LayoutPath p);
   void setWordList(WordList l);
   void setWordFont(QFont font);
+
 public slots:
   void randomiseOrientations(WordOrientation w);
   void unpinAll();

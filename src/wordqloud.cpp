@@ -635,7 +635,12 @@ void WordQloud::setFont()
 {
   bool ok;
   QFont font = QFontDialog::getFont(&ok, this);
-  if (ok) canvas->setWordFont(font);
+  if (ok)
+    {
+      canvas->setWordFont(font);
+      canvas->scaleSceneRect();
+      canvas->reCreateLayout();
+    }
 }
 
 void WordQloud::spinColours()

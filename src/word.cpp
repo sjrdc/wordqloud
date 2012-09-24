@@ -78,6 +78,7 @@ void Word::setFontName(QString name)
       QFont f = this->font();
       f.setFamily(name);
       this->setFont(f);
+      _regionInitialised = false;
     }
 }
 
