@@ -350,7 +350,7 @@ void Canvas::setWordList(WordList l)
   wordlist.clear();
   wordlist = l;
 
-  scaleSceneRectArea();
+  scaleSceneRect();
 
   // foreach (Word *word, wordlist)  
   //   word->setScale(scalefactor);
@@ -383,7 +383,6 @@ void Canvas::scaleSceneRect()
       scaleSceneRectArea(1.5*wordArea/boundArea);
     }
 }
-
 
 void Canvas::scaleSceneRectArea(float factor)
 {
