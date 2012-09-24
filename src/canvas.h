@@ -33,9 +33,10 @@ public:
   void reCreateLayout();
   void setColors(QColor bcolor, QVector<QRgb> wcolors);
   void setBoundingRegions(QVector<QRegion> b);
+  void setLayoutBound(LayoutBound l);
+  void setLayoutPath(LayoutPath p);
   void setWordList(WordList l);
   void setWordFont(QFont font);
-  void setLayoutBound(LayoutBound l);
 public slots:
   void randomiseOrientations(WordOrientation w);
   void unpinAll();
@@ -55,7 +56,8 @@ protected:
   QVector<QRgb> wordcolors;
   QuadTree quadtree;
   QVector<QRegion> boundingRegions;
-  
+  LayoutPath path;  
+
   // some random generator stuff for coordinate generation
   boost::mt19937 rng;
   boost::normal_distribution<float> cxDistribution;
@@ -66,7 +68,7 @@ protected:
   boost::variate_generator<boost::mt19937&, 
                            boost::normal_distribution<float> > *cyvarnor;
   boost::variate_generator<boost::mt19937&,
-    boost::uniform_int<> > *avarnor;    
+			   boost::uniform_int<> > *avarnor;    
 };
 
 inline void Canvas::addWord(Word *w)
@@ -82,8 +84,12 @@ inline void Canvas::appendWordList(WordList l)
     layoutWord(word);
 }
 
-
 inline void Canvas::setLayoutBound(LayoutBound l)
 {
   layoutBound = l;
+}
+
+inline void Canvas::setLayoutPath(LayoutPath p)
+{
+  path = p;
 }

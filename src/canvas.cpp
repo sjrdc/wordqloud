@@ -10,7 +10,8 @@
 Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
 { 
   setBackgroundBrush(Qt::white);
-
+  setLayoutPath(CircularPath);
+  
   // // initialise random number generator
   rng.seed(static_cast<unsigned int>(std::time(0)));
   angleIncrement = boost::uniform_int<>(1, 25);
@@ -94,8 +95,23 @@ bool Canvas::layoutWord(Word *w)
       do
 	{
 	  // get a new location estimate
-	  tau += avarnor->operator()()*0.05;
-	  float rho = tau;
+	  float rho;
+	  switch (path)
+	    {
+	    case RectangularPath:
+	      {
+		tau += avarnor->operator()()*0.05;
+		rho = 3*round(tau/M_PI*0.5);
+		break;
+	      }
+	    case CircularPath:
+	    default:
+	      {
+		tau += avarnor->operator()()*0.05;
+		rho = tau;
+		break;
+	      }
+	    }
 
 	  // move Word to a new location
 	  QPoint delta = (QPoint(rho*cos(tau), rho*sin(tau)) - oldpos);
@@ -352,7 +368,7 @@ void Canvas::setWordList(WordList l)
   std::cout << boundArea << " " << wordArea << " " << (wordArea - boundArea)/boundArea << std::endl;
   if (fabs(0.85*wordArea - boundArea)/boundArea > 0.03) 
     {
-      float scalefactor = .5*(wordArea/boundArea);
+      float scalefactor = .4*(wordArea/boundArea);
       scaleSceneRectArea(scalefactor);
     }
 

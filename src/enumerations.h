@@ -17,6 +17,12 @@ enum LayoutBound
     Combined
   };
 
+enum LayoutPath
+  {
+    CircularPath,
+    RectangularPath
+  };
+
 enum WordOrientation
   {
     AnyWordOrientation,

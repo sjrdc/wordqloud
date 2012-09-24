@@ -155,6 +155,21 @@ void WordQloud::contextMenuEvent(QContextMenuEvent *event)
 
 void WordQloud::createActions()
 {
+  spiralPathAction = new QAction(tr("Circular"), this);
+  spiralPathAction->setCheckable(true);
+  spiralPathAction->setData(CircularPath);
+  rectPathAction = new QAction(tr("Rectangular"), this);
+  rectPathAction->setCheckable(true);
+  rectPathAction->setData(RectangularPath);
+
+  pathGroup = new QActionGroup(this);
+  pathGroup->addAction(spiralPathAction);
+  pathGroup->addAction(rectPathAction);
+  pathGroup->setExclusive(true);
+  spiralPathAction->setChecked(true);
+  connect(pathGroup, SIGNAL(triggered(QAction*)),
+	  this, SLOT(onPathGroupAction(QAction*)));
+  
   horizontalOrientationAction = new QAction(tr("horizontal"), this);
   horizontalOrientationAction->setCheckable(true);
   horizontalOrientationAction->setData(HorizontalWordOrientation);
@@ -404,6 +419,7 @@ void WordQloud::createMenus()
   fileMenu->addAction(exitAction);
 
   layoutMenu = menuBar()->addMenu(tr("&Layout"));
+ 
   QMenu *orientationMenu = layoutMenu->addMenu(tr("&Orientation"));
   orientationMenu->addAction(horizontalOrientationAction);
   orientationMenu->addAction(mostlyHorizontalOrientationAction);
@@ -420,6 +436,10 @@ void WordQloud::createMenus()
   layoutBoundsMenu->addAction(sceneBoundOnlyAction);
   layoutBoundsMenu->addAction(imageBoundOnlyAction);
   layoutBoundsMenu->addAction(imageAndSceneBoundAction);
+
+  QMenu *pathMenu = layoutMenu->addMenu(tr("Path"));
+  pathMenu->addAction(spiralPathAction);
+  pathMenu->addAction(rectPathAction);  
 
   QMenu *colourVariationMenu = layoutMenu->addMenu(tr("Colour &variation"));
   colourVariationMenu->addAction(asPaletteAction);
@@ -522,6 +542,12 @@ void WordQloud::onColourVariationAction(QAction *a)
 void WordQloud::onOrientationAction(QAction* a)
 {
   canvas->randomiseOrientations((WordOrientation)a->data().toInt());
+}
+
+void WordQloud::onPathGroupAction(QAction* a)
+{
+  canvas->setLayoutPath((LayoutPath)a->data().toInt());
+  canvas->reCreateLayout();
 }
 
 void WordQloud::onLayoutBoundsAction(QAction *a)

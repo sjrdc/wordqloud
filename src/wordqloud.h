@@ -35,6 +35,7 @@ private slots:
   void onColourschemeActionGroupTriggered(QAction*);
   void onColourVariationAction(QAction*);
   void onLayoutBoundsAction(QAction*);
+  void onPathGroupAction(QAction*);
   void onUnpinAllButtonClicked();
   void reCreateLayout();
   void saveBitmap();
@@ -76,6 +77,10 @@ private:
   QAction *savePngAction;
   QAction *saveSvgAction;  
   QAction *boundsFromImageAction;
+
+  QActionGroup *pathGroup;
+  QAction *spiralPathAction;
+  QAction *rectPathAction;
 
   QActionGroup *layoutBoundsActionGroup;
   QAction *sceneBoundOnlyAction;
