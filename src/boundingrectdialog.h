@@ -5,21 +5,27 @@
 
 class QAbstractButton;
 class QDialogButtonBox;
-class QPushButton;
-class QSlider;
+class QDoubleSpinBox;
 
-class ColourschemeDialog : public QDialog
+class BoundingRectDialog : public QDialog
 {  
   Q_OBJECT
 public:
-  BoundingRectDialog(QList<QColor> initialScheme, QWidget *parent = 0);
-			     
+  BoundingRectDialog(QRectF initRect, QWidget *parent = 0);
+  QRectF getRect() const;
+			
 protected slots:
-  
+  void heightChanged(float);
+  void widthChanged(float);  
+
 private:
   QRectF rect;
+
+  QDoubleSpinBox *widthSpinner;
+  QDoubleSpinBox *heightSpinner;  
+  QDialogButtonBox *buttonBox;
 };
 
-inline QList<QColor> BoundingRectDialog::getRect() const { return rect; }
+inline QRectF BoundingRectDialog::getRect() const { return rect; }
 
 #endif

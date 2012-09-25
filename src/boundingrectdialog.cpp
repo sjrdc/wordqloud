@@ -1,38 +1,35 @@
-#include <QtGui>
+#include <QDialogButtonBox>
+#include <QHBoxLayout>
+#include <QDoubleSpinBox>
+#include <QVBoxLayout>
+
 #include "boundingrectdialog.moc"
 
-ColourschemeDialog::ColourschemeDialog(QList<QColor> initialScheme,
-				       QWidget *parent)
+BoundingRectDialog::BoundingRectDialog(QRectF initRect, QWidget *parent)
   : QDialog(parent, Qt::Dialog)
 {
-  colourscheme = initialScheme;
+  rect = initRect;
+
   buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
 				   | QDialogButtonBox::Cancel);
 
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-  QHBoxLayout *hlayout = new QHBoxLayout;
-  buttonGroup = new QButtonGroup;
-  connect(buttonGroup, SIGNAL(buttonClicked(QAbstractButton*)),
-	  this, SLOT(onColourButtonClicked(QAbstractButton*)));
-  int c = 0;
-  foreach(QColor colour, initialScheme)
-    {
-      QPushButton *label = new QPushButton;
-      label->setMinimumSize(QSize(100, 100));
-      label->setAutoFillBackground(true);
-      int alpha  = 255;
-      label->setStyleSheet("QPushButton { background-color: " +
-  			    colour.name() + "; }");
-      buttonGroup->addButton(label, c++);
-      hlayout->addWidget(label);
-    }
-  plusButton = new QPushButton("+");
-  connect(plusButton, SIGNAL(clicked()),	
-	  this, SLOT(onPlusButtonClicked()));
-  hlayout->addWidget(plusButton);
+  widthSpinner = new QDoubleSpinBox();
+  widthSpinner->setValue(rect.width());
+  connect(widthSpinner, SIGNAL(valueChanged(float)),
+	  this, SLOT(widthChanged(float)));
+
+  heightSpinner = new QDoubleSpinBox();
+  heightSpinner->setValue(rect.height());
+  connect(heightSpinner, SIGNAL(valueChanged(float)),
+	  this, SLOT(heightChanged(float)));
   
+  QHBoxLayout *hlayout = new QHBoxLayout;
+  hlayout->addWidget(widthSpinner);
+  hlayout->addWidget(heightSpinner);
+
   QVBoxLayout *layout = new QVBoxLayout;
   layout->addItem(hlayout);
   layout->addWidget(buttonBox);
@@ -41,21 +38,12 @@ ColourschemeDialog::ColourschemeDialog(QList<QColor> initialScheme,
   this->setMinimumSize(QSize(500, 100));
 }
 
-void ColourschemeDialog::onColourButtonClicked(QAbstractButton *button)
+void BoundingRectDialog::heightChanged(float f)
 {
-  int id = buttonGroup->id(button);
-  QColor colour = 
-    QColorDialog::getColor(colourscheme[id],
-			   this, "Select background color");
-  if (colour.isValid())
-    {
-      colourscheme[id] = colour;
-      button->setStyleSheet("QPushButton { background-color: " +
-			    colour.name() + "; }");
-    }
+  rect.setHeight(f);
 }
 
-void ColourschemeDialog::onPlusButtonClicked()
+void BoundingRectDialog::widthChanged(float f)
 {
-  
+  rect.setWidth(f);
 }

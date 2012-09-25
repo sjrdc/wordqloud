@@ -23,15 +23,18 @@ include_directories(
 qt4_automoc(
   boundsdialog.h
   boundsdialog.cpp
+  boundingrectdialog.h
+  boundingrectdialog.cpp
   colourschemedialog.h
   colourschemedialog.cpp
-view.cpp
-view.h
+  view.cpp
+  view.h
   wordqloud.cpp
   wordqloud.h
 )
 ADD_EXECUTABLE(wordqloud
   boundsdialog.cpp
+  boundingrectdialog.cpp
   colourschemedialog.cpp
   canvas.cpp
   colormap.cpp
