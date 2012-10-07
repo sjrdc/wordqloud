@@ -12,6 +12,7 @@ class QGraphicsView;
 class QLabel;
 class QMenu;
 class QPushButton;
+class QProgressBar;
 class View;
 
 class WordQloud : public QMainWindow
@@ -20,6 +21,9 @@ class WordQloud : public QMainWindow
 
   public:
   WordQloud();
+
+  public slots:
+    void progress(int);
 
 protected:
   void contextMenuEvent(QContextMenuEvent *event);
@@ -104,6 +108,7 @@ private:
 
   View *view;
   Canvas *canvas;
+  QProgressBar *progressBar;
 };
 
 #endif

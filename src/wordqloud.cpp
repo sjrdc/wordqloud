@@ -9,6 +9,7 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QPrinter>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QStatusBar>
 #include <QSvgGenerator>
@@ -37,6 +38,10 @@ WordQloud::WordQloud()
   
   QWidget *bottomFiller = new QWidget;
   bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+  progressBar = new QProgressBar();
+  progressBar->setRange(0, 100);
+  this->statusBar()->addWidget(progressBar);
 
   unpinAllButton = new QPushButton("unpin all");
   connect(unpinAllButton, SIGNAL(clicked()), this, SLOT(onUnpinAllButtonClicked()));
@@ -456,10 +461,10 @@ void WordQloud::createMenus()
 
 void WordQloud::load()
 {
-  // QString filename = 
-  //   QFileDialog::getOpenFileName(this, "Load text file");
+  QString filename = 
+    QFileDialog::getOpenFileName(this, "Load text file");
 
-  QString filename = "discussion.tex";
+  // QString filename = "discussion.tex";
   
   QAction *schemeAction = colourschemeActionGroup->checkedAction();
   QAction *colourVariationAction = colourVariationActionGroup->checkedAction();
@@ -559,6 +564,11 @@ void WordQloud::onLayoutBoundsAction(QAction *a)
 void WordQloud::onUnpinAllButtonClicked()
 {
   canvas->unpinAll();
+}
+
+void WordQloud::progress(int p)
+{
+  progressBar->setValue(p);
 }
 
 void WordQloud::reCreateLayout()
