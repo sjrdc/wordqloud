@@ -33,6 +33,7 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
 			     boost::uniform_int<> >(rng, angleIncrement);
   
   quadtree.setRootRectangle(sceneRect());
+  layoutThread.reset(new boost::thread);
 }
 
 Canvas::~Canvas()
@@ -42,8 +43,22 @@ Canvas::~Canvas()
   delete avarnor;
 }
 
+void Canvas::startLayout()
+{
+  if (layoutThread != NULL) 
+    {
+      layoutThread->interrupt();
+      layoutThread->join();
+    }
+  layoutThread.reset(new boost::thread(boost::bind(&Canvas::createLayout, this)));
+}
+
 void Canvas::createLayout()
 {
+  quadtree.clearContents();
+  foreach (QGraphicsItem *item, items())
+    removeItem(item);
+
   int words = 0;
   int c = 0;
   foreach (Word* w, wordlist)
@@ -52,6 +67,7 @@ void Canvas::createLayout()
       emit layoutProgress(c++, wordlist.size());
     }
   
+  emit layoutProgress(c++, wordlist.size());
   qDebug() << wordlist.size() << words;
 }
 
@@ -292,14 +308,14 @@ void Canvas::randomiseWordFontFamily(const QVector<QString> &fontfamilies)
     word->setFontName(fontfamilies[picker()]);
 }
 
-void Canvas::reCreateLayout()
-{
-  quadtree.clearContents();
-  foreach (QGraphicsItem *item, items())
-    removeItem(item);
+// void Canvas::reCreateLayout()
+// {
+//   quadtree.clearContents();
+//   foreach (QGraphicsItem *item, items())
+//     removeItem(item);
 
-  createLayout();
-}
+//   createLayout();
+// }
 
 void Canvas::setBoundingRegions(QVector<QRegion> b)
 {

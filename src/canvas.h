@@ -1,5 +1,6 @@
 #include <boost/random.hpp>
 #include <boost/random/normal_distribution.hpp>
+#include <boost/thread.hpp>
 
 #include <QGraphicsScene>
 
@@ -31,7 +32,8 @@ public:
   void highlightPinned(bool h);
   void randomiseWordColours(const QVector<QColor> &colours);
   void randomiseWordFontFamily(const QVector<QString> &fontfamilies);  
-  void reCreateLayout();  
+  // void reCreateLayout(); 
+  void startLayout() ;
   void scaleSceneRect();
   void setColors(QColor bcolor, QVector<QRgb> wcolors);
   void setBoundingRegions(QVector<QRegion> b);
@@ -75,6 +77,8 @@ protected:
                            boost::normal_distribution<float> > *cyvarnor;
   boost::variate_generator<boost::mt19937&,
 			   boost::uniform_int<> > *avarnor;    
+
+  boost::scoped_ptr<boost::thread> layoutThread;
 };
 
 inline void Canvas::addWord(Word *w)

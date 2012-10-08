@@ -4,7 +4,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0)
 
 # find required libraries
 set(BOOST_ROOT /packages)
-find_package(Boost COMPONENTS program_options REQUIRED)
+find_package(Boost COMPONENTS program_options system thread REQUIRED)
 set(QT_USE_QTOPENGL true)
 set(QT_USE_QTSVG true)
 find_package(Qt4 REQUIRED)

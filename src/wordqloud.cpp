@@ -1,3 +1,5 @@
+#include <boost/bind.hpp>
+
 #include <QAction>
 #include <QColorDialog>
 #include <QContextMenuEvent>
@@ -30,20 +32,14 @@ WordQloud::WordQloud()
   QWidget *widget = new QWidget;
   setCentralWidget(widget);
 
-  QWidget *topFiller = new QWidget;
-  topFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
   canvas = new Canvas;
   view = new View(canvas);
   
-  QWidget *bottomFiller = new QWidget;
-  bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
   progressBar = new QProgressBar();
   progressBar->setRange(0, 100);
   this->statusBar()->addWidget(progressBar);
   connect(canvas, SIGNAL(layoutProgress(int, int)),
-	  this, SLOT(progress(int, int)));
+	  this, SLOT(progress(int, int)), Qt::QueuedConnection);
 
   unpinAllButton = new QPushButton("unpin all");
   connect(unpinAllButton, SIGNAL(clicked()), this, SLOT(onUnpinAllButtonClicked()));
@@ -63,10 +59,8 @@ WordQloud::WordQloud()
 			  
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setMargin(5);
-  layout->addWidget(topFiller);
   layout->addWidget(view);
   layout->addItem(buttonLayout);
-  layout->addWidget(bottomFiller);
   widget->setLayout(layout);
 
   createActions();
@@ -81,7 +75,14 @@ WordQloud::WordQloud()
 void WordQloud::about()
 {
   QMessageBox::about(this, tr("About wordQloud"),
-		     tr("short description of how it came to be..."));
+		     tr(" In order to create the cover picture on my PhD thesis"
+			" I wrote wordQloud, based on the basic word layout "
+			"principles introduced with Wordle, the flexibility of"
+			" ManiWordle and the picture-based layout possibilities"
+			" from Tagxedo}. After futzing around untill things "
+			"looked `good' and worked `well' the word layout on the"
+			" cover was created in wordQloud, using words from the"
+			" thesis. I then decided to publish my tool!"));
 }
 
 void WordQloud::addColourVariations(QList<QColor> &colourlist, ColourVariation v)
@@ -107,7 +108,7 @@ void WordQloud::addColourVariations(QList<QColor> &colourlist, ColourVariation v
       break;
     case WildVariation:
       nrColourvariations = 7;
-      hmax = 40;
+      hmax = 50;
       break;
     }
 
@@ -258,7 +259,8 @@ void WordQloud::createActions()
   connect(customColourschemeAction, SIGNAL(triggered()), 
 	  this, SLOT(setCustomScheme()));
 
-  backgroundColorAction = new QAction(tr("Set background color"), this);
+  backgroundColorAction = new QAction(tr("Set background colour"), this);
+  backgroundColorAction->setStatusTip(tr("Set background colour"));
   connect(backgroundColorAction, SIGNAL(triggered()), 
 	  this, SLOT(setBackgroundColor()));
   
@@ -312,7 +314,7 @@ void WordQloud::createCloudBoundsFromImage()
   delete b;
 
   // re-do the layout
-  canvas->reCreateLayout();
+  canvas->startLayout();
 }
 
 QIcon WordQloud::createColourschemeIcon(QColor backgroundColour,
@@ -493,7 +495,7 @@ void WordQloud::load()
   
   canvas->setBackgroundBrush(backgroundColour);
   canvas->setWordList(wordlist);
-  canvas->createLayout();
+  canvas->startLayout();
 }
 
 void WordQloud::loadWordlist()
@@ -511,7 +513,7 @@ void WordQloud::loadWordlist()
     }
   
   canvas->setWordList(wordlist);
-  canvas->createLayout();
+  canvas->startLayout();
 }
 
 void WordQloud::open()
@@ -554,7 +556,6 @@ void WordQloud::onOrientationAction(QAction* a)
 void WordQloud::onPathGroupAction(QAction* a)
 {
   canvas->setLayoutPath((LayoutPath)a->data().toInt());
-  canvas->reCreateLayout();
 }
 
 void WordQloud::onLayoutBoundsAction(QAction *a)
@@ -576,7 +577,7 @@ void WordQloud::progress(int v, int max)
 
 void WordQloud::reCreateLayout()
 {
-  canvas->reCreateLayout();
+  canvas->startLayout();
 }
 
 void WordQloud::saveBitmap()
@@ -652,7 +653,6 @@ void WordQloud::setFont()
     {
       canvas->setWordFont(font);
       canvas->scaleSceneRect();
-      canvas->reCreateLayout();
     }
 }
 

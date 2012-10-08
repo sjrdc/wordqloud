@@ -1,3 +1,7 @@
+INCLUDE_DIRECTORIES(
+  ${Boost_INCLUDE_DIRS}
+  )
+
 ADD_EXECUTABLE(wordcloud
   canvas.cpp
   colormap.cpp
@@ -47,6 +51,7 @@ view.cpp
   wordlist.cpp
 )
 TARGET_LINK_LIBRARIES(wordqloud
+  ${Boost_LIBRARIES}
   ${QT_LIBRARIES}
   ${OpenCV_LIBS}
   )
