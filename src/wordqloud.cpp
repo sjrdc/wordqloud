@@ -116,7 +116,7 @@ void WordQloud::addColourVariations(QList<QColor> &colourlist, ColourVariation v
       break;
     case LotsOfVariation:
       nrColourvariations = 5;
-      hmax = 35;
+      hmax = 40;
       break;
     case WildVariation:
       nrColourvariations = 7;
