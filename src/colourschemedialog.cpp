@@ -22,7 +22,6 @@ ColourschemeDialog::ColourschemeDialog(QList<QColor> initialScheme,
       QPushButton *label = new QPushButton;
       label->setMinimumSize(QSize(100, 100));
       label->setAutoFillBackground(true);
-      int alpha  = 255;
       label->setStyleSheet("QPushButton { background-color: " +
   			    colour.name() + "; }");
       buttonGroup->addButton(label, c++);
@@ -57,5 +56,35 @@ void ColourschemeDialog::onColourButtonClicked(QAbstractButton *button)
 
 void ColourschemeDialog::onPlusButtonClicked()
 {
+  QColor colour = 
+    QColorDialog::getColor(Qt::white,
+			   this, "Select background color");
+  if (colour.isValid())
+    { 
+      delete this->layout();
+      colourscheme.push_back(colour);
+      int c = 0;
+      QHBoxLayout *hlayout = new QHBoxLayout;
+      foreach(QColor colour, colourscheme)
+	{
+	  QPushButton *label = new QPushButton;
+	  label->setMinimumSize(QSize(100, 100));
+	  label->setAutoFillBackground(true);
+	  label->setStyleSheet("QPushButton { background-color: " +
+			       colour.name() + "; }");
+	  buttonGroup->addButton(label, c++);
+	  hlayout->addWidget(label);
+	}
+      plusButton = new QPushButton("+");
+      connect(plusButton, SIGNAL(clicked()),	
+	      this, SLOT(onPlusButtonClicked()));
+      hlayout->addWidget(plusButton);
   
+      QVBoxLayout *layout = new QVBoxLayout;
+      layout->addItem(hlayout);
+      layout->addWidget(buttonBox);
+  
+      this->setLayout(layout);
+    }
 }
+
