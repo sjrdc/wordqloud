@@ -44,7 +44,9 @@ public:
 
 signals:
   void layoutProgress(int, int);
-			 
+  void layoutEnded();
+  void layoutStarted();
+
 public slots:
   void randomiseOrientations(WordOrientation w);
   void stopLayout();

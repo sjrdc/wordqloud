@@ -60,6 +60,7 @@ void Canvas::createLayout()
   
   emit layoutProgress(c++, wordlist.size());
   qDebug() << wordlist.size() << words;
+  emit layoutEnded();
 }
 
 void Canvas::highlightPinned(bool highlight)
@@ -299,15 +300,6 @@ void Canvas::randomiseWordFontFamily(const QVector<QString> &fontfamilies)
     word->setFontName(fontfamilies[picker()]);
 }
 
-// void Canvas::reCreateLayout()
-// {
-//   quadtree.clearContents();
-//   foreach (QGraphicsItem *item, items())
-//     removeItem(item);
-
-//   createLayout();
-// }
-
 void Canvas::setBoundingRegions(QVector<QRegion> b)
 {
   // find bounding rectangle for union of all bounding regions
@@ -382,7 +374,6 @@ QRectF Canvas::scaleSceneRect()
 	}
       else 
 	{
-	  qDebug() << "Hello wordl!";
 	  QRectF scene = sceneRect();
 	  boundArea = scene.width()*scene.height();
 	}
@@ -426,11 +417,18 @@ void Canvas::startLayout()
       layoutThread->join();
     }
   layoutThread.reset(new boost::thread(boost::bind(&Canvas::createLayout, this)));
+  emit layoutStarted();
 }
 
 void Canvas::stopLayout()
 {
-  if (layoutThread != NULL) layoutThread->interrupt();
+  if (layoutThread != NULL) 
+    {
+      layoutThread->interrupt();
+      layoutThread->join();
+    }
+  
+  emit layoutEnded();
 }
 
 void Canvas::unpinAll()

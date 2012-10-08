@@ -23,7 +23,7 @@ class WordQloud : public QMainWindow
   WordQloud();
 
   public slots:
-  void progress(int, int);
+  void onProgressChanged(int, int);
 
 protected:
   void contextMenuEvent(QContextMenuEvent *event);
@@ -39,6 +39,8 @@ private slots:
   void onColourschemeActionGroupTriggered(QAction*);
   void onColourVariationAction(QAction*);
   void onLayoutBoundsAction(QAction*);
+  void onLayoutEnded();
+  void onLayoutStarted();
   void onPathGroupAction(QAction*);
   void onUnpinAllButtonClicked();
   void reCreateLayout();
@@ -50,7 +52,8 @@ private slots:
   void spinColours();
   void spinOrientations();  
   void onStatusChanged(QString);
-  
+  void onStopButtonClicked();
+
 private:
   void addColourVariations(QList<QColor> &colourlis, ColourVariation v);
   ColourVariation checkedColourVariation();
@@ -110,6 +113,7 @@ private:
   View *view;
   Canvas *canvas;
   QProgressBar *progressBar;
+  QPushButton *stopLayoutButton;
 };
 
 #endif

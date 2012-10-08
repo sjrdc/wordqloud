@@ -38,9 +38,15 @@ WordQloud::WordQloud()
   progressBar = new QProgressBar();
   this->statusBar()->addPermanentWidget(progressBar);
   connect(canvas, SIGNAL(layoutProgress(int, int)),
-	  this, SLOT(progress(int, int)), Qt::QueuedConnection);
+	  this, SLOT(onProgressChanged(int, int)), Qt::QueuedConnection);
   progressBar->hide();
-
+  
+  stopLayoutButton = new QPushButton("stop");
+  this->statusBar()->addPermanentWidget(stopLayoutButton);
+  stopLayoutButton->hide();
+  connect(stopLayoutButton, SIGNAL(clicked(void)),
+	  this, SLOT(onStopButtonClicked(void)), Qt::QueuedConnection);
+    
   unpinAllButton = new QPushButton("unpin all");
   connect(unpinAllButton, SIGNAL(clicked()), this, SLOT(onUnpinAllButtonClicked()));
   reCreateLayoutButton = new QPushButton("re-create layout");
@@ -51,6 +57,12 @@ WordQloud::WordQloud()
   connect(spinOrientationsButton, SIGNAL(clicked()), 
 	  this, SLOT(spinOrientations()));  
   
+  connect(canvas, SIGNAL(layoutEnded(void)),
+	  this, SLOT(onLayoutEnded(void)));
+
+  connect(canvas, SIGNAL(layoutStarted(void)),
+	  this, SLOT(onLayoutStarted(void)));
+
   QHBoxLayout *buttonLayout = new QHBoxLayout;
   buttonLayout->addWidget(spinColoursButton);
   buttonLayout->addWidget(spinOrientationsButton); 
@@ -499,7 +511,19 @@ void WordQloud::load()
   
   canvas->setBackgroundBrush(backgroundColour);
   view->setSceneRect(canvas->setWordList(wordlist));
-  this->onStatusChanged(QString("Word list created."));  
+  this->onStatusChanged(QString("Word list created."));
+}
+
+void WordQloud::onLayoutEnded()
+{
+  progressBar->hide();
+  stopLayoutButton->hide();
+}
+
+void WordQloud::onLayoutStarted()
+{
+  progressBar->show();
+  stopLayoutButton->show();
 }
 
 void WordQloud::onLoadWordlist()
@@ -574,20 +598,20 @@ void WordQloud::onStatusChanged(QString s)
   statusBar()->showMessage(s);
 }
 
+void WordQloud::onStopButtonClicked()
+{
+  canvas->stopLayout();
+}
+
 void WordQloud::onUnpinAllButtonClicked()
 {
   canvas->unpinAll();
 }
 
-void WordQloud::progress(int v, int max)
+void WordQloud::onProgressChanged(int v, int max)
 {
   progressBar->setMaximum(max);
   progressBar->setValue(v);
-
-  if (v < max)
-    progressBar->show();
-  else
-    progressBar->hide();
 }
 
 void WordQloud::reCreateLayout()
