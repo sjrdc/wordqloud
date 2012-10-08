@@ -23,7 +23,7 @@ class WordQloud : public QMainWindow
   WordQloud();
 
   public slots:
-    void progress(int);
+  void progress(int, int);
 
 protected:
   void contextMenuEvent(QContextMenuEvent *event);

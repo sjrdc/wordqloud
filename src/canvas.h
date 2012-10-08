@@ -12,6 +12,7 @@ class Word;
 
 class Canvas : public QGraphicsScene
 {
+  Q_OBJECT
 public:
   /** 
    * Canvas constructor
@@ -39,6 +40,9 @@ public:
   void setWordList(WordList l);
   void setWordFont(QFont font);
 
+signals:
+  void layoutProgress(int, int);
+			 
 public slots:
   void randomiseOrientations(WordOrientation w);
   void unpinAll();

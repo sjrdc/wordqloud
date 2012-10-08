@@ -1,5 +1,3 @@
-
-
 ADD_EXECUTABLE(wordcloud
   canvas.cpp
   colormap.cpp
@@ -25,6 +23,8 @@ qt4_automoc(
   boundsdialog.cpp
   boundingrectdialog.h
   boundingrectdialog.cpp
+  canvas.cpp
+  canvas.h
   colourschemedialog.h
   colourschemedialog.cpp
   view.cpp

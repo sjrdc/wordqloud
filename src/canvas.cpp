@@ -4,7 +4,7 @@
 #include <QKeyEvent>
 
 #include <ctime>
-#include "canvas.h"
+#include "canvas.moc"
 #include "word.h"
 
 Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
@@ -45,8 +45,13 @@ Canvas::~Canvas()
 void Canvas::createLayout()
 {
   int words = 0;
+  int c = 0;
   foreach (Word* w, wordlist)
-    if (layoutWord(w)) ++words;
+    {
+      if (layoutWord(w)) ++words;
+      emit layoutProgress(c++, wordlist.size());
+    }
+  
   qDebug() << wordlist.size() << words;
 }
 
