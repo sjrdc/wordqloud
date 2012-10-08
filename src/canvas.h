@@ -34,12 +34,12 @@ public:
   void randomiseWordFontFamily(const QVector<QString> &fontfamilies);  
   // void reCreateLayout(); 
   void startLayout() ;
-  void scaleSceneRect();
+  QRectF scaleSceneRect();
   void setColors(QColor bcolor, QVector<QRgb> wcolors);
   void setBoundingRegions(QVector<QRegion> b);
   void setLayoutBound(LayoutBound l);
   void setLayoutPath(LayoutPath p);
-  void setWordList(WordList l);
+  QRectF setWordList(WordList l);
   void setWordFont(QFont font);
 
 signals:
@@ -47,6 +47,7 @@ signals:
 			 
 public slots:
   void randomiseOrientations(WordOrientation w);
+  void stopLayout();
   void unpinAll();
 
 protected:
@@ -56,7 +57,7 @@ protected:
   void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);    
-  void scaleSceneRectArea(float factor);
+  QRectF scaleSceneRectArea(float factor);
   
   WordList wordlist;
   LayoutBound layoutBound;

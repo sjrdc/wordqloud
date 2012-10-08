@@ -43,16 +43,6 @@ Canvas::~Canvas()
   delete avarnor;
 }
 
-void Canvas::startLayout()
-{
-  if (layoutThread != NULL) 
-    {
-      layoutThread->interrupt();
-      layoutThread->join();
-    }
-  layoutThread.reset(new boost::thread(boost::bind(&Canvas::createLayout, this)));
-}
-
 void Canvas::createLayout()
 {
   quadtree.clearContents();
@@ -65,6 +55,7 @@ void Canvas::createLayout()
     {
       if (layoutWord(w)) ++words;
       emit layoutProgress(c++, wordlist.size());
+      boost::this_thread::interruption_point();
     }
   
   emit layoutProgress(c++, wordlist.size());
@@ -364,20 +355,17 @@ void Canvas::setWordFont(QFont font)
     }
 }
 
-void Canvas::setWordList(WordList l) 
+QRectF Canvas::setWordList(WordList l) 
 {
   quadtree.clearContents();
   this->clear();
   wordlist.clear();
   wordlist = l;
 
-  scaleSceneRect();
-
-  // foreach (Word *word, wordlist)  
-  //   word->setScale(scalefactor);
+  return scaleSceneRect();
 }
 
-void Canvas::scaleSceneRect()
+QRectF Canvas::scaleSceneRect()
 {
   if (wordlist.size() > 1)
     {
@@ -401,19 +389,18 @@ void Canvas::scaleSceneRect()
 
       std::cout << boundArea << " " << wordArea << " " 
 		<< (wordArea/boundArea) << std::endl;
-      scaleSceneRectArea(1.5*wordArea/boundArea);
+      return scaleSceneRectArea(1.5*wordArea/boundArea);
     }
+  else return QRectF();
 }
 
-void Canvas::scaleSceneRectArea(float factor)
+QRectF Canvas::scaleSceneRectArea(float factor)
 {
   QRectF sceneRect = this->sceneRect();
-  qDebug() << sceneRect;
   sceneRect.setWidth(sceneRect.width()*sqrt(factor));
   sceneRect.setHeight(sceneRect.height()*sqrt(factor));
   this->setSceneRect(sceneRect);
   quadtree.setRootRectangle(sceneRect);
-  qDebug() << sceneRect;
   centrepoint = 0.5*QPointF(sceneRect.width(), sceneRect.height());
   cxDistribution = boost::normal_distribution<float>(centrepoint.x(),
 						     sceneRect.width()*.5);
@@ -428,6 +415,22 @@ void Canvas::scaleSceneRectArea(float factor)
     boost::variate_generator<boost::mt19937&, 
   			     boost::normal_distribution<float> >(rng,
 								 cyDistribution);
+  return sceneRect;
+}
+
+void Canvas::startLayout()
+{
+  if (layoutThread != NULL) 
+    {
+      layoutThread->interrupt();
+      layoutThread->join();
+    }
+  layoutThread.reset(new boost::thread(boost::bind(&Canvas::createLayout, this)));
+}
+
+void Canvas::stopLayout()
+{
+  if (layoutThread != NULL) layoutThread->interrupt();
 }
 
 void Canvas::unpinAll()
