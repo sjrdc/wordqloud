@@ -36,10 +36,10 @@ WordQloud::WordQloud()
   view = new View(canvas);
   
   progressBar = new QProgressBar();
-  progressBar->setRange(0, 100);
-  this->statusBar()->addWidget(progressBar);
+  this->statusBar()->addPermanentWidget(progressBar);
   connect(canvas, SIGNAL(layoutProgress(int, int)),
 	  this, SLOT(progress(int, int)), Qt::QueuedConnection);
+  progressBar->hide();
 
   unpinAllButton = new QPushButton("unpin all");
   connect(unpinAllButton, SIGNAL(clicked()), this, SLOT(onUnpinAllButtonClicked()));
@@ -573,6 +573,11 @@ void WordQloud::progress(int v, int max)
 {
   progressBar->setMaximum(max);
   progressBar->setValue(v);
+
+  if (v < max)
+    progressBar->show();
+  else
+    progressBar->hide();
 }
 
 void WordQloud::reCreateLayout()
