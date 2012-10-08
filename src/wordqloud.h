@@ -33,7 +33,7 @@ private slots:
   void about();
   void createCloudBoundsFromImage();
   void load();
-  void loadWordlist();
+  void onLoadWordlist();
   void open();
   void onOrientationAction(QAction*);
   void onColourschemeActionGroupTriggered(QAction*);
@@ -49,6 +49,7 @@ private slots:
   void setFont();
   void spinColours();
   void spinOrientations();  
+  void onStatusChanged(QString);
   
 private:
   void addColourVariations(QList<QColor> &colourlis, ColourVariation v);

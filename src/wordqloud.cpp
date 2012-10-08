@@ -265,11 +265,13 @@ void WordQloud::createActions()
 	  this, SLOT(setBackgroundColor()));
   
   loadAction = new QAction(tr("Load &text..."), this);
-  loadAction->setStatusTip(tr("load text file"));
+  loadAction->setStatusTip(tr("Create word list from text file"));
   connect(loadAction, SIGNAL(triggered()), this, SLOT(load()));
 
   loadWordlistAction = new QAction(tr("Load word list..."), this);
-  connect(loadWordlistAction, SIGNAL(triggered()), this, SLOT(loadWordlist()));
+  loadWordlistAction->setStatusTip(tr("Load word list file"));
+  connect(loadWordlistAction, SIGNAL(triggered()), 
+	  this, SLOT(onLoadWordlist()));
   
   openAction = new QAction(tr("&Open..."), this);
   openAction->setShortcuts(QKeySequence::Open);
@@ -295,9 +297,11 @@ void WordQloud::createActions()
   connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
   fontAction = new QAction(tr("&Font"), this);
+  fontAction->setStatusTip(tr("Set word font"));
   connect(fontAction, SIGNAL(triggered()), this, SLOT(setFont()));
 
   boundsFromImageAction = new QAction(tr("&Bounds from image"), this);
+  boundsFromImageAction->setStatusTip(tr("Create bounds from an image"));
   connect(boundsFromImageAction, SIGNAL(triggered()), 
 	  this, SLOT(createCloudBoundsFromImage()));
 }
@@ -498,7 +502,7 @@ void WordQloud::load()
   canvas->startLayout();
 }
 
-void WordQloud::loadWordlist()
+void WordQloud::onLoadWordlist()
 {
   QString filename = 
     QFileDialog::getOpenFileName(this, "Load text file");
@@ -513,7 +517,7 @@ void WordQloud::loadWordlist()
     }
   
   canvas->setWordList(wordlist);
-  canvas->startLayout();
+  this->onStatusChanged(QString("Word list created."));
 }
 
 void WordQloud::open()
@@ -562,6 +566,11 @@ void WordQloud::onLayoutBoundsAction(QAction *a)
 {
   LayoutBound l = (LayoutBound)(a->data().toInt());
   canvas->setLayoutBound(l);
+}
+
+void WordQloud::onStatusChanged(QString s)
+{
+  statusBar()->showMessage(s);
 }
 
 void WordQloud::onUnpinAllButtonClicked()
