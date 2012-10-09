@@ -19,6 +19,7 @@
 
 #include <ctime>
 
+#include "boundingrectdialog.h"
 #include "boundsdialog.h"
 #include "colourschemedialog.h"
 #include "canvas.h"
@@ -175,6 +176,11 @@ void WordQloud::contextMenuEvent(QContextMenuEvent *event)
 
 void WordQloud::createActions()
 {
+  sceneRectAction = new QAction(tr("Scene rectangle"), this);
+  sceneRectAction->setStatusTip(tr("Change scene rectangle"));
+  connect(sceneRectAction, SIGNAL(triggered()),
+	  this, SLOT(onSceneRectActionTriggered()));
+  
   spiralPathAction = new QAction(tr("Circular"), this);
   spiralPathAction->setCheckable(true);
   spiralPathAction->setData(CircularPath);
@@ -188,7 +194,7 @@ void WordQloud::createActions()
   pathGroup->setExclusive(true);
   spiralPathAction->setChecked(true);
   connect(pathGroup, SIGNAL(triggered(QAction*)),
-	  this, SLOT(onPathGroupAction(QAction*)));
+	  this, SLOT(onPathGroupActionTriggered(QAction*)));
   
   horizontalOrientationAction = new QAction(tr("horizontal"), this);
   horizontalOrientationAction->setCheckable(true);
@@ -219,7 +225,7 @@ void WordQloud::createActions()
   orientationActionGroup->setExclusive(true);
   horizontalOrientationAction->setChecked(true);
   connect(orientationActionGroup, SIGNAL(triggered(QAction*)),
-	  this, SLOT(onOrientationAction(QAction*)));
+	  this, SLOT(onOrientationActionTriggered(QAction*)));
 
   sceneBoundOnlyAction = new QAction(tr("Scene only"), this);
   sceneBoundOnlyAction->setCheckable(true);
@@ -237,7 +243,7 @@ void WordQloud::createActions()
   layoutBoundsActionGroup->setExclusive(true);
   sceneBoundOnlyAction->setChecked(true);
   connect(layoutBoundsActionGroup, SIGNAL(triggered(QAction*)),
-	  this, SLOT(onLayoutBoundsAction(QAction*)));
+	  this, SLOT(onLayoutBoundsActionTriggered(QAction*)));
   
   asPaletteAction = new QAction(tr("as palette"), this);
   asPaletteAction->setCheckable(true);
@@ -264,7 +270,7 @@ void WordQloud::createActions()
   colourVariationActionGroup->setExclusive(true);
   littleVariationAction->setChecked(true);
   connect(colourVariationActionGroup, SIGNAL(triggered(QAction*)),
-	  this, SLOT(onColourVariationAction(QAction*)));
+	  this, SLOT(onColourVariationActionTriggered(QAction*)));
   
   customColourschemeAction = new QAction(tr("Custom..."), this);
   customColourschemeAction->setCheckable(true);
@@ -456,6 +462,7 @@ void WordQloud::createMenus()
           
   layoutMenu->addAction(fontAction);
   layoutMenu->addAction(boundsFromImageAction);
+  layoutMenu->addAction(sceneRectAction);
 
   QMenu *layoutBoundsMenu = layoutMenu->addMenu(tr("Layout bounds"));
   layoutBoundsMenu->addAction(sceneBoundOnlyAction);
@@ -565,7 +572,7 @@ void WordQloud::onColourschemeActionGroupTriggered(QAction *a)
   canvas->randomiseWordColours(colourlist.toVector());
 }
 
-void WordQloud::onColourVariationAction(QAction *a)
+void WordQloud::onColourVariationActionTriggered(QAction *a)
 {
   QList<QColor> colourlist = this->checkedColourscheme();
   QColor backgroundColour = colourlist.first();
@@ -577,20 +584,32 @@ void WordQloud::onColourVariationAction(QAction *a)
   canvas->randomiseWordColours(colourlist.toVector());
 }
 
-void WordQloud::onOrientationAction(QAction* a)
+void WordQloud::onOrientationActionTriggered(QAction* a)
 {
   canvas->randomiseOrientations((WordOrientation)a->data().toInt());
 }
 
-void WordQloud::onPathGroupAction(QAction* a)
+void WordQloud::onPathGroupActionTriggered(QAction* a)
 {
   canvas->setLayoutPath((LayoutPath)a->data().toInt());
 }
 
-void WordQloud::onLayoutBoundsAction(QAction *a)
+void WordQloud::onLayoutBoundsActionTriggered(QAction *a)
 {
   LayoutBound l = (LayoutBound)(a->data().toInt());
   canvas->setLayoutBound(l);
+}
+
+void WordQloud::onSceneRectActionTriggered()
+{
+  BoundingRectDialog *b = new BoundingRectDialog(canvas->sceneRect());
+  b->exec();
+
+  if (b->result() == QDialog::Accepted)
+    canvas->setSceneRect(b->getRect());
+
+  // clean up
+  delete b;
 }
 
 void WordQloud::onStatusChanged(QString s)
@@ -710,5 +729,5 @@ void WordQloud::spinColours()
 
 void WordQloud::spinOrientations()
 {
-  this->onOrientationAction(orientationActionGroup->checkedAction());
+  this->onOrientationActionTriggered(orientationActionGroup->checkedAction());
 }

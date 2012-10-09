@@ -35,13 +35,14 @@ private slots:
   void load();
   void onLoadWordlist();
   void open();
-  void onOrientationAction(QAction*);
+  void onOrientationActionTriggered(QAction*);
   void onColourschemeActionGroupTriggered(QAction*);
-  void onColourVariationAction(QAction*);
-  void onLayoutBoundsAction(QAction*);
+  void onColourVariationActionTriggered(QAction*);
+  void onLayoutBoundsActionTriggered(QAction*);
   void onLayoutEnded();
   void onLayoutStarted();
-  void onPathGroupAction(QAction*);
+  void onPathGroupActionTriggered(QAction*);
+  void onSceneRectActionTriggered();
   void onUnpinAllButtonClicked();
   void reCreateLayout();
   void saveBitmap();
@@ -94,6 +95,8 @@ private:
   QAction *sceneBoundOnlyAction;
   QAction *imageBoundOnlyAction;
   QAction *imageAndSceneBoundAction;    
+
+  QAction *sceneRectAction;
 
   QActionGroup *orientationActionGroup;
   QAction *anyOrientationAction;

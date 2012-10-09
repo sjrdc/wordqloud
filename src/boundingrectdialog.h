@@ -15,8 +15,8 @@ public:
   QRectF getRect() const;
 			
 protected slots:
-  void heightChanged(float);
-  void widthChanged(float);  
+  void heightChanged(double);
+  void widthChanged(double);  
 
 private:
   QRectF rect;
