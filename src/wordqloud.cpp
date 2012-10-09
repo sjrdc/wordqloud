@@ -549,7 +549,6 @@ void WordQloud::onLoadWordlist()
   
   canvas->setWordList(wordlist);
   this->onStatusChanged(QString("Word list loaded"));
-  
 }
 
 void WordQloud::open()
@@ -606,9 +605,11 @@ void WordQloud::onSceneRectActionTriggered()
   b->exec();
 
   if (b->result() == QDialog::Accepted)
-    canvas->setSceneRect(b->getRect());
+    {
+      canvas->setSceneRect(b->getRect());
+      canvas->scaleSceneRect();
+    }
 
-  // clean up
   delete b;
 }
 

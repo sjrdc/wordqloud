@@ -33,7 +33,7 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
 			     boost::uniform_int<> >(rng, angleIncrement);
   
   quadtree.setRootRectangle(sceneRect());
-  layoutThread.reset(new boost::thread);
+  layoutBusy = false;
 }
 
 Canvas::~Canvas()
@@ -71,13 +71,13 @@ void Canvas::highlightPinned(bool highlight)
 
 void Canvas::keyPressEvent(QKeyEvent *event)
 {
-  if (event->key() == Qt::Key_Shift)
+  if (event->key() == Qt::Key_Shift && !layoutBusy)
     highlightPinned(true);
 }
 
 void Canvas::keyReleaseEvent(QKeyEvent *event)
 {
-  if (event->key() == Qt::Key_Shift)
+  if (event->key() == Qt::Key_Shift && !layoutBusy)
     highlightPinned(false);
 }
 
@@ -180,7 +180,7 @@ bool Canvas::layoutWord(Word *w)
 
 void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-  if (event->button() == Qt::LeftButton)
+  if (event->button() == Qt::LeftButton && !layoutBusy)
     {
       QGraphicsItem *item = itemAt(event->scenePos());
       if (item != NULL)
@@ -194,7 +194,7 @@ void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
   QGraphicsItem *item = mouseGrabberItem();
-  if (item != NULL)
+  if (item != NULL && !layoutBusy)
     {
       QPoint delta = (mouseEvent->scenePos() - mouseEvent->lastScenePos()).toPoint();
       item->moveBy(delta.x(), delta.y());
@@ -203,7 +203,7 @@ void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-  if (event->button() == Qt::LeftButton)
+  if (event->button() == Qt::LeftButton && !layoutBusy)
     {
       QGraphicsItem *item = mouseGrabberItem();  
       if (item != NULL)
@@ -342,9 +342,7 @@ void Canvas::setColors(QColor bcolor, QVector<QRgb> wcolors)
 void Canvas::setWordFont(QFont font)
 {
   foreach (Word *word, wordlist)
-    {
-      word->setFontName(font.family());
-    }
+    word->setFontName(font.family());
 }
 
 QRectF Canvas::setWordList(WordList l) 
@@ -417,6 +415,8 @@ void Canvas::startLayout()
       layoutThread->join();
     }
   layoutThread.reset(new boost::thread(boost::bind(&Canvas::createLayout, this)));
+  layoutBusy = true;
+  this->update();
   emit layoutStarted();
 }
 
@@ -427,7 +427,8 @@ void Canvas::stopLayout()
       layoutThread->interrupt();
       layoutThread->join();
     }
-  
+  layoutBusy = false;
+  this->update();
   emit layoutEnded();
 }
 

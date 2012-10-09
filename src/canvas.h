@@ -67,7 +67,8 @@ protected:
   QVector<QRgb> wordcolors;
   QuadTree quadtree;
   QVector<QRegion> boundingRegions;
-  LayoutPath path;  
+  LayoutPath path;
+  bool layoutBusy;
 
   // some random generator stuff for coordinate generation
   boost::mt19937 rng;
