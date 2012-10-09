@@ -59,6 +59,11 @@ bool Word::collidesWithCashed() const
     this->collidesWith(cachedCollision);
 }
 
+QTextStream& Word::fromStream(QTextStream& i)
+{
+  return i;
+}
+
 void Word::moveBy(float x, float y)
 {
   QGraphicsSimpleTextItem::moveBy(round(x), round(y));
@@ -96,6 +101,17 @@ void Word::setRotation(float r)
 {
   if (!_orientationLocked)
     QGraphicsSimpleTextItem::setRotation(r);
+}
+
+QTextStream& Word::toStream(QTextStream& o) const
+{
+  QPointF f = this->pos();
+  return  o << this->text() << ":"
+	    << "#" << this->brush().color().name() << ":"
+	    << "@" << this->rotation() << ":"
+	    << "!" << this->font().family() << ":"
+	    << "$" << f.x() << "," << f.y();
+  
 }
 
 void Word::updateCollisionDetection(QPointF delta)

@@ -517,7 +517,7 @@ void WordQloud::load()
     }
   
   canvas->setBackgroundBrush(backgroundColour);
-  view->setSceneRect(canvas->setWordList(wordlist));
+  canvas->setWordList(wordlist);
   this->onStatusChanged(QString("Word list created."));
 }
 

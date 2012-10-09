@@ -33,19 +33,20 @@ void View::setCenter(const QPointF& centerPoint)
       if(visibleArea.contains(sceneBounds)) 
 	// Use the center of scene ie. we can see the whole scene
 	currentCenterPoint = sceneBounds.center();
-      else {
-	currentCenterPoint = centerPoint;
+      else
+	{
+	  currentCenterPoint = centerPoint;
  
-      // We need to clamp the center. The centerPoint is too large
-      if(centerPoint.x() > bounds.x() + bounds.width())
-	currentCenterPoint.setX(bounds.x() + bounds.width());
-      else if(centerPoint.x() < bounds.x())
-	currentCenterPoint.setX(bounds.x());
-      if(centerPoint.y() > bounds.y() + bounds.height())
-	currentCenterPoint.setY(bounds.y() + bounds.height());
-      else if(centerPoint.y() < bounds.y())
-	currentCenterPoint.setY(bounds.y());
-    }
+	  // We need to clamp the center. The centerPoint is too large
+	  if(centerPoint.x() > bounds.x() + bounds.width())
+	    currentCenterPoint.setX(bounds.x() + bounds.width());
+	  else if(centerPoint.x() < bounds.x())
+	    currentCenterPoint.setX(bounds.x());
+	  if(centerPoint.y() > bounds.y() + bounds.height())
+	    currentCenterPoint.setY(bounds.y() + bounds.height());
+	  else if(centerPoint.y() < bounds.y())
+	    currentCenterPoint.setY(bounds.y());
+	}
   }
  
   // Update the scrollbars

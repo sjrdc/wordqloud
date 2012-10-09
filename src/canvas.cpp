@@ -59,8 +59,9 @@ void Canvas::createLayout()
     }
   
   emit layoutProgress(c++, wordlist.size());
-  qDebug() << wordlist.size() << words;
   emit layoutEnded();
+  layoutBusy = false;
+  qDebug() << wordlist.size() << words;
 }
 
 void Canvas::highlightPinned(bool highlight)
@@ -72,13 +73,19 @@ void Canvas::highlightPinned(bool highlight)
 void Canvas::keyPressEvent(QKeyEvent *event)
 {
   if (event->key() == Qt::Key_Shift && !layoutBusy)
-    highlightPinned(true);
+    {
+      highlightPinned(true);
+      update();
+    }
 }
 
 void Canvas::keyReleaseEvent(QKeyEvent *event)
 {
   if (event->key() == Qt::Key_Shift && !layoutBusy)
-    highlightPinned(false);
+    {
+      highlightPinned(false);
+      update();
+    }
 }
 
 bool Canvas::layoutWord(Word *w)
@@ -163,7 +170,7 @@ bool Canvas::layoutWord(Word *w)
 	    }	  
 
 	}
-      while (!done && attempts < 100);
+      while (!done && attempts < 25);
     }
   else w->prepareCollisionDetection();
 
@@ -171,6 +178,7 @@ bool Canvas::layoutWord(Word *w)
   
   /* finally add the word */
   QGraphicsScene::addItem((QGraphicsItem*)w);
+  this->update(w->boundingRect());
 
   // add it to the quadtree as well
   quadtree.insert(w);
@@ -198,6 +206,7 @@ void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
       QPoint delta = (mouseEvent->scenePos() - mouseEvent->lastScenePos()).toPoint();
       item->moveBy(delta.x(), delta.y());
+      this->update(item->boundingRect());
     }
 }
 
@@ -378,7 +387,7 @@ QRectF Canvas::scaleSceneRect()
 
       std::cout << boundArea << " " << wordArea << " " 
 		<< (wordArea/boundArea) << std::endl;
-      return scaleSceneRectArea(1.5*wordArea/boundArea);
+      return scaleSceneRectArea(1.6*wordArea/boundArea);
     }
   else return QRectF();
 }

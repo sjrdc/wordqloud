@@ -42,10 +42,11 @@ ADD_EXECUTABLE(wordqloud
   colourschemedialog.cpp
   canvas.cpp
   colormap.cpp
+  istreamable.cpp
   main.cpp
   quadtree.cpp
   quadnode.cpp
-view.cpp
+  view.cpp
   wordqloud.cpp
   word.cpp
   wordlist.cpp

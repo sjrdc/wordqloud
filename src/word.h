@@ -8,8 +8,10 @@
 
 #include <string>
 #include "iareacomparable.h"
+#include "istreamable.h"
 
-class Word : public QGraphicsSimpleTextItem, public IAreaComparable
+class Word : public QGraphicsSimpleTextItem, 
+	     public IAreaComparable, public IStreamable
 {
 public:
   Word(QString w, float b = 0.8);
@@ -23,6 +25,7 @@ public:
   bool colourLocked() const;
   bool fontLocked() const;
   bool fontsizeLocked() const;
+  QTextStream& fromStream(QTextStream&);
   int getFrequency() const;
   bool getPinned() const;
   float height();
@@ -40,6 +43,7 @@ public:
   void setFrequency(int f);
   void setRotation(float r);
   void showPinned(bool p);
+  QTextStream& toStream(QTextStream&) const;
   void togglePinned();
   void toggleShowPinned();  
   void toggleManipulated();
