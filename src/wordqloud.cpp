@@ -39,7 +39,7 @@ WordQloud::WordQloud()
   progressBar = new QProgressBar();
   this->statusBar()->addPermanentWidget(progressBar);
   connect(canvas, SIGNAL(layoutProgress(int, int)),
-	  this, SLOT(onProgressChanged(int, int)), Qt::QueuedConnection);
+	  this, SLOT(onProgressChanged(int, int)));
   progressBar->hide();
   
   stopLayoutButton = new QPushButton("stop");

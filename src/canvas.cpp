@@ -54,9 +54,9 @@ void Canvas::createLayout()
   int c = 0;
   foreach (Word* w, wordlist)
     {
+      boost::this_thread::interruption_point();
       if (layoutWord(w)) ++words;
       emit layoutProgress(c++, wordlist.size());
-      boost::this_thread::interruption_point();
     }
   
   emit layoutProgress(c++, wordlist.size());
@@ -436,15 +436,16 @@ QRectF Canvas::scaleSceneRectArea(float factor)
 
 void Canvas::startLayout()
 {
-  if (layoutThread != NULL) 
-    {
-      layoutThread->interrupt();
-      layoutThread->join();
-    }
-  layoutThread.reset(new boost::thread(boost::bind(&Canvas::createLayout, this)));
-  layoutBusy = true;
-  this->update();
+  // if (layoutThread != NULL) 
+  //   {
+  //     layoutThread->interrupt();
+  //     layoutThread->join();
+  //   }
+  // layoutThread.reset(new boost::thread(boost::bind(&Canvas::createLayout, this)));
+  // layoutBusy = true;
+  // this->update();
   emit layoutStarted();
+  createLayout();
 }
 
 void Canvas::stopLayout()
