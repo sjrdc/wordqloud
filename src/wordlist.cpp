@@ -101,55 +101,9 @@ void WordList::fromWordFile(QString filename)
   QStringList stringlist;
   while (!stream.atEnd() && stream.status() == QTextStream::Ok)
     {
-      QString line = stream.readLine();
-      QStringList words = line.split(' ');
-
-      foreach (QString string, words)
-	if (!string.isEmpty())
-	  {
-	    // find possible modifiers
-	    QStringList modifiers = string.split(':', QString::SkipEmptyParts);
-	    string = modifiers[0];
-	    modifiers.pop_front();
-	    Word *word = new Word(string);
-	    foreach (QString modifier, modifiers)
-	      {
-		char key = modifier[0].toAscii();
-		switch(key)
-		  {
-		  case '#':
-		    {
-		      if (modifier.size() == 7)
-			{
-			  word->setColour(QColor(modifier));
-			  word->lockColour();
-			}
-		      break;
-		    }
-		  case '@':
-		    {
-		      double angle = modifier.right(1).toDouble();
-		      word->setRotation(angle);
-		      word->lockOrientation();
-		      break;
-		    }
-		  case '!':
-		    {
-		      word->setFontName(modifier.right(1));
-		      word->lockFont();
-		      break;
-		    }
-		  default: 
-		    {
-		      int fsize = modifier.toInt();
-		      word->setFontsize(fsize);
-		      word->lockFontsize();
-		      break;
-		    }
-		  }
-	      }
-	    this->push_back(word);
-	  }
+      Word *w = new Word;
+      w->fromStream(stream);
+      this->push_back(w);
     }
   file.close();
 }

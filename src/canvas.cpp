@@ -2,6 +2,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
+#include <QTextStream>
 
 #include <ctime>
 #include "canvas.moc"
@@ -91,6 +92,7 @@ void Canvas::keyReleaseEvent(QKeyEvent *event)
 bool Canvas::layoutWord(Word *w)
 {
   int attempts = 0;
+  int maxattempts = 25;
   /* find out where to place the word */
   if (!w->getPinned())
     {
@@ -170,11 +172,11 @@ bool Canvas::layoutWord(Word *w)
 	    }	  
 
 	}
-      while (!done && attempts < 25);
+      while (!done && attempts < maxattempts);
     }
   else w->prepareCollisionDetection();
 
-  if (attempts >= 10) return false;
+  if (attempts >= maxattempts) return false;
   
   /* finally add the word */
   QGraphicsScene::addItem((QGraphicsItem*)w);
@@ -340,6 +342,22 @@ void Canvas::setBoundingRegions(QVector<QRegion> b)
   
   boundingRegions.clear();
   boundingRegions = b;
+}
+
+void Canvas::saveWordcloud(QString filename)
+{
+  QFile file(filename);
+  if (!file.open(QIODevice::WriteOnly|QIODevice::Truncate|QIODevice::Text)) 
+    {
+      qDebug() << "Could not save wordcloud to file " << filename << ".";
+      return;
+    }
+
+  QTextStream o(&file);
+  foreach (QGraphicsItem *item, items())
+    o << *(Word*)item << "\n"; 
+    
+  file.close();
 }
 
 void Canvas::setColors(QColor bcolor, QVector<QRgb> wcolors)

@@ -61,6 +61,69 @@ bool Word::collidesWithCashed() const
 
 QTextStream& Word::fromStream(QTextStream& i)
 {
+  QString line = i.readLine();
+  if (!line.isEmpty())
+    {
+      // find possible modifiers
+      QStringList modifiers = line.split(':', QString::SkipEmptyParts);
+      line = modifiers[0];
+      modifiers.pop_front();
+      this->setText(line);
+      qDebug() << line << modifiers;
+      foreach (QString modifier, modifiers)
+	{
+	  char key = modifier[0].toAscii();
+	  switch(key)
+	    {
+	    case '!':
+	      {
+		this->setFontName(modifier.right(modifier.size() - 1));
+		this->lockFont();
+		qDebug() << "font family: " << modifier.right(modifier.size() - 1);
+		break;
+	      }
+	    case '@':
+	      {
+		double angle = modifier.right(modifier.size() - 1).toDouble();
+		this->setRotation(angle);
+		this->lockOrientation();
+		qDebug() << "orientation: " << modifier.right(modifier.size() - 1).toDouble();
+		break;
+	      }
+	    case '#':
+	      {
+		if (modifier.size() == 7)
+		  {
+		    this->setColour(QColor(modifier));
+		    this->lockColour();
+		  }
+		break;
+	      }
+	    case '$':
+	      {
+		QStringList coordinates = modifier.right(modifier.size() - 1).split(',');
+		float x = coordinates[0].toFloat();
+		float y = coordinates[1].toFloat();
+		this->setPos(QPointF(x, y));
+		this->setPinned(true);
+		qDebug() << "coordinates: " << modifier.right(modifier.size() - 1).split(',');
+		break;
+	      }
+	    case '%':
+	      {
+		float size = modifier.right(modifier.size() - 1).toFloat();
+		this->setFontsize(size);
+		this->lockFontsize();
+		qDebug() << "size: " << modifier.right(modifier.size() - 1).toFloat();
+		break;
+	      }
+	    default: 
+	      {
+		break;
+	      }
+	    }
+	}
+    }
   return i;
 }
 
@@ -107,11 +170,11 @@ QTextStream& Word::toStream(QTextStream& o) const
 {
   QPointF f = this->pos();
   return  o << this->text() << ":"
-	    << "#" << this->brush().color().name() << ":"
+	    << "%" << this->font().pointSize() << ":"
+	    << this->brush().color().name() << ":"
 	    << "@" << this->rotation() << ":"
 	    << "!" << this->font().family() << ":"
 	    << "$" << f.x() << "," << f.y();
-  
 }
 
 void Word::updateCollisionDetection(QPointF delta)

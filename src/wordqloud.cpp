@@ -296,13 +296,17 @@ void WordQloud::createActions()
   openAction->setStatusTip(tr("Open an existing file"));
   connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
 
+  saveAction = new QAction(tr("Save..."), this);
+  saveAction->setStatusTip(tr("Save the document to disk"));
+  connect(saveAction, SIGNAL(triggered()), this, SLOT(onSaveActionTriggered()));
+  
   saveSvgAction = new QAction(tr("&Save PDF"), this);
   saveSvgAction->setShortcuts(QKeySequence::Save);
-  saveSvgAction->setStatusTip(tr("Save the document to disk"));
+  saveSvgAction->setStatusTip(tr("Save the document to disk as a PDF file"));
   connect(saveSvgAction, SIGNAL(triggered()), this, SLOT(savePDF()));
 
   savePngAction = new QAction(tr("&Save bitmap"), this);
-  savePngAction->setStatusTip(tr("Save the document to disk"));
+  savePngAction->setStatusTip(tr("Save the document to disk as a bitmap"));
   connect(savePngAction, SIGNAL(triggered()), this, SLOT(saveBitmap()));
 
   exitAction = new QAction(tr("E&xit"), this);
@@ -443,7 +447,8 @@ void WordQloud::createMenus()
   fileMenu = menuBar()->addMenu(tr("&File"));
   fileMenu->addAction(loadAction);
   fileMenu->addAction(loadWordlistAction);
-  fileMenu->addAction(openAction);  
+  fileMenu->addAction(openAction);
+  fileMenu->addAction(saveAction);
   fileMenu->addAction(saveSvgAction);
   fileMenu->addAction(savePngAction);  
   fileMenu->addSeparator();
@@ -583,6 +588,12 @@ void WordQloud::onColourVariationActionTriggered(QAction *a)
   canvas->randomiseWordColours(colourlist.toVector());
 }
 
+void WordQloud::onLayoutBoundsActionTriggered(QAction *a)
+{
+  LayoutBound l = (LayoutBound)(a->data().toInt());
+  canvas->setLayoutBound(l);
+}
+
 void WordQloud::onOrientationActionTriggered(QAction* a)
 {
   canvas->randomiseOrientations((WordOrientation)a->data().toInt());
@@ -593,10 +604,19 @@ void WordQloud::onPathGroupActionTriggered(QAction* a)
   canvas->setLayoutPath((LayoutPath)a->data().toInt());
 }
 
-void WordQloud::onLayoutBoundsActionTriggered(QAction *a)
+void WordQloud::onProgressChanged(int v, int max)
 {
-  LayoutBound l = (LayoutBound)(a->data().toInt());
-  canvas->setLayoutBound(l);
+  progressBar->setMaximum(max);
+  progressBar->setValue(v);
+}
+
+void WordQloud::onSaveActionTriggered()
+{
+  QString filename = 
+    QFileDialog::getSaveFileName(this, "Save wordcloud");
+    
+  if (!filename.isEmpty())
+    canvas->saveWordcloud(filename);
 }
 
 void WordQloud::onSceneRectActionTriggered()
@@ -626,12 +646,6 @@ void WordQloud::onStopButtonClicked()
 void WordQloud::onUnpinAllButtonClicked()
 {
   canvas->unpinAll();
-}
-
-void WordQloud::onProgressChanged(int v, int max)
-{
-  progressBar->setMaximum(max);
-  progressBar->setValue(v);
 }
 
 void WordQloud::reCreateLayout()

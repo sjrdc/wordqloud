@@ -14,7 +14,7 @@ class Word : public QGraphicsSimpleTextItem,
 	     public IAreaComparable, public IStreamable
 {
 public:
-  Word(QString w, float b = 0.8);
+  Word(QString w = "", float b = 0.8);
   ~Word();
 
   float area();

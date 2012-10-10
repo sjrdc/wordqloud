@@ -33,6 +33,7 @@ public:
   void randomiseWordColours(const QVector<QColor> &colours);
   void randomiseWordFontFamily(const QVector<QString> &fontfamilies);  
   // void reCreateLayout(); 
+  void saveWordcloud(QString filename);
   void startLayout() ;
   QRectF scaleSceneRect();
   void setColors(QColor bcolor, QVector<QRgb> wcolors);
