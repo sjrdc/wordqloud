@@ -1,5 +1,3 @@
-#include <boost/bind.hpp>
-
 #include <QAction>
 #include <QColorDialog>
 #include <QContextMenuEvent>
@@ -176,6 +174,11 @@ void WordQloud::contextMenuEvent(QContextMenuEvent *event)
 
 void WordQloud::createActions()
 {
+  clearWordListAction = new QAction(tr("Clear word list"), this);
+  clearWordListAction->setStatusTip(tr("Clear the word list"));
+  connect(clearWordListAction, SIGNAL(triggered()),
+	  this, SLOT(onClearWordListActionTriggered()));
+    
   sceneRectAction = new QAction(tr("Scene rectangle"), this);
   sceneRectAction->setStatusTip(tr("Change scene rectangle"));
   connect(sceneRectAction, SIGNAL(triggered()),
@@ -290,11 +293,6 @@ void WordQloud::createActions()
   loadWordlistAction->setStatusTip(tr("Load word list file"));
   connect(loadWordlistAction, SIGNAL(triggered()), 
 	  this, SLOT(onLoadWordlist()));
-  
-  openAction = new QAction(tr("&Open..."), this);
-  openAction->setShortcuts(QKeySequence::Open);
-  openAction->setStatusTip(tr("Open an existing file"));
-  connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
 
   saveAction = new QAction(tr("Save..."), this);
   saveAction->setStatusTip(tr("Save the document to disk"));
@@ -447,7 +445,7 @@ void WordQloud::createMenus()
   fileMenu = menuBar()->addMenu(tr("&File"));
   fileMenu->addAction(loadAction);
   fileMenu->addAction(loadWordlistAction);
-  fileMenu->addAction(openAction);
+  fileMenu->addAction(clearWordListAction);
   fileMenu->addAction(saveAction);
   fileMenu->addAction(saveSvgAction);
   fileMenu->addAction(savePngAction);  
@@ -522,8 +520,13 @@ void WordQloud::load()
     }
   
   canvas->setBackgroundBrush(backgroundColour);
-  canvas->setWordList(wordlist);
+  canvas->addWordList(wordlist);
   this->onStatusChanged(QString("Word list created."));
+}
+
+void WordQloud::onClearWordListActionTriggered()
+{
+  canvas->clearWordList();
 }
 
 void WordQloud::onLayoutEnded()
@@ -552,12 +555,8 @@ void WordQloud::onLoadWordlist()
       return;
     }
   
-  canvas->setWordList(wordlist);
+  canvas->addWordList(wordlist);
   this->onStatusChanged(QString("Word list loaded"));
-}
-
-void WordQloud::open()
-{
 }
 
 void WordQloud::onColourschemeActionGroupTriggered(QAction *a)

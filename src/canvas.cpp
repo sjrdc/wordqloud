@@ -44,6 +44,19 @@ Canvas::~Canvas()
   delete avarnor;
 }
 
+void Canvas::addWordList(WordList l)
+{
+  wordlist.append(l);
+  scaleSceneRect();
+}
+
+void Canvas::clearWordList()
+{
+  quadtree.clearContents();
+  this->clear();
+  wordlist.clear();
+}
+
 void Canvas::createLayout()
 {
   quadtree.clearContents();
@@ -374,11 +387,8 @@ void Canvas::setWordFont(QFont font)
 
 QRectF Canvas::setWordList(WordList l) 
 {
-  quadtree.clearContents();
-  this->clear();
-  wordlist.clear();
+  this->clearWordList();
   wordlist = l;
-
   return scaleSceneRect();
 }
 

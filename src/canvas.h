@@ -27,7 +27,8 @@ public:
   ~Canvas();
 
   void addWord(Word *w);
-  void appendWordList(WordList l);
+  void addWordList(WordList l);
+  void clearWordList();
   void createLayout();
   void highlightPinned(bool h);
   void randomiseWordColours(const QVector<QColor> &colours);
@@ -90,13 +91,6 @@ inline void Canvas::addWord(Word *w)
 {
   wordlist.push_back(w);
   layoutWord(w);
-}
-
-inline void Canvas::appendWordList(WordList l)
-{
-  wordlist.append(l);
-  foreach (Word *word, l)
-    layoutWord(word);
 }
 
 inline void Canvas::setLayoutBound(LayoutBound l)
