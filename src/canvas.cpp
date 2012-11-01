@@ -153,6 +153,7 @@ bool Canvas::layoutWord(Word *w)
 	  w->moveBy(delta.x(), delta.y());
 	  oldpos += delta;
 
+	  if (attempts >= maxattempts) break;
 	  if (!sceneRect().contains(w->boundingBox())) { attempts++; goto startlayout; }
           if (boundingRegions.size() > 0)
             {
@@ -427,6 +428,20 @@ QRectF Canvas::scaleSceneRectArea(float factor, QSizeF maximumWordSize)
   QRectF sceneRect = this->sceneRect();
   sceneRect.setWidth(sceneRect.width()*sqrt(factor));
   sceneRect.setHeight(sceneRect.height()*sqrt(factor));
+
+  if (sceneRect.width() < maximumWordSize.width())
+    {
+      float r = sceneRect.width()/sceneRect.height();
+      sceneRect.setWidth(maximumWordSize.width()*1.2);
+      sceneRect.setHeight(maximumWordSize.width()*1.2/r);
+    }
+  if (sceneRect.height() < maximumWordSize.height())
+    {
+      float r = sceneRect.height()/sceneRect.width();
+      sceneRect.setHeight(maximumWordSize.height()*1.2);
+      sceneRect.setWidth(maximumWordSize.height()*1.2/r);
+    }
+        
   this->setSceneRect(sceneRect);
   quadtree.setRootRectangle(sceneRect);
   centrepoint = 0.5*QPointF(sceneRect.width(), sceneRect.height());
