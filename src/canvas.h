@@ -61,7 +61,7 @@ protected:
   void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);    
-  QRectF scaleSceneRectArea(float factor);
+  QRectF scaleSceneRectArea(float factor, QSizeF maxwordsize = QSizeF());
   
   WordList wordlist;
   LayoutBound layoutBound;

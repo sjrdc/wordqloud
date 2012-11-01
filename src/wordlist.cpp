@@ -107,3 +107,18 @@ void WordList::fromWordFile(QString filename)
     }
   file.close();
 }
+
+QSizeF WordList::maximumWordSize()
+{
+  float maxwidth = 0, maxheight = 0;
+
+  foreach(Word *word, *this)
+    {
+      QRectF r = word->boundingRect();
+      if (r.width() > maxwidth) maxwidth = r.width();
+      if (r.height() > maxheight) maxheight = r.height();
+    }
+  
+  return QSizeF(maxwidth, maxheight);
+}
+

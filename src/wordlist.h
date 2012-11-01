@@ -10,9 +10,12 @@ public:
   float area();
   void fromTextFile(QString filename, const QList<QColor> &colourlist);
   void fromWordFile(QString filename);
+  QSizeF maximumWordSize();
+  
 protected:
   void initBlackList();
   std::vector<QString> blacklist;
+
 private:
 };
 

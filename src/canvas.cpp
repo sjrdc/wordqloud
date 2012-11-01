@@ -397,6 +397,8 @@ QRectF Canvas::scaleSceneRect()
   if (wordlist.size() > 1)
     {
       float wordArea = wordlist.area();
+      QSizeF maximumWordSize = wordlist.maximumWordSize();
+
       float boundArea = 0.;
       if (boundingRegions.size() != 0)
 	{
@@ -415,12 +417,12 @@ QRectF Canvas::scaleSceneRect()
 
       std::cout << boundArea << " " << wordArea << " " 
 		<< (wordArea/boundArea) << std::endl;
-      return scaleSceneRectArea(1.6*wordArea/boundArea);
+      return scaleSceneRectArea(1.6*wordArea/boundArea, maximumWordSize);
     }
   else return QRectF();
 }
 
-QRectF Canvas::scaleSceneRectArea(float factor)
+QRectF Canvas::scaleSceneRectArea(float factor, QSizeF maximumWordSize)
 {
   QRectF sceneRect = this->sceneRect();
   sceneRect.setWidth(sceneRect.width()*sqrt(factor));
