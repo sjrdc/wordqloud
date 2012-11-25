@@ -26,7 +26,6 @@ class WordQloud : public QMainWindow
   void onProgressChanged(int, int);
 
 protected:
-  void contextMenuEvent(QContextMenuEvent *event);
   void renderImage();
 		    
 private slots:

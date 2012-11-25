@@ -165,13 +165,6 @@ ColourVariation WordQloud::checkedColourVariation()
     checkedAction()->data().toInt();
 }
 
-void WordQloud::contextMenuEvent(QContextMenuEvent *event)
-{
-  QMenu menu(this);
-  menu.addAction(backgroundColorAction);
-  menu.exec(event->globalPos());
-}
-
 void WordQloud::createActions()
 {
   clearWordListAction = new QAction(tr("Clear word list"), this);
