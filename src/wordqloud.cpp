@@ -494,8 +494,6 @@ void WordQloud::load()
   QString filename = 
     QFileDialog::getOpenFileName(this, "Load text file");
 
-  // QString filename = "discussion.tex";
-  
   QAction *schemeAction = colourschemeActionGroup->checkedAction();
   QAction *colourVariationAction = colourVariationActionGroup->checkedAction();
   
@@ -686,7 +684,7 @@ void WordQloud::setBackgroundColor()
 {
   QColor color = 
     QColorDialog::getColor(canvas->backgroundBrush().color(),
-			   this, "Select background color");
+			   this, "Select background colour");
   canvas->setBackgroundBrush(color);
 }
 

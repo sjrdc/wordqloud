@@ -27,6 +27,8 @@ public:
   bool fontsizeLocked() const;
   QTextStream& fromStream(QTextStream&);
   int getFrequency() const;
+  QFont getFont() const;
+  QString getFontName() const;
   bool getPinned() const;
   float height();
   void lockColour(bool b = true);
