@@ -1,3 +1,4 @@
+#include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QColorDialog>
 #include <QFontDialog>
@@ -12,6 +13,8 @@ WordPropertyDialog::WordPropertyDialog(Word *w, QWidget *parent)
 {
   fontChanged = false;
   colourChanged = false;
+  word = w;
+  
   buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
 				   | QDialogButtonBox::Cancel);
 
@@ -32,6 +35,23 @@ WordPropertyDialog::WordPropertyDialog(Word *w, QWidget *parent)
   layout->addWidget(wordPreview);
   layout->addWidget(fontChangeButton);
   layout->addWidget(colourChangeButton);
+}
+
+void WordPropertyDialog::accept()
+{
+  if (colourChanged) 
+    {
+      word->setColour(wordPreview->palette().brush(QPalette::WindowText).color());
+      if (lockColour->isChecked()) word->lockColour(true);
+    }
+
+  if (fontChanged)
+    {
+      word->setFont(wordPreview->font());
+      if (lockFont->isChecked()) word->lockFont(true);
+    }
+
+  QDialog::accept();
 }
 
 void WordPropertyDialog::onColourChangeButtonClicked()
