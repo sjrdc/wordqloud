@@ -83,7 +83,7 @@ void WordPropertyDialog::onColourChangeButtonClicked()
 void WordPropertyDialog::onFontChangeButtonClicked()
 {
   bool ok;
-  QFont font = QFontDialog::getFont(&ok, this);
+  QFont font = QFontDialog::getFont(&ok, wordPreview->font(), this);
   if (ok) 
     {
       wordPreview->setFont(font);
