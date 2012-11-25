@@ -26,6 +26,7 @@ public:
   bool fontLocked() const;
   bool fontsizeLocked() const;
   QTextStream& fromStream(QTextStream&);
+  QColor getColour() const;
   int getFrequency() const;
   QFont getFont() const;
   QString getFontName() const;
@@ -134,6 +135,7 @@ inline void Word::toggleManipulated()
 }
 
 // colouring
+inline QColor Word::getColour() const { return this->brush().color(); }
 inline void Word::setBrush(QBrush b) { QGraphicsSimpleTextItem::setBrush(b); }
 inline void Word::setColour(QColor c) { if (!_colourLocked) this->setBrush(c); }
 

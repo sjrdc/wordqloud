@@ -1,4 +1,5 @@
 #include <QCheckBox>
+#include <QDebug>
 #include <QDialogButtonBox>
 #include <QColorDialog>
 #include <QFontDialog>
@@ -24,17 +25,28 @@ WordPropertyDialog::WordPropertyDialog(Word *w, QWidget *parent)
   colourChangeButton = new QPushButton(tr("Change colour"));
   connect(colourChangeButton, SIGNAL(clicked()), 
 	  this, SLOT(onColourChangeButtonClicked()));
+
   fontChangeButton = new QPushButton(tr("Change font"));  
   connect(fontChangeButton, SIGNAL(clicked()), 
 	  this, SLOT(onFontChangeButtonClicked()));
 
+  lockColour = new QCheckBox("lock");
+  lockFont = new QCheckBox("lock");  
+  
   wordPreview = new QLabel(w->text());
+  wordPreview->setAlignment(Qt::AlignCenter);
   wordPreview->setFont(w->getFont());
+  QPalette p = wordPreview->palette();
+  p.setBrush(QPalette::WindowText, w->getColour());
+  wordPreview->setPalette(p);
 
-  QVBoxLayout *layout = new QVBoxLayout();
-  layout->addWidget(wordPreview);
-  layout->addWidget(fontChangeButton);
-  layout->addWidget(colourChangeButton);
+  QGridLayout *layout = new QGridLayout();
+  layout->addWidget(wordPreview, 0, 0, 2, 2);
+  layout->addWidget(fontChangeButton, 2, 0);
+  layout->addWidget(lockFont, 2, 1);  
+  layout->addWidget(colourChangeButton, 3, 0);
+  layout->addWidget(lockColour, 3, 1);  
+  layout->addWidget(buttonBox, 4, 0, 1, 2);
 
   this->setLayout(layout);
   this->setMinimumSize(QSize(200, 100));
