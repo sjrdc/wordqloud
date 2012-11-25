@@ -35,6 +35,9 @@ WordPropertyDialog::WordPropertyDialog(Word *w, QWidget *parent)
   layout->addWidget(wordPreview);
   layout->addWidget(fontChangeButton);
   layout->addWidget(colourChangeButton);
+
+  this->setLayout(layout);
+  this->setMinimumSize(QSize(200, 100));
 }
 
 void WordPropertyDialog::accept()

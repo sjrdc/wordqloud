@@ -36,7 +36,7 @@ BoundingRectDialog::BoundingRectDialog(QRectF initRect, QWidget *parent)
   layout->addWidget(buttonBox, 2, 0, 1, 2);
   
   this->setLayout(layout);
-  this->setMinimumSize(QSize(500, 100));
+  this->setMinimumSize(QSize(200, 100));
 }
 
 void BoundingRectDialog::heightChanged(double f)
