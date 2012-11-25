@@ -213,7 +213,6 @@ void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
 	  item->grabMouse();
 	  if (event->button() == Qt::LeftButton)
 	    {
-	      item->grabMouse();
 	      ((Word*)item)->toggleManipulated();
 	    }
 	}
@@ -243,7 +242,7 @@ void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 	    {
       
 	      Word *w = ((Word*)item);
-	      ((Word*)item)->toggleManipulated();
+	      w->toggleManipulated();
 	      if (event->modifiers() == Qt::ControlModifier)
 		{
 		  w->setPinned(false);
