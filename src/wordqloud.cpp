@@ -535,7 +535,7 @@ void WordQloud::onLayoutStarted()
 void WordQloud::onLoadWordlist()
 {
   QString filename = 
-    QFileDialog::getOpenFileName(this, "Load text file");
+    QFileDialog::getOpenFileName(this, "Load word list file");
 
   WordList wordlist;
   try { wordlist.fromWordFile(filename); }
