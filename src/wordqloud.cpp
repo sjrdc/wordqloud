@@ -297,6 +297,10 @@ void WordQloud::createActions()
   saveAction = new QAction(tr("Save..."), this);
   saveAction->setStatusTip(tr("Save the document to disk"));
   connect(saveAction, SIGNAL(triggered()), this, SLOT(onSaveActionTriggered()));
+
+  saveColourSchemeAction = new QAction(tr("Save colour scheme..."), this);
+  saveColourSchemeAction->setStatusTip(tr("Save the current colour scheme to disk"));
+  connect(saveColourSchemeAction, SIGNAL(triggered()), this, SLOT(onSaveColourSchemeActionTriggered()));
   
   saveSvgAction = new QAction(tr("&Save PDF"), this);
   saveSvgAction->setShortcuts(QKeySequence::Save);
@@ -371,6 +375,7 @@ void WordQloud::createColourschemeMenu()
 {
   QMenu *colourschemeMenu = layoutMenu->addMenu(tr("&Colours"));
   colourschemeMenu->addAction(customColourschemeAction);
+  colourschemeMenu->addAction(saveColourSchemeAction);
   colourschemeMenu->addSeparator();
 
   colourschemeActionGroup = new QActionGroup(this);
@@ -616,6 +621,30 @@ void WordQloud::onSaveActionTriggered()
     
   if (!filename.isEmpty())
     canvas->saveWordcloud(filename);
+}
+
+void WordQloud::onSaveColourSchemeActionTriggered()
+{
+  QString filename = 
+    QFileDialog::getSaveFileName(this, "Save colour scheme");
+    
+  if (!filename.isEmpty())
+    {
+      QFile file(filename);
+      if (!file.open(QIODevice::WriteOnly|QIODevice::Truncate|QIODevice::Text)) 
+	{
+	  qDebug() << "Could not save colours to file " << filename << ".";
+	  return;
+	}
+      
+      QTextStream o(&file);
+      o << "custom_scheme ";
+      foreach (QColor c, checkedColourscheme())
+	o << c.name() << " ";
+      o << "\n";
+      
+      file.close();
+    }
 }
 
 void WordQloud::onSceneRectActionTriggered()

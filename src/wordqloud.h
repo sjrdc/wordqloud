@@ -43,6 +43,7 @@ private slots:
   void onLayoutStarted();
   void onPathGroupActionTriggered(QAction*);
   void onSaveActionTriggered();
+  void onSaveColourSchemeActionTriggered();
   void onSceneRectActionTriggered();
   void onUnpinAllButtonClicked();
   void reCreateLayout();
@@ -85,6 +86,7 @@ private:
   QAction *loadAction;
   QAction *loadWordlistAction;
   QAction *saveAction;
+  QAction *saveColourSchemeAction;
   QAction *savePngAction;
   QAction *saveSvgAction;  
   QAction *boundsFromImageAction;
