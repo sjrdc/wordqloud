@@ -371,30 +371,36 @@ void WordQloud::createCloudBoundsFromImage()
   canvas->startLayout();
 }
 
-QIcon WordQloud::createColourschemeIcon(QColor backgroundColour,
-					QVector<QColor> foregroundColours)
+QIcon WordQloud::createColourschemeIcon(QVector<QColor> colours)
 {
   int bsize = 7;
   int squaresize = 20;
   int between = 5;
-    
-  QImage iconImage(bsize + (squaresize + between)*foregroundColours.size() - 
-		   between + bsize, bsize*2 + squaresize, QImage::Format_RGB32);
-  iconImage.fill(backgroundColour);
-
-  QPainter painter(&iconImage);
-  int c = 0;
-  foreach (QColor colour, foregroundColours)
-    {
-      QRect rectangle(bsize + c*(squaresize + bsize), bsize, 
-		      squaresize, squaresize);
-      painter.setBrush(colour);
-      painter.drawRect(rectangle);
-      c++;
-    }
-  painter.end();
   
-  return QIcon(QPixmap::fromImage(iconImage));
+  if (colours.size() > 2)
+    {
+      QColor backgroundColour = colours.first();
+      colours.pop_front();
+
+      QImage iconImage(bsize + (squaresize + between)*colours.size() - 
+		       between + bsize, bsize*2 + squaresize, QImage::Format_RGB32);
+      iconImage.fill(backgroundColour);
+
+      QPainter painter(&iconImage);
+      int c = 0;
+
+      foreach (QColor colour, colours)
+        {
+          QRect rectangle(bsize + c*(squaresize + bsize), bsize, 
+      		      squaresize, squaresize);
+          painter.setBrush(colour);
+          painter.drawRect(rectangle);
+          c++;
+        }
+
+      painter.end();
+      return QIcon(QPixmap::fromImage(iconImage));
+    }
 }
 
 void WordQloud::createColourschemeMenu()
@@ -425,26 +431,19 @@ void WordQloud::createColourschemeMenu()
 	  QString schemeName = colourlist.first();
 	  colourlist.pop_front();
 
-	  // extract backgroundcolour
-	  QColor backgroundColour(colourlist.first());
-	  colourlist.pop_front();
-
-	  // a varlist to store colours in the action object
+	  // extract all colours;
+	  QVector<QColor> colours;
 	  QList<QVariant> varlist;
-	  varlist.push_back(backgroundColour.rgb()); 
-
-	  // extract all foregroundcolours;
-	  QVector<QColor> foregroundColours;
 	  foreach (QString colourstring, colourlist)
 	    {
 	      QColor colour(colourstring);
-	      foregroundColours.push_back(colour);
+
+	      colours.push_back(colour);
 	      varlist.push_back(QVariant(QColor(colour).rgb()));
 	    }
 
 	  // create an icon to use in the menu
-	  QIcon schemeIcon = createColourschemeIcon(backgroundColour,
-						    foregroundColours);
+	  QIcon schemeIcon = createColourschemeIcon(colours);
 
 	  // create action for the current scheme
 	  QAction *action = new QAction(schemeIcon, schemeName, this);
@@ -575,8 +574,34 @@ void WordQloud::onLayoutStarted()
 
 void WordQloud::onLoadColourSchemeActionTriggered()
 {
-  qDebug() << __PRETTY_FUNCTION__;
-  
+  QString filename = 
+    QFileDialog::getOpenFileName(this, "Load colour scheme");
+
+  QFile file(filename);
+  if (!file.open(QIODevice::ReadOnly))
+    {
+      statusBar()->showMessage("Could not read colourscheme file " + filename);
+      return;
+    }
+
+  QTextStream textstream(&file);
+  QString line = textstream.readLine();
+
+  QString schemeName;
+  QVector<QColor> scheme;
+  stringToColourScheme(line, schemeName, scheme);
+
+  // create an icon to use in the menu
+  QIcon schemeIcon = createColourschemeIcon(scheme);
+
+  QList<QVariant> varlist;
+  foreach (QColor colour, scheme)
+    varlist.push_back(QVariant(colour.rgb()));
+
+  customColourschemeAction->setIcon(schemeIcon);
+  customColourschemeAction->setData(varlist);
+
+  file.close();
 }
 
 void WordQloud::onLoadWordlist()
