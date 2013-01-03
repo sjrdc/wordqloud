@@ -165,6 +165,28 @@ ColourVariation WordQloud::checkedColourVariation()
     checkedAction()->data().toInt();
 }
 
+void stringToColourScheme(QString s, QString &schemeName, QVector<QColor> &colourScheme)
+{
+  QStringList colourlist = s.split(' ');
+  if (colourlist.size() > 2)
+    {
+      // extract colourscheme name
+      schemeName = colourlist.first();
+      colourlist.pop_front();
+
+      // extract backgroundcolour
+      QColor backgroundColour(colourlist.first());
+      colourlist.pop_front();
+
+      // a varlist to store colours in the action object
+      colourScheme.push_back(backgroundColour.rgb()); 
+
+      // extract all foregroundcolours;
+      foreach (QString colourstring, colourlist)
+	colourScheme.push_back(QColor(colourstring));
+    }
+}
+
 void WordQloud::contextMenuEvent(QContextMenuEvent *event)
 {
   QMenu menu(this);
@@ -554,6 +576,7 @@ void WordQloud::onLayoutStarted()
 void WordQloud::onLoadColourSchemeActionTriggered()
 {
   qDebug() << __PRETTY_FUNCTION__;
+  
 }
 
 void WordQloud::onLoadWordlist()
