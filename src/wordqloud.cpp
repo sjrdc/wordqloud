@@ -423,40 +423,28 @@ void WordQloud::createColourschemeMenu()
   while (!textstream.atEnd() && textstream.status() == QTextStream::Ok)
     {
       QString line = textstream.readLine();
-      QStringList colourlist = line.split(' ');
 
-      if (colourlist.size() > 2)
-	{
-	  // extract colourscheme name
-	  QString schemeName = colourlist.first();
-	  colourlist.pop_front();
+      QString schemeName;
+      QVector<QColor> scheme;
+      stringToColourScheme(line, schemeName, scheme);
 
-	  // extract all colours;
-	  QVector<QColor> colours;
-	  QList<QVariant> varlist;
-	  foreach (QString colourstring, colourlist)
-	    {
-	      QColor colour(colourstring);
+      QList<QVariant> varlist;
+      foreach(QColor c, scheme)
+	varlist.push_back(QVariant(c.rgb()));
 
-	      colours.push_back(colour);
-	      varlist.push_back(QVariant(QColor(colour).rgb()));
-	    }
-
-	  // create an icon to use in the menu
-	  QIcon schemeIcon = createColourschemeIcon(colours);
-
-	  // create action for the current scheme
-	  QAction *action = new QAction(schemeIcon, schemeName, this);
-	  action->setData(varlist);
-	  action->setCheckable(true);
+      QIcon schemeIcon = createColourschemeIcon(scheme);
+      
+      // create action for the current scheme
+      QAction *action = new QAction(schemeIcon, schemeName, this);
+      action->setData(varlist);
+      action->setCheckable(true);
 	  
-	  // add action to menu and group
-	  colourschemeMenu->addAction(action);
-	  colourschemeActionGroup->addAction(action);
+      // add action to menu and group
+      colourschemeMenu->addAction(action);
+      colourschemeActionGroup->addAction(action);
 
-	  if (c == 0) action->setChecked(true);
-	  c++;
-	}
+      if (c == 0) action->setChecked(true);
+      c++;
     }
 
   colourschemeActionGroup->setExclusive(true);
@@ -525,8 +513,6 @@ void WordQloud::load()
   QString filename = 
     QFileDialog::getOpenFileName(this, "Load text file");
 
-  // QString filename = "discussion.tex";
-  
   QAction *schemeAction = colourschemeActionGroup->checkedAction();
   QAction *colourVariationAction = colourVariationActionGroup->checkedAction();
   
