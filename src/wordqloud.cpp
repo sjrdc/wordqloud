@@ -79,8 +79,6 @@ WordQloud::WordQloud()
 
   setWindowTitle(tr("wordQloud"));
   setMinimumSize(400, 600);
-
-  load();
 }
 
 void WordQloud::about()
@@ -419,32 +417,35 @@ void WordQloud::createColourschemeMenu()
     qDebug() << "Could not read colourscheme file";
 
   QTextStream textstream(&colourfile);
-  int c = 0;
+  short c = 0;
   while (!textstream.atEnd() && textstream.status() == QTextStream::Ok)
     {
       QString line = textstream.readLine();
 
-      QString schemeName;
-      QVector<QColor> scheme;
-      stringToColourScheme(line, schemeName, scheme);
+      if (!line.isEmpty())
+	{
+	  QString schemeName;
+	  QVector<QColor> scheme;
+	  stringToColourScheme(line, schemeName, scheme);
 
-      QList<QVariant> varlist;
-      foreach(QColor c, scheme)
-	varlist.push_back(QVariant(c.rgb()));
+	  QList<QVariant> varlist;
+	  foreach(QColor c, scheme)
+	    varlist.push_back(QVariant(c.rgb()));
 
-      QIcon schemeIcon = createColourschemeIcon(scheme);
+	  QIcon schemeIcon = createColourschemeIcon(scheme);
       
-      // create action for the current scheme
-      QAction *action = new QAction(schemeIcon, schemeName, this);
-      action->setData(varlist);
-      action->setCheckable(true);
+	  // create action for the current scheme
+	  QAction *action = new QAction(schemeIcon, schemeName, this);
+	  action->setData(varlist);
+	  action->setCheckable(true);
 	  
-      // add action to menu and group
-      colourschemeMenu->addAction(action);
-      colourschemeActionGroup->addAction(action);
+	  // add action to menu and group
+	  colourschemeMenu->addAction(action);
+	  colourschemeActionGroup->addAction(action);
 
-      if (c == 0) action->setChecked(true);
-      c++;
+	  if (c == 0) action->setChecked(true);
+	  c++;
+	}
     }
 
   colourschemeActionGroup->setExclusive(true);
