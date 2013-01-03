@@ -289,6 +289,10 @@ void WordQloud::createActions()
   loadAction->setStatusTip(tr("Create word list from text file"));
   connect(loadAction, SIGNAL(triggered()), this, SLOT(load()));
 
+  loadColourSchemeAction = new QAction(tr("Load colour scheme..."), this);
+  loadColourSchemeAction->setStatusTip(tr("Load a custom colour scheme from text file"));
+  connect(loadColourSchemeAction, SIGNAL(triggered()), this, SLOT(onLoadColourSchemeActionTriggered()));
+
   loadWordlistAction = new QAction(tr("Load word list..."), this);
   loadWordlistAction->setStatusTip(tr("Load word list file"));
   connect(loadWordlistAction, SIGNAL(triggered()), 
@@ -375,6 +379,7 @@ void WordQloud::createColourschemeMenu()
 {
   QMenu *colourschemeMenu = layoutMenu->addMenu(tr("&Colours"));
   colourschemeMenu->addAction(customColourschemeAction);
+  colourschemeMenu->addAction(loadColourSchemeAction);
   colourschemeMenu->addAction(saveColourSchemeAction);
   colourschemeMenu->addSeparator();
 
@@ -544,6 +549,11 @@ void WordQloud::onLayoutStarted()
 {
   progressBar->show();
   stopLayoutButton->show();
+}
+
+void WordQloud::onLoadColourSchemeActionTriggered()
+{
+  qDebug() << __PRETTY_FUNCTION__;
 }
 
 void WordQloud::onLoadWordlist()
