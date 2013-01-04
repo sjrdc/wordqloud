@@ -10,6 +10,7 @@ ADD_EXECUTABLE(wordcloud
   word.cpp
   wordcloud.cpp
   wordlist.cpp  
+  wordpropertydialog.cpp 
   )
 TARGET_LINK_LIBRARIES(wordcloud
   ${Boost_LIBRARIES}
@@ -33,6 +34,8 @@ qt4_automoc(
   colourschemedialog.cpp
   view.cpp
   view.h
+  wordpropertydialog.h
+  wordpropertydialog.cpp
   wordqloud.cpp
   wordqloud.h
 )
@@ -47,6 +50,7 @@ ADD_EXECUTABLE(wordqloud
   quadtree.cpp
   quadnode.cpp
   view.cpp
+  wordpropertydialog.cpp  
   wordqloud.cpp
   word.cpp
   wordlist.cpp

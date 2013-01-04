@@ -1,7 +1,7 @@
 #include <QDialogButtonBox>
-#include <QHBoxLayout>
 #include <QDoubleSpinBox>
-#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QLabel>
 
 #include "boundingrectdialog.moc"
 
@@ -28,13 +28,15 @@ BoundingRectDialog::BoundingRectDialog(QRectF initRect, QWidget *parent)
   connect(heightSpinner, SIGNAL(valueChanged(double)),
 	  this, SLOT(heightChanged(double)));
   
-  QVBoxLayout *layout = new QVBoxLayout;
-  layout->addWidget(widthSpinner);
-  layout->addWidget(heightSpinner);
-  layout->addWidget(buttonBox);
+  QGridLayout *layout = new QGridLayout;
+  layout->addWidget(new QLabel("Width"), 0, 0);
+  layout->addWidget(widthSpinner, 0, 1);
+  layout->addWidget(new QLabel("Height"), 1, 0);  
+  layout->addWidget(heightSpinner, 1, 1);
+  layout->addWidget(buttonBox, 2, 0, 1, 2);
   
   this->setLayout(layout);
-  this->setMinimumSize(QSize(500, 100));
+  this->setMinimumSize(QSize(200, 100));
 }
 
 void BoundingRectDialog::heightChanged(double f)

@@ -185,13 +185,6 @@ void stringToColourScheme(QString s, QString &schemeName, QVector<QColor> &colou
     }
 }
 
-void WordQloud::contextMenuEvent(QContextMenuEvent *event)
-{
-  QMenu menu(this);
-  menu.addAction(backgroundColorAction);
-  menu.exec(event->globalPos());
-}
-
 void WordQloud::createActions()
 {
   clearWordListAction = new QAction(tr("Clear word list"), this);
@@ -594,7 +587,7 @@ void WordQloud::onLoadColourSchemeActionTriggered()
 void WordQloud::onLoadWordlist()
 {
   QString filename = 
-    QFileDialog::getOpenFileName(this, "Load text file");
+    QFileDialog::getOpenFileName(this, "Load word list file");
 
   WordList wordlist;
   try { wordlist.fromWordFile(filename); }
@@ -760,7 +753,7 @@ void WordQloud::setBackgroundColor()
 {
   QColor color = 
     QColorDialog::getColor(canvas->backgroundBrush().color(),
-			   this, "Select background color");
+			   this, "Select background colour");
   canvas->setBackgroundBrush(color);
 }
 

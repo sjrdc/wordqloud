@@ -69,7 +69,6 @@ QTextStream& Word::fromStream(QTextStream& i)
       line = modifiers[0];
       modifiers.pop_front();
       this->setText(line);
-      qDebug() << line << modifiers;
       foreach (QString modifier, modifiers)
 	{
 	  char key = modifier[0].toAscii();
@@ -79,7 +78,6 @@ QTextStream& Word::fromStream(QTextStream& i)
 	      {
 		this->setFontName(modifier.right(modifier.size() - 1));
 		this->lockFont();
-		qDebug() << "font family: " << modifier.right(modifier.size() - 1);
 		break;
 	      }
 	    case '@':
@@ -87,7 +85,6 @@ QTextStream& Word::fromStream(QTextStream& i)
 		double angle = modifier.right(modifier.size() - 1).toDouble();
 		this->setRotation(angle);
 		this->lockOrientation();
-		qDebug() << "orientation: " << modifier.right(modifier.size() - 1).toDouble();
 		break;
 	      }
 	    case '#':
@@ -106,7 +103,6 @@ QTextStream& Word::fromStream(QTextStream& i)
 		float y = coordinates[1].toFloat();
 		this->setPos(QPointF(x, y));
 		this->setPinned(true);
-		qDebug() << "coordinates: " << modifier.right(modifier.size() - 1).split(',');
 		break;
 	      }
 	    case '%':
@@ -114,7 +110,6 @@ QTextStream& Word::fromStream(QTextStream& i)
 		float size = modifier.right(modifier.size() - 1).toFloat();
 		this->setFontsize(size);
 		this->lockFontsize();
-		qDebug() << "size: " << modifier.right(modifier.size() - 1).toFloat();
 		break;
 	      }
 	    default: 
@@ -125,6 +120,17 @@ QTextStream& Word::fromStream(QTextStream& i)
 	}
     }
   return i;
+}
+
+QFont Word::getFont() const
+{
+  return this->font();
+}
+
+QString Word::getFontName() const
+{
+  QFont f = this->font();
+  return f.family();
 }
 
 void Word::moveBy(float x, float y)
