@@ -7,7 +7,6 @@
 class Canvas;
 class QAction;
 class QActionGroup;
-class QContextMenuEvent;
 class QGraphicsView;
 class QLabel;
 class QMenu;

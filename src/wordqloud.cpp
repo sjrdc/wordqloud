@@ -1,6 +1,5 @@
 #include <QAction>
 #include <QColorDialog>
-#include <QContextMenuEvent>
 #include <QFileDialog>
 #include <QFontDialog>
 #include <QGraphicsView>
