@@ -51,17 +51,21 @@ signals:
 
 public slots:
   void randomiseOrientations(WordOrientation w);
+  void hAlignSelectedWords();
+  void vAlignSelectedWords();
   void stopLayout();
   void unpinAll();
 
 protected:
-  void keyPressEvent(QKeyEvent *event);
+void keyPressEvent(QKeyEvent *event);
   void keyReleaseEvent(QKeyEvent *event);
   bool layoutWord(Word *w);
+
   void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);    
   QRectF scaleSceneRectArea(float factor, QSizeF maxwordsize = QSizeF());
+
   
   WordList wordlist;
   LayoutBound layoutBound;

@@ -81,6 +81,11 @@ void Canvas::createLayout()
   qDebug() << wordlist.size() << words;
 }
 
+void Canvas::hAlignSelectedWords()
+{
+  qDebug() << __PRETTY_FUNCTION__;
+}
+
 void Canvas::highlightPinned(bool highlight)
 {
   foreach (Word *word, wordlist)
@@ -301,6 +306,7 @@ void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 	}
     }
 }
+
 void Canvas::randomiseOrientations(WordOrientation w)
 {
   rng.seed(static_cast<unsigned int>(std::time(0)));
@@ -542,4 +548,9 @@ void Canvas::unpinAll()
 {
   foreach (Word *word, wordlist)
     word->setPinned(false);
+}
+
+void Canvas::vAlignSelectedWords()
+{
+  qDebug() << __PRETTY_FUNCTION__;
 }

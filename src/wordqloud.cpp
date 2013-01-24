@@ -11,7 +11,7 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QStatusBar>
-#include <QSvgGenerator>
+#include <QToolbar>
 #include <QVBoxLayout>
 
 #include <ctime>
@@ -75,7 +75,8 @@ WordQloud::WordQloud()
 
   createActions();
   createMenus();
-
+  createToolbar();
+  
   setWindowTitle(tr("wordQloud"));
   setMinimumSize(400, 600);
 
@@ -454,6 +455,19 @@ void WordQloud::createColourschemeMenu()
 	  this, SLOT(onColourschemeActionGroupTriggered(QAction*)));
 }
 
+void WordQloud::createToolbar()
+{
+  toolbar = addToolBar(tr("tool bar"));
+  
+  QAction *hAlignAction = toolbar->addAction(tr("halign"));
+  connect(hAlignAction, SIGNAL(triggered()),
+	  this, SLOT(onHAlignActionTriggered()));
+  
+  QAction *vAlignAction = toolbar->addAction(tr("valign"));
+  connect(vAlignAction, SIGNAL(triggered()),
+	  this, SLOT(onVAlignActionTriggered()));  
+}
+
 void WordQloud::createMenus()
 {
   fileMenu = menuBar()->addMenu(tr("&File"));
@@ -539,6 +553,11 @@ void WordQloud::load()
 void WordQloud::onClearWordListActionTriggered()
 {
   canvas->clearWordList();
+}
+
+void WordQloud::onHAlignActionTriggered()
+{
+  canvas->hAlignSelectedWords();
 }
 
 void WordQloud::onLayoutEnded()
@@ -715,6 +734,11 @@ void WordQloud::onStopButtonClicked()
 void WordQloud::onUnpinAllButtonClicked()
 {
   canvas->unpinAll();
+}
+
+void WordQloud::onVAlignActionTriggered()
+{
+  canvas->vAlignSelectedWords();
 }
 
 void WordQloud::reCreateLayout()
