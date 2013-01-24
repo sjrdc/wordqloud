@@ -568,5 +568,21 @@ void Canvas::unpinAll()
 
 void Canvas::vAlignSelectedWords()
 {
-  qDebug() << __PRETTY_FUNCTION__;
+  if (selectGroup.size() > 1)
+    {
+      Word* referenceWord = selectGroup.first();
+      QRectF referenceRectangle = referenceWord->boundingBox();
+      qreal refY = 
+	referenceRectangle.topLeft().y() + referenceRectangle.height()*.5;
+      unsigned short s = 0;
+      foreach (Word* w, selectGroup)
+	{
+	  if (s != 0)
+	    {
+	      QRectF r = w->boundingBox();
+	      w->setPos(r.topLeft().x(), refY - r.height()*.5);
+	    }
+	  s++;
+	}
+    }
 }
