@@ -78,6 +78,8 @@ WordQloud::WordQloud()
 
   setWindowTitle(tr("wordQloud"));
   setMinimumSize(400, 600);
+
+  onLoadWordlist();
 }
 
 void WordQloud::about()
@@ -585,9 +587,11 @@ void WordQloud::onLoadColourSchemeActionTriggered()
 
 void WordQloud::onLoadWordlist()
 {
-  QString filename = 
-    QFileDialog::getOpenFileName(this, "Load word list file");
+  // QString filename = 
+  //   QFileDialog::getOpenFileName(this, "Load word list file");
 
+  QString filename = "/Users/sjoerd/work/wordcloud/build/sjoerd.txt";
+  
   WordList wordlist;
   try { wordlist.fromWordFile(filename); }
   catch (...) 

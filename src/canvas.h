@@ -72,6 +72,9 @@ protected:
   LayoutPath path;
   bool layoutBusy;
 
+  QList<Word*> selectGroup;
+  bool groupSelectMode;
+  
   // some random generator stuff for coordinate generation
   boost::mt19937 rng;
   boost::normal_distribution<float> cxDistribution;
@@ -85,6 +88,9 @@ protected:
 			   boost::uniform_int<> > *avarnor;    
 
   boost::scoped_ptr<boost::thread> layoutThread;
+
+  const unsigned int pinKey = Qt::Key_P;
+  const unsigned int groupKey = Qt::Key_Shift;
 };
 
 inline void Canvas::addWord(Word *w)
