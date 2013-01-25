@@ -20,10 +20,11 @@
 #include "boundsdialog.h"
 #include "colourschemedialog.h"
 #include "canvas.h"
-#include "view.moc"
+#include "enumerations.h"
 #include "wordqloud.moc"
 #include "word.h"
 #include "wordlist.h"
+#include "view.moc"
 
 WordQloud::WordQloud()
 {
@@ -465,7 +466,11 @@ void WordQloud::createToolbar()
   
   QAction *vAlignAction = toolbar->addAction(tr("valign"));
   connect(vAlignAction, SIGNAL(triggered()),
-	  this, SLOT(onVAlignActionTriggered()));  
+	  this, SLOT(onVAlignActionTriggered()));
+
+  QAction *hDistribute = toolbar->addAction(tr("hDistribute"));
+  connect(hDistribute, SIGNAL(triggered()),
+	  canvas, SLOT(distributeSelectedWords()));
 }
 
 void WordQloud::createMenus()

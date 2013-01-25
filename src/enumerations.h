@@ -1,6 +1,12 @@
 #ifndef ENUM_H_
 #define ENUM_H_
 
+enum AlightmentDirection
+  {
+    HorizontalAlignment,
+    VerticalAlignment
+  };
+
 enum ColourVariation
   {
     AsPalette,
@@ -9,6 +15,12 @@ enum ColourVariation
     LotsOfVariation,
     WildVariation
    };
+
+enum DistributionDirection
+  {
+    HorizontalDistribution,
+    VerticalDistribution
+  };
 
 enum LayoutBound
   {
@@ -32,5 +44,7 @@ enum WordOrientation
     MostlyVerticalWordOrientation,
     VerticalWordOrientation
   };
+
+
 
 #endif

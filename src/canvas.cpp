@@ -81,6 +81,44 @@ void Canvas::createLayout()
   qDebug() << wordlist.size() << words;
 }
 
+bool comparePairs(std::pair<Word*, qreal> a,
+		  std::pair<Word*, qreal> b)
+{
+  return a.second < b.second;
+}
+
+void Canvas::distributeSelectedWords(DistributionDirection direction)
+{
+  QVector<std::pair<Word*, qreal> > coordinates(selectGroup.size());
+  switch (direction)
+    {
+    case HorizontalDistribution:
+      {
+	foreach (Word* w, selectGroup)
+	  {
+	    QRectF r = w->boundingBox();
+	    coordinates.push_back(std::make_pair<Word*, qreal>(w, r.topLeft().x() + r.width()*.5));
+	  }
+
+	std::sort(coordinates.begin(), coordinates.end(), comparePairs);
+
+	qreal extent = coordinates.last().second - coordinates.first().second;
+	qreal spacing = extent/(selectGroup.size() - 1);
+
+	
+	break;
+      }
+    case VerticalDistribution:
+      {
+	foreach (Word* w, selectGroup)
+	  {
+	  }
+
+	break;
+      }
+    }
+}
+
 void Canvas::hAlignSelectedWords()
 {
   if (selectGroup.size() > 1)

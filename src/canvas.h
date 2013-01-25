@@ -53,6 +53,7 @@ public slots:
   void randomiseOrientations(WordOrientation w);
   void hAlignSelectedWords();
   void vAlignSelectedWords();
+  void distributeSelectedWords(DistributionDirection);
   void stopLayout();
   void unpinAll();
 
