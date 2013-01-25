@@ -62,9 +62,9 @@ void keyPressEvent(QKeyEvent *event);
   void keyReleaseEvent(QKeyEvent *event);
   bool layoutWord(Word *w);
 
-  void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
-  void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
-  void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);    
+  // void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+  // void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+  // void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);    
   QRectF scaleSceneRectArea(float factor, QSizeF maxwordsize = QSizeF());
 
   
@@ -77,7 +77,6 @@ void keyPressEvent(QKeyEvent *event);
   LayoutPath path;
   bool layoutBusy;
 
-  QList<Word*> selectGroup;
   bool groupSelectMode;
   
   // some random generator stuff for coordinate generation

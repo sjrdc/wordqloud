@@ -6,12 +6,16 @@
 #include <math.h>
 
 #include "word.h"
+#include "wordpropertydialog.h"
 
 Word::Word(QString string, float b)
   : QGraphicsSimpleTextItem()
 {
   assert (b >= 0 && b <= 1);
 
+  setFlags(ItemIsSelectable | ItemIsMovable);
+  setAcceptsHoverEvents(true);
+ 
   this->setText(string);
   this->setBrush(Qt::black);
   this->setBoundingRegionGranularity(b);
@@ -134,11 +138,40 @@ QString Word::getFontName() const
   QFont f = this->font();
   return f.family();
 }
-
 void Word::moveBy(float x, float y)
 {
   QGraphicsSimpleTextItem::moveBy(round(x), round(y));
   region.translate(QPoint(round(x), round(y)));
+}
+
+void Word::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+  this->setManipulated(true);
+  QGraphicsSimpleTextItem::mousePressEvent(event);
+  update();
+}
+
+void Word::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+  QPoint delta = (event->scenePos() - event->lastScenePos()).toPoint();  
+  qDebug() << __PRETTY_FUNCTION__ << delta;
+  moveBy(delta.x(), delta.y());
+  QGraphicsSimpleTextItem::mouseMoveEvent(event);
+}
+
+void Word::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+  this->setManipulated(false);
+  qDebug() << __PRETTY_FUNCTION__;
+  QGraphicsSimpleTextItem::mouseReleaseEvent(event);
+  update();
+
+  if (event->button() == Qt::RightButton)
+    {
+      WordPropertyDialog *wpd = new WordPropertyDialog(this);
+      wpd->exec();
+      delete wpd;
+    }
 }
 
 void Word::prepareCollisionDetection()

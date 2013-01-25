@@ -2,20 +2,20 @@ INCLUDE_DIRECTORIES(
   ${Boost_INCLUDE_DIRS}
   )
 
-ADD_EXECUTABLE(wordcloud
-  canvas.cpp
-  colormap.cpp
-  quadnode.cpp
-  quadtree.cpp
-  word.cpp
-  wordcloud.cpp
-  wordlist.cpp  
-  wordpropertydialog.cpp 
-  )
-TARGET_LINK_LIBRARIES(wordcloud
-  ${Boost_LIBRARIES}
-  ${QT_LIBRARIES}
-  )
+# ADD_EXECUTABLE(wordcloud
+#   canvas.cpp
+#   colormap.cpp
+#   quadnode.cpp
+#   quadtree.cpp
+#   word.cpp
+#   wordcloud.cpp
+#   wordlist.cpp  
+#   wordpropertydialog.cpp 
+#   )
+# TARGET_LINK_LIBRARIES(wordcloud
+#   ${Boost_LIBRARIES}
+#   ${QT_LIBRARIES}
+#   )
 
 include_directories(
   ${CMAKE_BINARY_DIR}/src # for moc files
@@ -62,7 +62,7 @@ TARGET_LINK_LIBRARIES(wordqloud
   )
 
 install(TARGETS
-  wordcloud
+  # wordcloud
   RUNTIME DESTINATION bin/wordqloud
   )
 

@@ -6,6 +6,8 @@
 
 View::View(Canvas* canvas, QWidget *parent) : QGraphicsView(canvas, parent)
 {
+  this->setDragMode(QGraphicsView::RubberBandDrag);
+
 }
 
 void View::setCenter(const QPointF& centerPoint) 

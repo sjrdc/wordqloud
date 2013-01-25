@@ -10,6 +10,8 @@
 #include "iareacomparable.h"
 #include "istreamable.h"
 
+class QGraphicsSceneMouseEvent;
+
 class Word : public QGraphicsSimpleTextItem, 
 	     public IAreaComparable, public IStreamable
 {
@@ -36,7 +38,13 @@ public:
   void lockFont(bool b = true);
   void lockFontsize(bool b = true);
   void lockOrientation(bool b = true);
+
+  void mousePressEvent(QGraphicsSceneMouseEvent *event);
+  void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+  void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
   void moveBy(float x, float y);
+
   bool orientationLocked() const;
   void prepareCollisionDetection();
   void setColour(QColor c);
@@ -45,6 +53,7 @@ public:
   void setFontsize(float s);
   void setFrequency(int f);
   void setRotation(float r);
+  void setManipulated(bool m);
   void showPinned(bool p);
   QTextStream& toStream(QTextStream&) const;
   void togglePinned();
@@ -72,6 +81,7 @@ private:
   bool _regionInitialised;
   QColor cachedColor;
   int frequency;
+  QList<QPointF> stuff;
 };
 
 inline QRectF Word::boundingBox() const
@@ -94,6 +104,17 @@ inline void Word::lockFont(bool b) { _fontLocked = b; }
 // pinning
 inline bool Word::getPinned() const { return _pinned; }
 inline void Word::setPinned(bool p) { _pinned = p; }
+inline void Word::setManipulated(bool m)
+{
+  _manipulated = m; 
+  if (m)
+    {
+      this->cachedColor = this->brush().color();
+      this->setBrush(Qt::red);
+    }
+  else this->setBrush(cachedColor);
+
+}
 inline void Word::togglePinned() { _pinned = !_pinned; }
 
 inline void Word::showPinned(bool p)

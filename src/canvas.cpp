@@ -13,8 +13,8 @@ Canvas::Canvas(float w, float h) :   QGraphicsScene(0., 0., w, h)
 {
   setBackgroundBrush(Qt::white);
   setLayoutPath(CircularPath);
-  
-  // // initialise random number generator
+
+  // initialise random number generator
   rng.seed(static_cast<unsigned int>(std::time(0)));
   angleIncrement = boost::uniform_int<>(1, 25);
   
@@ -89,24 +89,23 @@ bool comparePairs(std::pair<Word*, qreal> a,
 
 void Canvas::distributeSelectedWords(DistributionDirection direction)
 {
-  qDebug() << selectGroup.size();
-  if (selectGroup.size() > 2)
+  if (selectedItems().size() > 2)
     {
       QVector<std::pair<Word*, qreal> > coordinates;
       switch (direction)
 	{
 	case HorizontalDistribution:
 	  {
-	    foreach (Word* w, selectGroup)
+	    foreach (QGraphicsItem* w, selectedItems())
 	      {
-		QRectF r = w->boundingBox();
-		coordinates.push_back(std::make_pair<Word*, qreal>(w, r.topLeft().x() + r.width()*.5));
+		QRectF r = ((Word*)w)->boundingBox();
+		coordinates.push_back(std::make_pair<Word*, qreal>((Word*)w, r.topLeft().x() + r.width()*.5));
 	      }
 
 	    std::sort(coordinates.begin(), coordinates.end(), comparePairs);
 
 	    qreal extent = coordinates.last().second - coordinates.first().second;
-	    qreal spacing = extent/(selectGroup.size() - 1);
+	    qreal spacing = extent/(selectedItems().size() - 1);
 	    qreal startPosition = coordinates[0].second;
 	    
 	    for (unsigned int i = 0; i < coordinates.size(); ++i)
@@ -119,16 +118,16 @@ void Canvas::distributeSelectedWords(DistributionDirection direction)
 	  }
 	case VerticalDistribution:
 	  {
-	    foreach (Word* w, selectGroup)
+	    foreach (QGraphicsItem* w, selectedItems())
 	      {
-		QRectF r = w->boundingBox();
-		coordinates.push_back(std::make_pair<Word*, qreal>(w, r.topLeft().y() + r.height()*.5));
+		QRectF r = ((Word*)w)->boundingBox();
+		coordinates.push_back(std::make_pair<Word*, qreal>((Word*)w, r.topLeft().y() + r.height()*.5));
 	      }
 
 	    std::sort(coordinates.begin(), coordinates.end(), comparePairs);
 
 	    qreal extent = coordinates.last().second - coordinates.first().second;
-	    qreal spacing = extent/(selectGroup.size() - 1);
+	    qreal spacing = extent/(selectedItems().size() - 1);
 	    qreal startPosition = coordinates[0].second;
 	    
 	    for (unsigned int i = 0; i < coordinates.size(); ++i)
@@ -146,20 +145,19 @@ void Canvas::distributeSelectedWords(DistributionDirection direction)
 
 void Canvas::hAlignSelectedWords()
 {
-  qDebug() << selectGroup.size();
-  if (selectGroup.size() > 1)
+  if (selectedItems().size() > 1)
     {
-      Word* referenceWord = selectGroup.first();
+      Word* referenceWord = (Word*)selectedItems().first();
       QRectF referenceRectangle = referenceWord->boundingBox();
       qreal refX = 
 	referenceRectangle.topLeft().x() + referenceRectangle.width()*.5;
       unsigned short s = 0;
-      foreach (Word* w, selectGroup)
+      foreach (QGraphicsItem* word, selectedItems())
 	{
 	  if (s != 0)
 	    {
-	      QRectF r = w->boundingBox();
-	      w->setPos(refX - r.width()*.5, r.topLeft().y());
+	      QRectF r = ((Word*)word)->boundingBox();
+	      word->setPos(refX - r.width()*.5, r.topLeft().y());
 	    }
 	  s++;
 	}
@@ -180,11 +178,6 @@ void Canvas::keyPressEvent(QKeyEvent *event)
 	{
 	  highlightPinned(true);
 	  update();
-	}
-      else if (event->key() == groupKey)
-	{
-	  groupSelectMode = true;
-	  selectGroup.clear();
 	}
     }
 }
@@ -306,86 +299,71 @@ bool Canvas::layoutWord(Word *w)
   return true;
 }
 
-void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-  if (!layoutBusy)
-    {
-      QGraphicsItem *item = itemAt(event->scenePos());
-      if (item != NULL)
-	{
-	  item->grabMouse();
-	  if (event->button() == Qt::LeftButton)
-	    {
-	      if (groupSelectMode && !selectGroup.contains((Word*)item))
-		selectGroup.push_back((Word*)item);
-	      else
-		((Word*)item)->toggleManipulated();		  
-	    }
-	}
-    }
-}
+// void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
+// {
+//   if (!layoutBusy)
+//     {
+//       QGraphicsItem *item = itemAt(event->scenePos());
+//       if (item != NULL)
+// 	{
+// 	  item->grabMouse();
+// 	  if (event->button() == Qt::LeftButton)
+// 	    {
+// 	      if (groupSelectMode && !selectGroup.contains((Word*)item))
+// 		selectGroup.push_back((Word*)item);
+// 	      else
+// 		((Word*)item)->toggleManipulated();		  
+// 	    }
+// 	}
+//     }
+// }
 
-void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
-{
-  if (groupSelectMode)
-    {
-      QPoint delta = (mouseEvent->scenePos() - mouseEvent->lastScenePos()).toPoint();      
-      foreach (Word* w, selectGroup)
-	{
-	  w->moveBy(delta.x(), delta.y());
-	  this->update(w->boundingRect());	      
-	}
-    }
-  else
-    {
-      QGraphicsItem *item = mouseGrabberItem();
-      if (item != NULL && !layoutBusy)
-	{
-	  QPoint delta = (mouseEvent->scenePos() - mouseEvent->lastScenePos()).toPoint();
-	  ((Word*)item)->moveBy(delta.x(), delta.y());
-	  this->update(item->boundingRect());	  
-	}
-    }
-}
+// void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+// {
+//   if (groupSelectMode)
+//     {
+//       QPoint delta = (mouseEvent->scenePos() - mouseEvent->lastScenePos()).toPoint();      
+//       foreach (Word* w, selectGroup)
+// 	{
+// 	  w->moveBy(delta.x(), delta.y());
+// 	  this->update(w->boundingRect());	      
+// 	}
+//     }
+//   else
+//     {
+//       QGraphicsItem *item = mouseGrabberItem();
+//       if (item != NULL && !layoutBusy)
+// 	{
+// 	  QPoint delta = (mouseEvent->scenePos() - mouseEvent->lastScenePos()).toPoint();
+// 	  ((Word*)item)->moveBy(delta.x(), delta.y());
+// 	  this->update(item->boundingRect());	  
+// 	}
+//     }
+// }
 
-void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-  if (!layoutBusy)
-    {
-      if (groupSelectMode)
-	{
-	}
-      else
-	{
-	  QGraphicsItem *item = mouseGrabberItem(); 
-	  if (item != NULL)
-	    {
-	      item->ungrabMouse();
-	      if (event->button() == Qt::LeftButton)
-		{
-      
-		  Word *w = ((Word*)item);
-		  w->toggleManipulated();
-		  if (event->modifiers() == Qt::ControlModifier)
-		    {
-		      w->setPinned(false);
-		    }
-		  else
-		    {
-		      w->setPinned(true);
-		      wordlist.move(wordlist.indexOf(w), 0);
-		    }
-		}
-	      else
-		{
-		  WordPropertyDialog *wpd = new WordPropertyDialog((Word*)item);
-		  wpd->exec();
-		  delete wpd;
-		}
-	    }
-	}
-    }
-}
+// void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+// {
+//   qDebug() << __PRETTY_FUNCTION__;
+//   QGraphicsItem *item = mouseGrabberItem(); 
+//   if (item != NULL)
+//     {
+//       item->ungrabMouse();
+//       if (event->button() == Qt::LeftButton)
+// 	{		  
+// 	  Word *w = ((Word*)item);
+// 	  w->toggleManipulated();
+// 	  if (event->modifiers() == Qt::ControlModifier)
+// 	    {
+// 	      w->setPinned(false);
+// 	    }
+// 	  else
+// 	    {
+// 	      w->setPinned(true);
+// 	      wordlist.move(wordlist.indexOf(w), 0);
+// 	    }
+// 	}
+//     }
+// }
 
 void Canvas::randomiseOrientations(WordOrientation w)
 {
@@ -632,19 +610,19 @@ void Canvas::unpinAll()
 
 void Canvas::vAlignSelectedWords()
 {
-  if (selectGroup.size() > 1)
+  if (selectedItems().size() > 1)
     {
-      Word* referenceWord = selectGroup.first();
+      Word* referenceWord = (Word*)selectedItems().first();
       QRectF referenceRectangle = referenceWord->boundingBox();
       qreal refY = 
 	referenceRectangle.topLeft().y() + referenceRectangle.height()*.5;
       unsigned short s = 0;
-      foreach (Word* w, selectGroup)
+      foreach (QGraphicsItem* word, selectedItems())
 	{
 	  if (s != 0)
 	    {
-	      QRectF r = w->boundingBox();
-	      w->setPos(r.topLeft().x(), refY - r.height()*.5);
+	      QRectF r = ((Word*)word)->boundingBox();
+	      word->setPos(r.topLeft().x(), refY - r.height()*.5);
 	    }
 	  s++;
 	}
