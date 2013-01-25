@@ -31,6 +31,7 @@ public:
   void clearWordList();
   void createLayout();
   void highlightPinned(bool h);
+  void moveWordOnList(Word*, unsigned int);
   void randomiseWordColours(const QVector<QColor> &colours);
   void randomiseWordFontFamily(const QVector<QString> &fontfamilies);  
   // void reCreateLayout(); 

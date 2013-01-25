@@ -365,6 +365,11 @@ bool Canvas::layoutWord(Word *w)
 //     }
 // }
 
+void Canvas::moveWordOnList(Word* w, unsigned int p)
+{
+  wordlist.move(wordlist.indexOf(w), 0);
+}
+
 void Canvas::randomiseOrientations(WordOrientation w)
 {
   rng.seed(static_cast<unsigned int>(std::time(0)));

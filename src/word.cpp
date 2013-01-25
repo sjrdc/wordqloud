@@ -5,6 +5,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <math.h>
 
+#include "canvas.h"
 #include "word.h"
 #include "wordpropertydialog.h"
 
@@ -161,11 +162,19 @@ void Word::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void Word::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
   this->setManipulated(false);
-  qDebug() << __PRETTY_FUNCTION__;
-  QGraphicsSimpleTextItem::mouseReleaseEvent(event);
-  update();
-
-  if (event->button() == Qt::RightButton)
+  if (event->button() == Qt::LeftButton)
+    {
+      if (event->modifiers() == Qt::ControlModifier)
+	this->setPinned(false);
+      else
+	{
+	  this->setPinned(true);
+	  ((Canvas*)this->scene())->moveWordOnList(this, 0);
+	}
+      QGraphicsSimpleTextItem::mouseReleaseEvent(event);
+      update();
+    }
+  else if (event->button() == Qt::RightButton)
     {
       WordPropertyDialog *wpd = new WordPropertyDialog(this);
       wpd->exec();
