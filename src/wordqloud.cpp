@@ -11,7 +11,7 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QStatusBar>
-#include <QToolbar>
+#include <QToolBar>
 #include <QVBoxLayout>
 
 #include <ctime>

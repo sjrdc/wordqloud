@@ -94,8 +94,8 @@ void keyPressEvent(QKeyEvent *event);
 
   boost::scoped_ptr<boost::thread> layoutThread;
 
-  const unsigned int pinKey = Qt::Key_P;
-  const unsigned int groupKey = Qt::Key_Shift;
+  static const unsigned int pinKey = Qt::Key_P;
+  static const unsigned int groupKey = Qt::Key_Shift;
 };
 
 inline void Canvas::addWord(Word *w)
