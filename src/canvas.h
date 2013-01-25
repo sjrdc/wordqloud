@@ -51,17 +51,22 @@ signals:
 
 public slots:
   void randomiseOrientations(WordOrientation w);
+  void hAlignSelectedWords();
+  void vAlignSelectedWords();
+  void distributeSelectedWords(DistributionDirection);
   void stopLayout();
   void unpinAll();
 
 protected:
-  void keyPressEvent(QKeyEvent *event);
+void keyPressEvent(QKeyEvent *event);
   void keyReleaseEvent(QKeyEvent *event);
   bool layoutWord(Word *w);
+
   void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
   void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);    
   QRectF scaleSceneRectArea(float factor, QSizeF maxwordsize = QSizeF());
+
   
   WordList wordlist;
   LayoutBound layoutBound;
@@ -72,6 +77,9 @@ protected:
   LayoutPath path;
   bool layoutBusy;
 
+  QList<Word*> selectGroup;
+  bool groupSelectMode;
+  
   // some random generator stuff for coordinate generation
   boost::mt19937 rng;
   boost::normal_distribution<float> cxDistribution;
@@ -85,6 +93,9 @@ protected:
 			   boost::uniform_int<> > *avarnor;    
 
   boost::scoped_ptr<boost::thread> layoutThread;
+
+  const unsigned int pinKey = Qt::Key_P;
+  const unsigned int groupKey = Qt::Key_Shift;
 };
 
 inline void Canvas::addWord(Word *w)

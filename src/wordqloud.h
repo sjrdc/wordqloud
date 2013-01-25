@@ -12,6 +12,7 @@ class QLabel;
 class QMenu;
 class QPushButton;
 class QProgressBar;
+class QToolBar;
 class View;
 
 class WordQloud : public QMainWindow
@@ -37,6 +38,7 @@ private slots:
   void onOrientationActionTriggered(QAction*);
   void onColourschemeActionGroupTriggered(QAction*);
   void onColourVariationActionTriggered(QAction*);
+  void onHAlignActionTriggered();
   void onLayoutBoundsActionTriggered(QAction*);
   void onLayoutEnded();
   void onLayoutStarted();
@@ -55,12 +57,13 @@ private slots:
   void spinOrientations();  
   void onStatusChanged(QString);
   void onStopButtonClicked();
-
+  void onVAlignActionTriggered();
 private:
   void addColourVariations(QList<QColor> &colourlis, ColourVariation v);
   ColourVariation checkedColourVariation();
   void createActions();
   void createMenus();
+  void createToolbar();
   void createColourschemeMenu();
   QIcon createColourschemeIcon(QVector<QColor> colours);
   QList<QColor> checkedColourscheme();
@@ -115,6 +118,8 @@ private:
   QAction *someVariationAction;
   QAction *lotsOfVariationAction;
   QAction *wildVariationAction;
+
+  QToolBar *toolbar;
 
   View *view;
   Canvas *canvas;

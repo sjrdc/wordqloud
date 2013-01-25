@@ -11,7 +11,7 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QStatusBar>
-#include <QSvgGenerator>
+#include <QToolbar>
 #include <QVBoxLayout>
 
 #include <ctime>
@@ -20,10 +20,11 @@
 #include "boundsdialog.h"
 #include "colourschemedialog.h"
 #include "canvas.h"
-#include "view.moc"
+#include "enumerations.h"
 #include "wordqloud.moc"
 #include "word.h"
 #include "wordlist.h"
+#include "view.moc"
 
 WordQloud::WordQloud()
 {
@@ -75,9 +76,12 @@ WordQloud::WordQloud()
 
   createActions();
   createMenus();
-
+  createToolbar();
+  
   setWindowTitle(tr("wordQloud"));
   setMinimumSize(400, 600);
+
+  onLoadWordlist();
 }
 
 void WordQloud::about()
@@ -452,6 +456,23 @@ void WordQloud::createColourschemeMenu()
 	  this, SLOT(onColourschemeActionGroupTriggered(QAction*)));
 }
 
+void WordQloud::createToolbar()
+{
+  toolbar = addToolBar(tr("tool bar"));
+  
+  QAction *hAlignAction = toolbar->addAction(tr("halign"));
+  connect(hAlignAction, SIGNAL(triggered()),
+	  this, SLOT(onHAlignActionTriggered()));
+  
+  QAction *vAlignAction = toolbar->addAction(tr("valign"));
+  connect(vAlignAction, SIGNAL(triggered()),
+	  this, SLOT(onVAlignActionTriggered()));
+
+  QAction *hDistribute = toolbar->addAction(tr("hDistribute"));
+  connect(hDistribute, SIGNAL(triggered()),
+	  canvas, SLOT(distributeSelectedWords()));
+}
+
 void WordQloud::createMenus()
 {
   fileMenu = menuBar()->addMenu(tr("&File"));
@@ -539,6 +560,11 @@ void WordQloud::onClearWordListActionTriggered()
   canvas->clearWordList();
 }
 
+void WordQloud::onHAlignActionTriggered()
+{
+  canvas->hAlignSelectedWords();
+}
+
 void WordQloud::onLayoutEnded()
 {
   progressBar->hide();
@@ -585,9 +611,11 @@ void WordQloud::onLoadColourSchemeActionTriggered()
 
 void WordQloud::onLoadWordlist()
 {
-  QString filename = 
-    QFileDialog::getOpenFileName(this, "Load word list file");
+  // QString filename = 
+  //   QFileDialog::getOpenFileName(this, "Load word list file");
 
+  QString filename = "/Users/sjoerd/work/wordcloud/build/sjoerd.txt";
+  
   WordList wordlist;
   try { wordlist.fromWordFile(filename); }
   catch (...) 
@@ -711,6 +739,11 @@ void WordQloud::onStopButtonClicked()
 void WordQloud::onUnpinAllButtonClicked()
 {
   canvas->unpinAll();
+}
+
+void WordQloud::onVAlignActionTriggered()
+{
+  canvas->vAlignSelectedWords();
 }
 
 void WordQloud::reCreateLayout()
