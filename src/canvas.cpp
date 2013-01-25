@@ -89,38 +89,64 @@ bool comparePairs(std::pair<Word*, qreal> a,
 
 void Canvas::distributeSelectedWords(DistributionDirection direction)
 {
-  QVector<std::pair<Word*, qreal> > coordinates(selectGroup.size());
-  switch (direction)
+  qDebug() << selectGroup.size();
+  if (selectGroup.size() > 2)
     {
-    case HorizontalDistribution:
-      {
-	foreach (Word* w, selectGroup)
+      QVector<std::pair<Word*, qreal> > coordinates;
+      switch (direction)
+	{
+	case HorizontalDistribution:
 	  {
-	    QRectF r = w->boundingBox();
-	    coordinates.push_back(std::make_pair<Word*, qreal>(w, r.topLeft().x() + r.width()*.5));
+	    foreach (Word* w, selectGroup)
+	      {
+		QRectF r = w->boundingBox();
+		coordinates.push_back(std::make_pair<Word*, qreal>(w, r.topLeft().x() + r.width()*.5));
+	      }
+
+	    std::sort(coordinates.begin(), coordinates.end(), comparePairs);
+
+	    qreal extent = coordinates.last().second - coordinates.first().second;
+	    qreal spacing = extent/(selectGroup.size() - 1);
+	    qreal startPosition = coordinates[0].second;
+	    
+	    for (unsigned int i = 0; i < coordinates.size(); ++i)
+	      {
+		QRectF r = coordinates[i].first->boundingBox();
+		qreal x = startPosition + i*spacing - r.width()*.5;
+		coordinates[i].first->setPos(x, r.topLeft().y());
+	      }
+	    break;
 	  }
-
-	std::sort(coordinates.begin(), coordinates.end(), comparePairs);
-
-	qreal extent = coordinates.last().second - coordinates.first().second;
-	qreal spacing = extent/(selectGroup.size() - 1);
-
-	
-	break;
-      }
-    case VerticalDistribution:
-      {
-	foreach (Word* w, selectGroup)
+	case VerticalDistribution:
 	  {
-	  }
+	    foreach (Word* w, selectGroup)
+	      {
+		QRectF r = w->boundingBox();
+		coordinates.push_back(std::make_pair<Word*, qreal>(w, r.topLeft().y() + r.height()*.5));
+	      }
 
-	break;
-      }
+	    std::sort(coordinates.begin(), coordinates.end(), comparePairs);
+
+	    qreal extent = coordinates.last().second - coordinates.first().second;
+	    qreal spacing = extent/(selectGroup.size() - 1);
+	    qreal startPosition = coordinates[0].second;
+	    
+	    for (unsigned int i = 0; i < coordinates.size(); ++i)
+	      {
+		QRectF r = coordinates[i].first->boundingBox();
+		qreal y = startPosition + i*spacing - r.height()*.5;
+		coordinates[i].first->setPos(r.topLeft().x(), y);
+	      }
+
+	    break;
+	  }
+	}
     }
 }
 
 void Canvas::hAlignSelectedWords()
 {
+  qDebug() << selectGroup.size();
   if (selectGroup.size() > 1)
     {
       Word* referenceWord = selectGroup.first();

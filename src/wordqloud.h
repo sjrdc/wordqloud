@@ -39,6 +39,7 @@ private slots:
   void onColourschemeActionGroupTriggered(QAction*);
   void onColourVariationActionTriggered(QAction*);
   void onHAlignActionTriggered();
+  void onHDistributeActionTriggered();  
   void onLayoutBoundsActionTriggered(QAction*);
   void onLayoutEnded();
   void onLayoutStarted();
@@ -47,6 +48,7 @@ private slots:
   void onSaveColourSchemeActionTriggered();
   void onSceneRectActionTriggered();
   void onUnpinAllButtonClicked();
+  void onVDistributeActionTriggered();
   void reCreateLayout();
   void saveBitmap();
   void savePDF();  

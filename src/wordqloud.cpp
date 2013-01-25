@@ -470,7 +470,11 @@ void WordQloud::createToolbar()
 
   QAction *hDistribute = toolbar->addAction(tr("hDistribute"));
   connect(hDistribute, SIGNAL(triggered()),
-	  canvas, SLOT(distributeSelectedWords()));
+	  this, SLOT(onHDistributeActionTriggered()));
+
+  QAction *vDistribute = toolbar->addAction(tr("vDistribute"));
+  connect(vDistribute, SIGNAL(triggered()),
+	  this, SLOT(onVDistributeActionTriggered()));
 }
 
 void WordQloud::createMenus()
@@ -565,6 +569,11 @@ void WordQloud::onHAlignActionTriggered()
   canvas->hAlignSelectedWords();
 }
 
+void WordQloud::onHDistributeActionTriggered()
+{
+  canvas->distributeSelectedWords(HorizontalDistribution);
+}
+
 void WordQloud::onLayoutEnded()
 {
   progressBar->hide();
@@ -614,7 +623,7 @@ void WordQloud::onLoadWordlist()
   // QString filename = 
   //   QFileDialog::getOpenFileName(this, "Load word list file");
 
-  QString filename = "/Users/sjoerd/work/wordcloud/build/sjoerd.txt";
+  QString filename = "/home/scrijns/work/wordcloud/build/sjoerd.txt";
   
   WordList wordlist;
   try { wordlist.fromWordFile(filename); }
@@ -744,6 +753,11 @@ void WordQloud::onUnpinAllButtonClicked()
 void WordQloud::onVAlignActionTriggered()
 {
   canvas->vAlignSelectedWords();
+}
+
+void WordQloud::onVDistributeActionTriggered()
+{
+  canvas->distributeSelectedWords(VerticalDistribution);
 }
 
 void WordQloud::reCreateLayout()
