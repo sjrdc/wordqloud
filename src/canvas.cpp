@@ -106,7 +106,7 @@ void Canvas::keyReleaseEvent(QKeyEvent *event)
 bool Canvas::layoutWord(Word *w)
 {
   int attempts = 0;
-  int maxattempts = 25;
+  int maxattempts = 250;
   /* find out where to place the word */
   if (!w->getPinned())
     {

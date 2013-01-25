@@ -8,9 +8,11 @@
 #include "word.h"
 
 Word::Word(QString string, float b)
-  : QGraphicsSimpleTextItem(string)
+  : QGraphicsSimpleTextItem()
 {
   assert (b >= 0 && b <= 1);
+
+  this->setText(string);
   this->setBrush(Qt::black);
   this->setBoundingRegionGranularity(b);
   cachedCollision = NULL;
@@ -66,9 +68,9 @@ QTextStream& Word::fromStream(QTextStream& i)
     {
       // find possible modifiers
       QStringList modifiers = line.split(':', QString::SkipEmptyParts);
-      line = modifiers[0];
+      QString word = modifiers[0];
       modifiers.pop_front();
-      this->setText(line);
+      this->setText(word.replace("\\n", QString(QChar::LineSeparator)));
       foreach (QString modifier, modifiers)
 	{
 	  char key = modifier[0].toAscii();
