@@ -166,7 +166,7 @@ ColourVariation WordQloud::checkedColourVariation()
     checkedAction()->data().toInt();
 }
 
-void stringToColourScheme(QString s, QString &schemeName, QVector<QColor> &colourScheme)
+void string2ColourScheme(QString s, QString &schemeName, QVector<QColor> &colourScheme)
 {
   QStringList colourlist = s.split(' ');
   if (colourlist.size() > 2)
@@ -422,7 +422,7 @@ void WordQloud::createColourschemeMenu()
 	{
 	  QString schemeName;
 	  QVector<QColor> scheme;
-	  stringToColourScheme(line, schemeName, scheme);
+	  string2ColourScheme(line, schemeName, scheme);
 
 	  QList<QVariant> varlist;
 	  foreach(QColor c, scheme)
@@ -594,7 +594,7 @@ void WordQloud::onLoadColourSchemeActionTriggered()
 
   QString schemeName;
   QVector<QColor> scheme;
-  stringToColourScheme(line, schemeName, scheme);
+  string2ColourScheme(line, schemeName, scheme);
 
   // create an icon to use in the menu
   QIcon schemeIcon = createColourschemeIcon(scheme);
