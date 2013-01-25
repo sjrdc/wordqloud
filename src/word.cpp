@@ -154,7 +154,6 @@ void Word::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void Word::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
   QPoint delta = (event->scenePos() - event->lastScenePos()).toPoint();  
-  qDebug() << __PRETTY_FUNCTION__ << delta;
   moveBy(delta.x(), delta.y());
   QGraphicsSimpleTextItem::mouseMoveEvent(event);
 }
